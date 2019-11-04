@@ -16,13 +16,15 @@ import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LandingComponent } from './landing/landing.component';
+import { RegistrationComponent } from './registration/registration.component';
 import { ConnectionService } from './connection.service';
 >>>>>>> add http client
 
 @NgModule({
   declarations: [
     AppComponent,
-    LandingComponent
+    LandingComponent,
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,
