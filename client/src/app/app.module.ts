@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AppComponent } from './app.component';
 import { LandingComponent } from './landing/landing.component';
@@ -33,6 +34,7 @@ import { ConnectionService } from './connection.service';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCheckboxModule,
   ],
   providers: [ConnectionService],
   bootstrap: [AppComponent]
