@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,6 +15,8 @@ import { LandingComponent } from './landing/landing.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { ConnectionService } from './connection.service';
+import { JwtInterceptor } from './jwt.interceptor';
+import { ErrInterceptor } from './err.interceptor';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,11 @@ import { ConnectionService } from './connection.service';
     MatInputModule,
     MatCheckboxModule,
   ],
-  providers: [ConnectionService],
+  providers: [
+    ConnectionService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

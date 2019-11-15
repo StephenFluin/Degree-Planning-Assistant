@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserData, ConnectionService } from '../connection.service';
+import { User, ConnectionService } from '../connection.service';
 
 @Component({
   selector: 'app-registration',
@@ -21,19 +21,19 @@ export class RegistrationComponent {
   /**
    * Register new user, validating input and server response
    */
-  register() {
+  onSubmit() {
     if (!this.registrationForm.valid) {
       alert('Please fill out all form boxes.');
       return;
     }
 
-    const user: UserData = {
+    const userData: User = {
       name: this.registrationForm.value.name,
       email: this.registrationForm.value.email,
       password: this.registrationForm.value.password
     };
 
-    const tokenResult = this.connectionService.sign_in_user(user);
+    const tokenResult = this.connectionService.login(userData);
 
     // retrieve token or handle server error
     tokenResult
@@ -54,7 +54,7 @@ export class RegistrationComponent {
   /**
    * Triggers authentication check of user email and password
    */
-  login() {
+  routeTologin() {
     this.router.navigate(['login']);
   }
 

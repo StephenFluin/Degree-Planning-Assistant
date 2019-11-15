@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { throwError, Observable } from 'rxjs';
+import { throwError, Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   EMAIL_IS_EMPTY, EMAIL_IS_IN_WRONG_FORMAT, PASSWORD_IS_EMPTY,
   PASSWORD_LENGTH_MUST_BE_MORE_THAN_8, WRONG_PASSWORD, SOME_THING_WENT_WRONG,
@@ -8,7 +9,7 @@ import {
   TOKEN_IS_EMPTY, NAME_IS_INVALID
 } from './constant';
 
-export interface UserData {
+export interface User {
   name?: string;
   email: string;
   password: string;
@@ -21,22 +22,43 @@ export class ConnectionService {
 
   uri = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) { }
+  // Accreditted to https://jasonwatmore.com/post/2019/06/22/angular-8-jwt-authentication-example-tutorial
+  private currentUserSubject: BehaviorSubject<any>;
+  public currentUser: Observable<User>;
+
+  constructor(private http: HttpClient) {
+    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
 
   /**
    * Register a new user
-   * @param user
+   * @param userData
    */
-  create_new_user(user: UserData) {
-    return this.http.post(`${this.uri}/register`, user);
+  create_new_user(userData: User) {
+    return this.http.post(`${this.uri}/register`, userData);
+  }
+
+  public get currentUserValue(): User {
+    return this.currentUserSubject.value;
   }
 
   /**
    * Login an existing user
-   * @param user
+   * @param userData
    */
-  sign_in_user(user: UserData): Observable<any> {
-    return this.http.post(`${this.uri}/login`, user);
+  login(userData: User): Observable<any> {
+    return this.http.post(`${this.uri}/login`, userData)
+      .pipe(map(userDetails => {
+        localStorage.setItem('currentUser', JSON.stringify(userDetails));
+        this.currentUserSubject.next(userDetails);
+        return userDetails;
+      }));
+  }
+
+  logout() {
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
   }
 
   /**
