@@ -1,11 +1,8 @@
 import express from 'express';
-import {
-  check,
-  validationResult
-} from 'express-validator';
-
+import { check, validationResult } from 'express-validator';
 import passport from "passport";
-
+import { generateServerErrorCode } from '../store/utils';
+import { Course } from '../database/models';
 import {
   COURSE_SCHOOL_IS_EMPTY,
   COURSE_EXISTS_ALREADY,
@@ -18,15 +15,8 @@ import {
   SOME_THING_WENT_WRONG
 } from './constant';
 
-import {
-  generateServerErrorCode
-} from '../store/utils';
-
-import {
-  Course
-} from '../database/models';
-
 const courseController = express.Router();
+const ObjectId = require('mongoose').Types.ObjectId; 
 
 const validateCourseCreation = [
   check('school')
@@ -63,15 +53,35 @@ const validateSchoolCourses = [
   .withMessage(COURSE_SCHOOL_IS_EMPTY),
 ];
 
-function createCourse(school, code, title, description, prerequisites, corequisites, difficulty, impaction, termsOffered) {
+async function createCourse(schl, code, title, description, prereq, coreq, difficulty, impaction, termsOffered) {
   let course;
+  let prerequisites = [];
+  let corequisites = [];
+  
+  console.log("PREREQS before: ", prereq);
+  // retrieve each prereq's id and save that into the database
+  for (let pre of prereq) {
+    console.log("pre: ", pre);
+
+    prerequisites.push(await findIdFromSchoolCode(schl, pre));
+  }
+  console.log("PREREQS after: ", prerequisites);
+
+
+  // console.log("COREQS before: ", coreq);
+  // // retrieve each coreq's id and save that into the database
+  // for (let co of coreq) {
+  //   corequisites.push(findIdFromSchoolCode(schl, co));
+  // }
+  // console.log("COREQS after: ", corequisites);
+
   const data = {
-    school,
+    school: schl,
     code,
     title,
     description,
     prerequisites,
-    corequisites,
+    coreq,
     difficulty,
     impaction,
     termsOffered
@@ -80,6 +90,46 @@ function createCourse(school, code, title, description, prerequisites, corequisi
   course = new Course(data);
   return course.save();
 }
+
+async function findIdFromSchoolCode(schl, courseCode) {
+  console.log("findIdFromSchoolCode")
+  let course = await Course.findOne({ school: schl, code: courseCode });
+  console.log(1)
+  console.log(course)
+  if (course) {
+    console.log(course._id);
+    return new ObjectId(course._id); 
+  }
+
+  console.log("Creating an empty course since no entry for ", courseCode);
+  let newCourse = createEmptyCourse(schl, courseCode);
+  newCourse.save();
+}
+
+function createEmptyCourse(schl, courseCode) {
+  
+  const data = {
+    school: schl,
+    code: courseCode,
+    title: " ",
+    description: " ",
+    prerequisites: [],
+    corequisites: [],
+    difficulty: 0,
+    impaction: 0,
+    termsOffered: " "
+  };
+  return new Course(data);
+}
+
+
+// function populateCourseBasedOnId() {
+//   .populate('prerequisites')
+//       .exec(function (err, currentCourse) {
+//         if (err) return handleError(err);
+//         console.log('\nThe prerequisites are %s', currentCourse);
+//       });
+// }
 
 /**
  * POST/
@@ -110,15 +160,10 @@ courseController.post('/create',
           termsOffered
         } = req.body;
 
-        const course = await Course.findOne({
-          school,
-          code
-        });
+        const course = await Course.findOne({ school, code });
         if (!course) {
           const createdCourse = await createCourse(school, code, title, description, prerequisites, corequisites, difficulty, impaction, termsOffered);
-          const courseToReturn = {
-            ...createdCourse.toJSON()
-          };
+          const courseToReturn = { ...createdCourse.toJSON() };
           res.status(200).json(courseToReturn);
         } else {
           generateServerErrorCode(res, 403, 'course creation error', COURSE_EXISTS_ALREADY, 'code');
@@ -142,14 +187,9 @@ courseController.get('/:school/:code', validateSingleCourse, async (req, res) =>
     });
   } else {
     try {
-      const {
-        school,
-        code
-      } = req.params;
-      const course = await Course.findOne({
-        school,
-        code
-      });
+      const { school, code } = req.params;
+      const course = await Course.findOne({ school, code });
+
       if (course) {
         const courseToReturn = course;
         res.status(200).json(courseToReturn);
@@ -175,9 +215,7 @@ courseController.get('/:school', validateSchoolCourses, async (req, res) => {
     });
   } else {
     try {
-      const courses = await Course.find({
-        school: req.params.school
-      });
+      const courses = await Course.find({ school: req.params.school });
       if (courses) {
         console.log("\n---COURSES---\n ", courses);
         const coursesToReturn = courses;
