@@ -1,8 +1,15 @@
 import express from 'express';
-import { check, validationResult } from 'express-validator';
+import {
+  check,
+  validationResult
+} from 'express-validator';
 import passport from "passport";
-import { generateServerErrorCode } from '../store/utils';
-import { Course } from '../database/models';
+import {
+  generateServerErrorCode
+} from '../store/utils';
+import {
+  Course
+} from '../database/models';
 import {
   COURSE_SCHOOL_IS_EMPTY,
   COURSE_EXISTS_ALREADY,
@@ -16,7 +23,7 @@ import {
 } from './constant';
 
 const courseController = express.Router();
-const ObjectId = require('mongoose').Types.ObjectId; 
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const validateCourseCreation = [
   check('school')
@@ -67,25 +74,31 @@ const validateSchoolCourses = [
  * @returns {Course} new course
  */
 async function createCourse(schl, code, title, description, prereq, coreq, difficulty, impaction, termsOffered) {
+  console.log("Current course: ", schl, code);
   let course;
-  let prerequisites = loopThroughCourses(schl, prereq);
-  let corequisites = coreq;
-  // let corequisites = await loopThroughCourses(schl, coreq);
+  let prerequisites;
+  try {
+    prerequisites = await loopThroughCourses(schl, prereq);
+    let corequisites = coreq;
+    // let corequisites = await loopThroughCourses(schl, coreq);
+    const data = {
+      school: schl,
+      code,
+      title,
+      description,
+      prerequisites,
+      corequisites,
+      difficulty,
+      impaction,
+      termsOffered
+    };
 
-  const data = {
-    school: schl,
-    code,
-    title,
-    description,
-    prerequisites,
-    corequisites,
-    difficulty,
-    impaction,
-    termsOffered
-  };
+    course = new Course(data);
+    return course.save();
 
-  course = new Course(data);
-  return course.save();
+  } catch (e) {
+    console.log("looping error", e);
+  }
 }
 
 /**
@@ -95,36 +108,40 @@ async function createCourse(schl, code, title, description, prereq, coreq, diffi
  * @returns {[Course]} coursesWithIds
  */
 async function loopThroughCourses(school, codes) {
-  let coursesWithIds = [];
-  for (let code of codes) {
-    console.log("Would be pushing to coursesWithIds")
-    coursesWithIds.push(await getObjectId(school, code));
+  try {
+    let coursesWithIds = [];
+    for (let code of codes) {
+      const objId = await getObjectId(school, code)
+      coursesWithIds.push(objId);
+    }
+    return coursesWithIds;
+  } catch (e) {
+    console.log("The error e: ", e);
   }
-  console.log("About to return courseWithIds: ", courseWithIds);
-  return coursesWithIds;
 }
 
 /**
  * Get the ObjectId of a course based on school (schl) and course code
+ * Or initialize a new course and retrieve the ObjectId
  * @param {String} schl 
  * @param {String} courseCode 
  * @returns {ObjectId} course._id
  */
 async function getObjectId(school, code) {
   console.log("getObjectId of school and code: ", school, code);
-  let course = await Course.findOne({ school, code });
-
-  /**
-   * If the course is not already in the database, 
-   * need to initialize one and then retrieve the objectId of it
-   */
-  if (!course) {
-    const createdCourse = await createEmptyCourse(school, code);
-    return new ObjectId(createdCourse._id);
-    // return getObjectId(school, code);
+  try {
+    let course = await Course.findOne({
+      school,
+      code
+    });
+    if (!course) {
+      const createdCourse = await createEmptyCourse(school, code);
+      return new ObjectId(createdCourse._id);
+    }
+    return new ObjectId(course._id);
+  } catch (e) {
+    console.log("The unhandled error: ", e);
   }
-  
-  return new ObjectId(course._id); 
 }
 
 /**
@@ -134,8 +151,6 @@ async function getObjectId(school, code) {
  * @returns {Course} new course
  */
 async function createEmptyCourse(schl, courseCode) {
-  console.log("Creating an empty course since no entry for ", courseCode);
-  console.log("YOU ENDED HERE!");
   const data = {
     school: schl,
     code: courseCode,
@@ -177,15 +192,30 @@ courseController.post('/create',
       });
     } else {
       try {
-        const { school, code, title, description, prerequisites, corequisites, difficulty, impaction, termsOffered } = req.body;
+        const {
+          school,
+          code,
+          title,
+          description,
+          prerequisites,
+          corequisites,
+          difficulty,
+          impaction,
+          termsOffered
+        } = req.body;
 
         // Check if course already exists
-        const course = await Course.findOne({ school, code });
+        const course = await Course.findOne({
+          school,
+          code
+        });
 
         // It doesn't, so create a new course
         if (!course) {
           const createdCourse = await createCourse(school, code, title, description, prerequisites, corequisites, difficulty, impaction, termsOffered);
-          const courseToReturn = { ...createdCourse.toJSON() };
+          const courseToReturn = {
+            ...createdCourse.toJSON()
+          };
           res.status(200).json(courseToReturn);
         } else {
           generateServerErrorCode(res, 403, 'course creation error', COURSE_EXISTS_ALREADY, 'code');
@@ -209,8 +239,14 @@ courseController.get('/:school/:code', validateSingleCourse, async (req, res) =>
     });
   } else {
     try {
-      const { school, code } = req.params;
-      const course = await Course.findOne({ school, code });
+      const {
+        school,
+        code
+      } = req.params;
+      const course = await Course.findOne({
+        school,
+        code
+      });
 
       if (course) {
         const courseToReturn = course;
@@ -237,7 +273,9 @@ courseController.get('/:school', validateSchoolCourses, async (req, res) => {
     });
   } else {
     try {
-      const courses = await Course.find({ school: req.params.school });
+      const courses = await Course.find({
+        school: req.params.school
+      });
       if (courses) {
         console.log("\n---COURSES---\n ", courses);
         const coursesToReturn = courses;
