@@ -6,10 +6,20 @@ const courseSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   prerequisites: [
-    { type: Schema.Types.ObjectId, ref: 'Course', uppercase: true },
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Course',
+      required: true,
+      uppercase: true,
+    },
   ],
   corequisites: [
-    { type: Schema.Types.ObjectId, ref: 'Course', uppercase: true },
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Course',
+      required: true,
+      uppercase: true,
+    },
   ],
   difficulty: { type: Number },
   impaction: { type: Number },

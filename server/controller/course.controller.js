@@ -7,6 +7,7 @@ import {
   COURSE_SCHOOL_IS_EMPTY,
   COURSE_EXISTS_ALREADY,
   COURSE_DOES_NOT_EXIST,
+  SCHOOl_DOES_NOT_EXIST,
   COURSE_CODE_IS_EMPTY,
   DOES_NOT_CONTAIN_A_DIGIT,
   COURSE_TITLE_IS_EMPTY,
@@ -55,43 +56,18 @@ const validateSchoolCourses = [
 
 /**
  * Creates a new Course with correct reference to ObjectId of prerequisites and corequisites
- * @param {String} schl
- * @param {String} code
- * @param {String} title
- * @param {String} description
- * @param {[ObjectId]} prereq
- * @param {[ObjectId]} coreq
- * @param {Number} difficulty
- * @param {Number} impaction
- * @param {String} termsOffered
- * @returns {Course} new course
+ * @param {} data
+ * @returns {Course} Course
  */
-async function createCourse(
-  schl,
-  code,
-  title,
-  description,
-  prereq,
-  coreq,
-  difficulty,
-  impaction,
-  termsOffered
-) {
+async function createCourse(data) {
   try {
     let course;
-    let prerequisites = await loopThroughCourses(schl, prereq);
-    let corequisites = await loopThroughCourses(schl, coreq);
-    const data = {
-      school: schl,
-      code,
-      title,
-      description,
-      prerequisites,
-      corequisites,
-      difficulty,
-      impaction,
-      termsOffered,
-    };
+    let prereqs = data.prerequisites;
+    let coreqs = data.corequisites;
+
+    data.prerequisites = await getAllCourseId(data.school, prereqs);
+    data.corequisites = await getAllCourseId(data.school, coreqs);
+
     course = new Course(data);
     return course.save();
   } catch (e) {
@@ -103,9 +79,9 @@ async function createCourse(
  * Loop though an array of Courses to get the ObjectId of each
  * @param {String} school
  * @param {[String]} codes
- * @returns {[Course]} coursesWithIds
+ * @returns {[ObjectId]} [ObjectId]
  */
-async function loopThroughCourses(school, codes, next) {
+async function getAllCourseId(school, codes) {
   try {
     let coursesWithIds = [];
     for (let code of codes) {
@@ -114,19 +90,18 @@ async function loopThroughCourses(school, codes, next) {
     }
     return coursesWithIds;
   } catch (e) {
-    console.log('loopThroughCourses() Error: ', e);
+    console.log('getAllCourseId() Error: ', e);
   }
 }
 
 /**
  * Get the ObjectId of a course based on school (schl) and course code
  * Or initialize a new course and retrieve the ObjectId
- * @param {String} schl
- * @param {String} courseCode
- * @returns {ObjectId} course._id
+ * @param {String} school
+ * @param {String} code
+ * @returns {ObjectId} ObjectId
  */
 async function getObjectId(school, code) {
-  console.log('getObjectId of school and code: ', school, code);
   try {
     let course = await Course.findOne({
       school,
@@ -146,7 +121,7 @@ async function getObjectId(school, code) {
  * Initialiazes an empty course for future use
  * @param {String} schl
  * @param {String} courseCode
- * @returns {Course} new course
+ * @returns {Course} Course
  */
 async function createEmptyCourse(school, code) {
   const data = {
@@ -177,7 +152,7 @@ async function createEmptyCourse(school, code) {
  * Create a new course, requires authentication of user
  */
 courseController.post(
-  '/create',
+  '/',
   passport.authenticate('jwt', {
     session: false,
   }),
@@ -191,17 +166,7 @@ courseController.post(
       });
     } else {
       try {
-        const {
-          school,
-          code,
-          title,
-          description,
-          prerequisites,
-          corequisites,
-          difficulty,
-          impaction,
-          termsOffered,
-        } = req.body;
+        const { school, code } = req.body;
 
         // Check if course already exists
         const course = await Course.findOne({
@@ -209,30 +174,17 @@ courseController.post(
           code,
         });
 
-        // It doesn't, so create a new course
+        // Create a new course
         if (!course) {
-          const createdCourse = await createCourse(
-            school,
-            code,
-            title,
-            description,
-            prerequisites,
-            corequisites,
-            difficulty,
-            impaction,
-            termsOffered
-          );
-          const courseToReturn = {
-            ...createdCourse.toJSON(),
-          };
-          res.status(200).json(courseToReturn);
+          const createdCourse = await createCourse(req.body);
+          res.status(200).json(createdCourse);
         } else {
           generateServerErrorCode(
             res,
             403,
             'course creation error',
             COURSE_EXISTS_ALREADY,
-            'code'
+            'school, code'
           );
         }
       } catch (e) {
@@ -259,14 +211,15 @@ courseController.get(
     } else {
       try {
         const { school, code } = req.params;
+
+        // Check if course already exists
         const course = await Course.findOne({
           school,
           code,
         });
 
         if (course) {
-          const courseToReturn = course;
-          res.status(200).json(courseToReturn);
+          res.status(200).json(course);
         } else {
           generateServerErrorCode(
             res,
@@ -296,21 +249,20 @@ courseController.get('/:school', validateSchoolCourses, async (req, res) => {
     });
   } else {
     try {
+      // Get all courses with matching school name
       const courses = await Course.find({
         school: req.params.school,
       });
+
       if (courses) {
-        console.log('\n---COURSES---\n ', courses);
-        const coursesToReturn = courses;
-        console.log('\n---COURSES TO RETURN---\n ', coursesToReturn);
-        res.status(200).json(coursesToReturn);
+        res.status(200).json(courses);
       } else {
         generateServerErrorCode(
           res,
           403,
-          'course retrieval error',
-          COURSE_DOES_NOT_EXIST,
-          'code'
+          'school courses retrieval error',
+          SCHOOl_DOES_NOT_EXIST,
+          'school'
         );
       }
     } catch (e) {
@@ -320,10 +272,10 @@ courseController.get('/:school', validateSchoolCourses, async (req, res) => {
 });
 
 /**
- * GET/
- * Get all courses for a school
+ * DELETE/
+ * Delete everything!
  */
-courseController.delete('/', async (req, res) => {
+courseController.delete('/all', async (req, res) => {
   Course.deleteMany({}, function(err, result) {
     if (err) {
       return res.status(500).json({ err });
