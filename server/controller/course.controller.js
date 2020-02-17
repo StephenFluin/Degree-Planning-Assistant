@@ -53,27 +53,24 @@ const validateSchoolCourses = [
   .withMessage(COURSE_SCHOOL_IS_EMPTY),
 ];
 
+/**
+ * Creates a new Course with correct reference to ObjectId of prerequisites and corequisites
+ * @param {String} schl 
+ * @param {String} code 
+ * @param {String} title 
+ * @param {String} description 
+ * @param {[ObjectId]} prereq 
+ * @param {[ObjectId]} coreq 
+ * @param {Number} difficulty 
+ * @param {Number} impaction 
+ * @param {String} termsOffered 
+ * @returns {Course} new course
+ */
 async function createCourse(schl, code, title, description, prereq, coreq, difficulty, impaction, termsOffered) {
   let course;
-  let prerequisites = [];
-  let corequisites = [];
-  
-  console.log("PREREQS before: ", prereq);
-  // retrieve each prereq's id and save that into the database
-  for (let pre of prereq) {
-    console.log("pre: ", pre);
-
-    prerequisites.push(await findIdFromSchoolCode(schl, pre));
-  }
-  console.log("PREREQS after: ", prerequisites);
-
-
-  // console.log("COREQS before: ", coreq);
-  // // retrieve each coreq's id and save that into the database
-  // for (let co of coreq) {
-  //   corequisites.push(findIdFromSchoolCode(schl, co));
-  // }
-  // console.log("COREQS after: ", corequisites);
+  let prerequisites = loopThroughCourses(schl, prereq);
+  let corequisites = coreq;
+  // let corequisites = await loopThroughCourses(schl, coreq);
 
   const data = {
     school: schl,
@@ -81,7 +78,7 @@ async function createCourse(schl, code, title, description, prereq, coreq, diffi
     title,
     description,
     prerequisites,
-    coreq,
+    corequisites,
     difficulty,
     impaction,
     termsOffered
@@ -91,23 +88,54 @@ async function createCourse(schl, code, title, description, prereq, coreq, diffi
   return course.save();
 }
 
-async function findIdFromSchoolCode(schl, courseCode) {
-  console.log("findIdFromSchoolCode")
-  let course = await Course.findOne({ school: schl, code: courseCode });
-  console.log(1)
-  console.log(course)
-  if (course) {
-    console.log(course._id);
-    return new ObjectId(course._id); 
+/**
+ * Loop though an array of Courses to get the ObjectId of each
+ * @param {String} school 
+ * @param {[String]} codes 
+ * @returns {[Course]} coursesWithIds
+ */
+async function loopThroughCourses(school, codes) {
+  let coursesWithIds = [];
+  for (let code of codes) {
+    console.log("Would be pushing to coursesWithIds")
+    coursesWithIds.push(await getObjectId(school, code));
   }
-
-  console.log("Creating an empty course since no entry for ", courseCode);
-  let newCourse = createEmptyCourse(schl, courseCode);
-  newCourse.save();
+  console.log("About to return courseWithIds: ", courseWithIds);
+  return coursesWithIds;
 }
 
-function createEmptyCourse(schl, courseCode) {
+/**
+ * Get the ObjectId of a course based on school (schl) and course code
+ * @param {String} schl 
+ * @param {String} courseCode 
+ * @returns {ObjectId} course._id
+ */
+async function getObjectId(school, code) {
+  console.log("getObjectId of school and code: ", school, code);
+  let course = await Course.findOne({ school, code });
+
+  /**
+   * If the course is not already in the database, 
+   * need to initialize one and then retrieve the objectId of it
+   */
+  if (!course) {
+    const createdCourse = await createEmptyCourse(school, code);
+    return new ObjectId(createdCourse._id);
+    // return getObjectId(school, code);
+  }
   
+  return new ObjectId(course._id); 
+}
+
+/**
+ * Initialiazes an empty course for future use
+ * @param {String} schl 
+ * @param {String} courseCode 
+ * @returns {Course} new course
+ */
+async function createEmptyCourse(schl, courseCode) {
+  console.log("Creating an empty course since no entry for ", courseCode);
+  console.log("YOU ENDED HERE!");
   const data = {
     school: schl,
     code: courseCode,
@@ -119,7 +147,8 @@ function createEmptyCourse(schl, courseCode) {
     impaction: 0,
     termsOffered: " "
   };
-  return new Course(data);
+  let newCourse = new Course(data);
+  return newCourse.save();
 }
 
 
@@ -148,19 +177,12 @@ courseController.post('/create',
       });
     } else {
       try {
-        const {
-          school,
-          code,
-          title,
-          description,
-          prerequisites,
-          corequisites,
-          difficulty,
-          impaction,
-          termsOffered
-        } = req.body;
+        const { school, code, title, description, prerequisites, corequisites, difficulty, impaction, termsOffered } = req.body;
 
+        // Check if course already exists
         const course = await Course.findOne({ school, code });
+
+        // It doesn't, so create a new course
         if (!course) {
           const createdCourse = await createCourse(school, code, title, description, prerequisites, corequisites, difficulty, impaction, termsOffered);
           const courseToReturn = { ...createdCourse.toJSON() };
