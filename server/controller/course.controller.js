@@ -139,14 +139,6 @@ async function createEmptyCourse(school, code) {
   return newCourse.save();
 }
 
-// function populateCourseBasedOnId() {
-//   .populate('prerequisites')
-//       .exec(function (err, currentCourse) {
-//         if (err) return handleError(err);
-//         console.log('\nThe prerequisites are %s', currentCourse);
-//       });
-// }
-
 /**
  * POST/
  * Create a new course, requires authentication of user
@@ -212,11 +204,11 @@ courseController.get(
       try {
         const { school, code } = req.params;
 
-        // Check if course already exists
+        // Get course and populate the prerequisites and corequisities data using their _id
         const course = await Course.findOne({
           school,
           code,
-        });
+        }).populate('prerequisites corequisites');
 
         if (course) {
           res.status(200).json(course);
@@ -249,10 +241,10 @@ courseController.get('/:school', validateSchoolCourses, async (req, res) => {
     });
   } else {
     try {
-      // Get all courses with matching school name
+      // Get all courses with matching school name and populate the prerequisites and corequisities data using their _id
       const courses = await Course.find({
         school: req.params.school,
-      });
+      }).populate('prerequisites corequisites');
 
       if (courses) {
         res.status(200).json(courses);
