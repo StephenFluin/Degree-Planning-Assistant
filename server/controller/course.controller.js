@@ -14,6 +14,8 @@ import {
   COURSE_DESCRIPTION_IS_EMPTY,
   COURSE_TERMS_OFFERED_IS_EMPTY,
   SOME_THING_WENT_WRONG,
+  COURSE_ID_IS_EMPTY,
+  NO_DATA_TO_UPDATE,
 } from './constant';
 
 const courseController = express.Router();
@@ -52,6 +54,12 @@ const validateSchoolCourses = [
   check('school')
     .exists()
     .withMessage(COURSE_SCHOOL_IS_EMPTY),
+];
+
+const validateCourseId = [
+  check('course_id')
+    .exists()
+    .withMessage(COURSE_ID_IS_EMPTY),
 ];
 
 /**
@@ -137,6 +145,20 @@ async function createEmptyCourse(school, code) {
   };
   let newCourse = new Course(data);
   return newCourse.save();
+}
+
+/**
+ * Removes the undefined properties of an object
+ * Found: https://stackoverflow.com/questions/25421233/javascript-removing-undefined-fields-from-an-object/38340374#38340374
+ * @param {Object} obj
+ */
+function removeUndefinedObjectProps(obj) {
+  Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
+  return obj;
+}
+
+function isObjectEmpty(obj) {
+  return Object.keys(obj).length === 0;
 }
 
 /**
@@ -264,16 +286,105 @@ courseController.get('/:school', validateSchoolCourses, async (req, res) => {
 });
 
 /**
+ * PUT/
+ * Update a course based on ObjectId
+ */
+courseController.put(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  validateCourseId,
+  async (req, res) => {
+    const errorsAfterValidation = validationResult(req);
+    if (!errorsAfterValidation.isEmpty()) {
+      res.status(400).json({
+        code: 400,
+        errors: errorsAfterValidation.mapped(),
+      });
+    } else {
+      try {
+        // Get course ObjectId from query
+        const course_id = req.query.course_id;
+
+        // Remove undefined properties
+        const updateData = removeUndefinedObjectProps(req.body);
+
+        // Check if there is data to update
+        if (isObjectEmpty(updateData)) {
+          return res.status(400).json({ error: NO_DATA_TO_UPDATE });
+        }
+
+        const updatedCourse = await Course.findByIdAndUpdate(
+          { _id: course_id },
+          updateData,
+          { useFindAndModify: false }
+        );
+
+        if (updatedCourse) {
+          res.status(200).json(updatedCourse);
+        } else {
+          generateServerErrorCode(
+            res,
+            403,
+            'update course error',
+            COURSE_DOES_NOT_EXIST,
+            'course_id'
+          );
+        }
+      } catch (e) {
+        generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
+      }
+    }
+  }
+);
+
+/**
+ * DELETE/
+ * Delete a course
+ */
+courseController.delete(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      // Get course ObjectId from query
+      const course_id = req.query.course_id;
+
+      const successfulDeletion = await Course.findByIdAndDelete({
+        _id: course_id,
+      });
+
+      if (successfulDeletion) {
+        return res.status(200).json({ message: 'deleted a course' });
+      } else {
+        generateServerErrorCode(
+          res,
+          403,
+          'delete course error',
+          COURSE_DOES_NOT_EXIST,
+          'course_id'
+        );
+      }
+    } catch (e) {
+      generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
+    }
+  }
+);
+
+/**
  * DELETE/
  * Delete everything!
  */
-courseController.delete('/all', async (req, res) => {
-  Course.deleteMany({}, function(err, result) {
-    if (err) {
-      return res.status(500).json({ err });
-    }
-    return res.status(200).json({ message: 'delete all course' });
-  });
-});
+courseController.delete(
+  '/all',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    Course.deleteMany({}, function(err, result) {
+      if (err) {
+        return res.status(500).json({ err });
+      }
+      return res.status(200).json({ message: 'deleted all courses' });
+    });
+  }
+);
 
 export default courseController;
