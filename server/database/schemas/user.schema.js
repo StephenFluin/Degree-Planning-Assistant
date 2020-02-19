@@ -2,18 +2,57 @@ import { Schema } from 'mongoose';
 import sha256 from 'sha256';
 
 const userSchema = new Schema({
-  hashedPassword: { type: String, required: true },
-  email: { type: String, required: true },
-  avatarUrl: { type: String },
-  avatarType: { type: String },
-  firstName: { type: String },
-  lastName: { type: String },
-  dob: { type: Date },
-  bio: { type: String },
-  address: { type: String },
-  phone: { type: String },
-  gender: { type: Number },
-  addedInfo: { type: [Object] },
+  hashedPassword: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  avatarUrl: {
+    type: String,
+  },
+  avatarType: {
+    type: String,
+  },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  bio: {
+    type: String,
+  },
+  isAdmin: {
+    type: Boolean,
+    isRequired: true,
+  },
+  coursesTaken: {
+    type: Array,
+  },
+  gradDate: {
+    year: {
+      type: Number,
+    },
+    term: {
+      type: String,
+    },
+  },
+  major: {
+    type: String,
+  },
+  minor: {
+    type: String,
+  },
+  catalogYear: {
+    type: Number,
+  },
+  degreePlanId: {
+    type: Schema.Types.ObjectId,
+    ref: 'program',
+  },
 });
 
 /**
