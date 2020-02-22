@@ -1,4 +1,4 @@
-import { check, body, query } from 'express-validator';
+import { check, body, param, query } from 'express-validator';
 
 import {
   AVATAR_URL_IS_EMPTY,
@@ -92,11 +92,11 @@ export const validateEditProfile = [
   // of a USER document (check schema). In order to allow the client to choose which data they want to change,
   // We make the other values OPTIONAL in this validator array. However, in the HTTP req/res itself, we will
   // check if the client had included at least ONE data to be changed.
-  body('user_id') // The only input this validator array requires
+  param('userId') // The only input this validator array requires
     .exists()
     .withMessage(USER_ID_IS_REQUIRED)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .not()
@@ -108,24 +108,24 @@ export const validateEditProfile = [
     .bail()
     .isLength({ min: 24, max: 24 })
     .withMessage(USER_ID_IS_INVALID),
-  body('avatar_url') // Optional
-    .if(body('avatar_url').exists()) // IF the client included avatar_url, then validate it
+  body('avatarUrl') // Optional
+    .if(body('avatarUrl').exists()) // IF the client included avatar_url, then validate it
     .not()
     .isEmpty()
     .withMessage(AVATAR_URL_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .isURL()
     .withMessage(AVATAR_URL_IS_INVALID),
-  body('avatar_type') // Optional
-    .if(body('avatar_type').exists()) // IF the client included avatar_type, then validate it
+  body('avatarType') // Optional
+    .if(body('avatarType').exists()) // IF the client included avatar_type, then validate it
     .not()
     .isEmpty()
     .withMessage(AVATAR_TYPE_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .custom(value => {
@@ -135,13 +135,13 @@ export const validateEditProfile = [
         return Promise.reject(AVATAR_TYPE_IS_INVALID);
       }
     }),
-  body('first_name') // Optional
-    .if(body('first_name').exists()) // IF the client included first_name, then validate it
+  body('firstName') // Optional
+    .if(body('firstName').exists()) // IF the client included first_name, then validate it
     .not()
     .isEmpty()
     .withMessage(FIRST_NAME_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .custom(value => {
@@ -151,13 +151,13 @@ export const validateEditProfile = [
         return Promise.reject(FIRST_NAME_IS_INVALID);
       }
     }),
-  body('last_name') // Optional
-    .if(body('last_name').exists()) // IF the client included last_name, then validate it
+  body('lastName') // Optional
+    .if(body('lastName').exists()) // IF the client included last_name, then validate it
     .not()
     .isEmpty()
     .withMessage(LAST_NAME_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .custom(value => {
@@ -173,7 +173,7 @@ export const validateEditProfile = [
     .isEmpty()
     .withMessage(BIO_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .isLength({ max: 160 })
@@ -184,7 +184,7 @@ export const validateEditProfile = [
     .isEmpty()
     .withMessage(MAJOR_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .custom(value => {
@@ -200,7 +200,7 @@ export const validateEditProfile = [
     .isEmpty()
     .withMessage(MINOR_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .custom(value => {
@@ -210,13 +210,13 @@ export const validateEditProfile = [
         return Promise.reject(MINOR_IS_INVALID);
       }
     }),
-  body('catalog_year') // Optional
-    .if(body('catalog_year').exists()) // IF the client included catalog_year, then validate it
+  body('catalogYear') // Optional
+    .if(body('catalogYear').exists()) // IF the client included catalog_year, then validate it
     .not()
     .isEmpty()
     .withMessage(CATALOG_YEAR_IS_EMPTY)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .isNumeric()
@@ -224,11 +224,11 @@ export const validateEditProfile = [
 ];
 
 export const validateFetchProfile = [
-  query('user_id')
+  param('userId')
     .exists()
     .withMessage(USER_ID_IS_REQUIRED)
     .bail()
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim()
     .not()
@@ -242,47 +242,47 @@ export const validateFetchProfile = [
     .withMessage(USER_ID_IS_INVALID),
   query('email') // Optional
     .if(query('email').exists()) // IF the client included email, then validate it
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim(),
-  query('avatar_url') // Optional
-    .if(query('avatar_url').exists()) // IF the client included avatar_url, then validate it
-    .unescape()
+  query('avatarUrl') // Optional
+    .if(query('avatarUrl').exists()) // IF the client included avatar_url, then validate it
+    .escape()
     .ltrim()
     .rtrim(),
-  query('avatar_type') // Optional
-    .if(query('avatar_type').exists()) // IF the client included avatar_type, then validate it
-    .unescape()
+  query('avatarType') // Optional
+    .if(query('avatarType').exists()) // IF the client included avatar_type, then validate it
+    .escape()
     .ltrim()
     .rtrim(),
-  query('first_name') // Optional
-    .if(query('first_name').exists()) // IF the client included first_name, then validate it
-    .unescape()
+  query('firstName') // Optional
+    .if(query('firstName').exists()) // IF the client included first_name, then validate it
+    .escape()
     .ltrim()
     .rtrim(),
-  query('last_name') // Optional
-    .if(query('last_name').exists()) // IF the client included last_name, then validate it
-    .unescape()
+  query('lastName') // Optional
+    .if(query('lastName').exists()) // IF the client included last_name, then validate it
+    .escape()
     .ltrim()
     .rtrim(),
   query('bio') // Optional
     .if(query('bio').exists()) // IF the client included bio, then validate it
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim(),
   query('major') // Optional
     .if(query('major').exists()) // IF the client included major, then validate it
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim(),
   query('minor') // Optional
     .if(query('minor').exists()) // IF the client included minor, then validate it
-    .unescape()
+    .escape()
     .ltrim()
     .rtrim(),
-  query('catalog_year') // Optional
-    .if(query('catalog_year').exists()) // IF the client included catalog_year, then validate it
-    .unescape()
+  query('catalogYear') // Optional
+    .if(query('catalogYear').exists()) // IF the client included catalog_year, then validate it
+    .escape()
     .ltrim()
     .rtrim(),
 ];

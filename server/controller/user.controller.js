@@ -156,7 +156,7 @@ userController.post('/login', validateLoginUser, async (req, res) => {
 // @desc    Edits a user's profile
 // @access  Private
 userController.put(
-  '/profile',
+  '/profile/:userId',
   passport.authenticate('jwt', { session: false }),
   validateEditProfile,
   async (req, res) => {
@@ -166,37 +166,37 @@ userController.put(
       return res.status(400).json(errors);
     }
 
+    const { userId } = req.params;
     const {
-      user_id,
-      avatar_url,
-      avatar_type,
-      first_name,
-      last_name,
+      avatarUrl,
+      avatarType,
+      firstName,
+      lastName,
       bio,
       major,
       minor,
-      catalog_year,
-      grad_date,
+      catalogYear,
+      gradDate,
     } = req.body;
 
     // Check if the client had included at least one data to be changed
     if (
-      !avatar_url &&
-      !avatar_type &&
-      !first_name &&
-      !last_name &&
+      !avatarUrl &&
+      !avatarType &&
+      !firstName &&
+      !lastName &&
       !bio &&
       !major &&
       !minor &&
-      !catalog_year &&
-      !grad_date
+      !catalogYear &&
+      !gradDate
     ) {
       // Client did not include data to be changed so there is nothing to be updated, return error code
       return res.status(400).json({ errors: PARAMETERS_REQUIRED });
     }
 
-    // Check if the client had inputted grad_date and check if it's a valid object input
-    if (grad_date && checkIfCorrectGradDate(grad_date) === false) {
+    // Check if the client had inputted gradDate and check if it's a valid object input
+    if (gradDate && checkIfCorrectGradDate(gradDate) === false) {
       return res.status(400).json({ errors: INVALID_GRAD_DATE });
     }
 
@@ -206,20 +206,20 @@ userController.put(
       // exists before adding it into the object. It is important that we don't include keys that
       // don't exist so that their values in the database aren't changed.
       const itemsToBeUpdated = {
-        ...(avatar_url && { avatarUrl: avatar_url }),
-        ...(avatar_type && { avatarType: avatar_type }),
-        ...(first_name && { firstName: first_name }),
-        ...(last_name && { lastName: last_name }),
+        ...(avatarUrl && { avatar_url: avatarUrl }),
+        ...(avatarType && { avatar_type: avatarType }),
+        ...(firstName && { first_name: firstName }),
+        ...(lastName && { last_name: lastName }),
         ...(bio && { bio }),
         ...(major && { major }),
         ...(minor && { minor }),
-        ...(catalog_year && { catalogYear: catalog_year }),
-        ...(grad_date && { gradDate: grad_date }),
+        ...(catalogYear && { catalog_year: catalogYear }),
+        ...(gradDate && { grad_date: gradDate }),
       };
 
       // Query the database with the data to be changed and the id of the user to be changed
       const updatedUser = await User.updateOne(
-        { _id: user_id },
+        { _id: userId },
         itemsToBeUpdated
       );
 
@@ -242,7 +242,7 @@ userController.put(
 //  @desc   Fetches a user's profile
 //  @access Private
 userController.get(
-  '/profile',
+  '/profile/:userId',
   passport.authenticate('jwt', { session: false }),
   validateFetchProfile,
   async (req, res) => {
@@ -252,18 +252,18 @@ userController.get(
       return res.status(400).json(errors);
     }
 
+    const { userId } = req.params;
     const {
-      user_id,
       email,
-      avatar_url,
-      avatar_type,
-      first_name,
-      last_name,
+      avatarUrl,
+      avatarType,
+      firstName,
+      lastName,
       bio,
       major,
       minor,
-      catalog_year,
-      grad_date,
+      catalogYear,
+      gradDate,
     } = req.query;
 
     try {
@@ -271,15 +271,15 @@ userController.get(
       // If field is specified, add them to an object which will be used for projection
       let itemsToBeFetched = {
         ...(email && { email: true }),
-        ...(avatar_url && { avatarUrl: true }),
-        ...(avatar_type && { avatarType: true }),
-        ...(first_name && { firstName: true }),
-        ...(last_name && { lastName: true }),
+        ...(avatarUrl && { avatarUrl: true }),
+        ...(avatarType && { avatarType: true }),
+        ...(firstName && { firstName: true }),
+        ...(lastName && { lastName: true }),
         ...(bio && { bio: true }),
         ...(major && { major: true }),
         ...(minor && { minor: true }),
-        ...(catalog_year && { catalogYear: true }),
-        ...(grad_date && { gradDate: true }),
+        ...(catalogYear && { catalogYear: true }),
+        ...(gradDate && { gradDate: true }),
       };
 
       // If client doesn't specify anything, fetch everything but the unnecessary fields
@@ -287,16 +287,13 @@ userController.get(
         itemsToBeFetched = {
           _id: false,
           hashedPassword: false,
-          degreePlanId: false,
-          isAdmin: false,
+          degree_plan_id: false,
+          is_admin: false,
         };
       }
 
       // Fetch the document using the projection object
-      const fetchedUser = await User.findOne(
-        { _id: user_id },
-        itemsToBeFetched
-      );
+      const fetchedUser = await User.findOne({ _id: userId }, itemsToBeFetched);
 
       // Check if document was fetched. if so, include in response
       if (fetchedUser) {
