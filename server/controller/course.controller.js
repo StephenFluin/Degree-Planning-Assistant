@@ -169,10 +169,53 @@ courseController.post(
 
 /**
  * GET/
- * Get a single course based on school and code
+ * Get a course using ObjectId through query
+ */
+courseController.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  validateCourseId,
+  async (req, res) => {
+    const errorsAfterValidation = validationResult(req);
+    if (!errorsAfterValidation.isEmpty()) {
+      res.status(400).json({
+        code: 400,
+        errors: errorsAfterValidation.mapped(),
+      });
+    } else {
+      try {
+        // Get course ObjectId from query
+        const course_id = req.query.course_id;
+
+        const fetchedCourse = await Course.findOne({
+          _id: course_id,
+        }).populate('prerequisites corequisites');
+
+        if (fetchedCourse) {
+          res.status(200).json(fetchedCourse);
+        } else {
+          generateServerErrorCode(
+            res,
+            403,
+            'course retrieval error',
+            COURSE_DOES_NOT_EXIST,
+            'course_id'
+          );
+        }
+      } catch (e) {
+        generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
+      }
+    }
+  }
+);
+
+/**
+ * GET/
+ * Get a course using school and code through params
  */
 courseController.get(
   '/:school/:code',
+  passport.authenticate('jwt', { session: false }),
   validateSingleCourse,
   async (req, res) => {
     const errorsAfterValidation = validationResult(req);
@@ -199,7 +242,7 @@ courseController.get(
             403,
             'course retrieval error',
             COURSE_DOES_NOT_EXIST,
-            'code'
+            'school, code'
           );
         }
       } catch (e) {
@@ -211,42 +254,48 @@ courseController.get(
 
 /**
  * GET/
- * Get all courses for a school
+ * Get all courses using school through params
  */
-courseController.get('/:school', validateSchoolCourses, async (req, res) => {
-  const errorsAfterValidation = validationResult(req);
-  if (!errorsAfterValidation.isEmpty()) {
-    res.status(400).json({
-      code: 400,
-      errors: errorsAfterValidation.mapped(),
-    });
-  } else {
-    try {
-      // Get all courses with matching school name and populate the prerequisites and corequisities data using their _id
-      const courses = await Course.find({
-        school: req.params.school,
-      }).populate('prerequisites corequisites');
+courseController.get(
+  '/:school',
+  passport.authenticate('jwt', { session: false }),
+  validateSchoolCourses,
+  async (req, res) => {
+    const errorsAfterValidation = validationResult(req);
+    if (!errorsAfterValidation.isEmpty()) {
+      res.status(400).json({
+        code: 400,
+        errors: errorsAfterValidation.mapped(),
+      });
+    } else {
+      try {
+        // Get all courses with matching school name
+        // and populate the prerequisites and corequisities
+        const courses = await Course.find({
+          school: req.params.school,
+        }).populate('prerequisites corequisites');
 
-      if (courses) {
-        res.status(200).json(courses);
-      } else {
-        generateServerErrorCode(
-          res,
-          403,
-          'school courses retrieval error',
-          SCHOOl_DOES_NOT_EXIST,
-          'school'
-        );
+        if (courses) {
+          res.status(200).json(courses);
+        } else {
+          generateServerErrorCode(
+            res,
+            403,
+            'school courses retrieval error',
+            SCHOOl_DOES_NOT_EXIST,
+            'school'
+          );
+        }
+      } catch (e) {
+        generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
       }
-    } catch (e) {
-      generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
     }
   }
-});
+);
 
 /**
  * PUT/
- * Update a course based on ObjectId
+ * Update a course using ObjectId through query
  */
 courseController.put(
   '/',
@@ -275,7 +324,7 @@ courseController.put(
         const updatedCourse = await Course.findByIdAndUpdate(
           { _id: course_id },
           updateData,
-          { useFindAndModify: false }
+          { useFindAndModify: false, new: true }
         );
 
         if (updatedCourse) {
@@ -298,22 +347,25 @@ courseController.put(
 
 /**
  * DELETE/
- * Delete a course
+ * Delete a course using ObjectId through query
  */
 courseController.delete(
   '/',
   passport.authenticate('jwt', { session: false }),
+  validateCourseId,
   async (req, res) => {
     try {
       // Get course ObjectId from query
       const course_id = req.query.course_id;
 
-      const successfulDeletion = await Course.findByIdAndDelete({
+      const deletedCourse = await Course.findByIdAndDelete({
         _id: course_id,
       });
 
-      if (successfulDeletion) {
-        return res.status(200).json({ message: 'deleted a course' });
+      if (deletedCourse) {
+        return res
+          .status(200)
+          .json({ message: 'deleted a course', deletedCourse });
       } else {
         generateServerErrorCode(
           res,

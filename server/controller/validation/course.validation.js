@@ -1,4 +1,4 @@
-import { check } from 'express-validator';
+import { check, query } from 'express-validator';
 import {
   COURSE_SCHOOL_IS_EMPTY,
   COURSE_CODE_IS_EMPTY,
@@ -7,7 +7,8 @@ import {
   COURSE_DESCRIPTION_IS_EMPTY,
   COURSE_TERMS_OFFERED_IS_EMPTY,
   COURSE_ID_IS_EMPTY,
-} from './constant';
+  ID_IS_INVALID,
+} from '../constant';
 
 export const validateCourseCreation = [
   check('school')
@@ -45,7 +46,14 @@ export const validateSchoolCourses = [
 ];
 
 export const validateCourseId = [
-  check('course_id')
+  query('course_id')
     .exists()
-    .withMessage(COURSE_ID_IS_EMPTY),
+    .withMessage(COURSE_ID_IS_EMPTY)
+    .not()
+    .isEmpty()
+    .isHexadecimal()
+    .withMessage(ID_IS_INVALID)
+    .bail()
+    .isLength({ min: 24, max: 24 })
+    .withMessage(ID_IS_INVALID),
 ];
