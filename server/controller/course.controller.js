@@ -1,66 +1,25 @@
 import express from 'express';
-import { check, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import passport from 'passport';
 import { generateServerErrorCode } from '../store/utils';
 import { Course } from '../database/models';
 import {
-  COURSE_SCHOOL_IS_EMPTY,
   COURSE_EXISTS_ALREADY,
   COURSE_DOES_NOT_EXIST,
   SCHOOl_DOES_NOT_EXIST,
-  COURSE_CODE_IS_EMPTY,
-  DOES_NOT_CONTAIN_A_DIGIT,
-  COURSE_TITLE_IS_EMPTY,
-  COURSE_DESCRIPTION_IS_EMPTY,
-  COURSE_TERMS_OFFERED_IS_EMPTY,
   SOME_THING_WENT_WRONG,
-  COURSE_ID_IS_EMPTY,
   NO_DATA_TO_UPDATE,
 } from './constant';
 
+import {
+  validateCourseCreation,
+  validateSingleCourse,
+  validateSchoolCourses,
+  validateCourseId,
+} from './validation/course.validation';
+
 const courseController = express.Router();
 const ObjectId = require('mongoose').Types.ObjectId;
-
-const validateCourseCreation = [
-  check('school')
-    .exists()
-    .withMessage(COURSE_SCHOOL_IS_EMPTY),
-  check('code')
-    .exists()
-    .withMessage(COURSE_CODE_IS_EMPTY),
-  check('title')
-    .exists()
-    .withMessage(COURSE_TITLE_IS_EMPTY),
-  check('description')
-    .exists()
-    .withMessage(COURSE_DESCRIPTION_IS_EMPTY),
-  check('termsOffered')
-    .exists()
-    .withMessage(COURSE_TERMS_OFFERED_IS_EMPTY),
-];
-
-const validateSingleCourse = [
-  check('school')
-    .exists()
-    .withMessage(COURSE_SCHOOL_IS_EMPTY),
-  check('code')
-    .exists()
-    .withMessage(COURSE_CODE_IS_EMPTY)
-    .matches(/\d/)
-    .withMessage(DOES_NOT_CONTAIN_A_DIGIT),
-];
-
-const validateSchoolCourses = [
-  check('school')
-    .exists()
-    .withMessage(COURSE_SCHOOL_IS_EMPTY),
-];
-
-const validateCourseId = [
-  check('course_id')
-    .exists()
-    .withMessage(COURSE_ID_IS_EMPTY),
-];
 
 /**
  * Creates a new Course with correct reference to ObjectId of prerequisites and corequisites
