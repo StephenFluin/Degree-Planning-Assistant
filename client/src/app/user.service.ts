@@ -12,7 +12,7 @@ export interface UserData {
 @Injectable({
   providedIn: "root"
 })
-export class ConnectionService {
+export class UserService {
   uri = "http://localhost:8080";
   tokenKey = "tokenKey";
 

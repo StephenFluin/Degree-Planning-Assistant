@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { UserData, ConnectionService } from "../connection.service";
+import { UserData, UserService } from "../user.service";
 import { ErrorHandlerService } from "../error-handler.service";
 
 @Component({
@@ -17,7 +17,7 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private connectionService: ConnectionService,
+    private userService: UserService,
     private errorHandler: ErrorHandlerService
   ) {}
 
@@ -35,7 +35,7 @@ export class LoginComponent {
       password: this.loginForm.value.password
     };
 
-    const tokenResult = this.connectionService.login(user);
+    const tokenResult = this.userService.login(user);
 
     // retrieve token or handle server error
     tokenResult.subscribe(
