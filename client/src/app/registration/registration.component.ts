@@ -1,29 +1,33 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserData, ConnectionService } from '../connection.service';
+import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { UserData, ConnectionService } from "../connection.service";
+import { ErrorHandlerService } from "../error-handler.service";
 
 @Component({
-  selector: 'app-registration',
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.css']
+  selector: "app-registration",
+  templateUrl: "./registration.component.html",
+  styleUrls: ["./registration.component.css"]
 })
 export class RegistrationComponent {
-
   registrationForm: FormGroup = new FormGroup({
-    name: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.email),
-    password: new FormControl('', Validators.required)
+    name: new FormControl("", Validators.required),
+    email: new FormControl("", Validators.email),
+    password: new FormControl("", Validators.required)
   });
 
-  constructor(private router: Router, private connectionService: ConnectionService) { }
+  constructor(
+    private router: Router,
+    private connectionService: ConnectionService,
+    private errorHandler: ErrorHandlerService
+  ) {}
 
   /**
    * Register new user, validating input and server response
    */
   onSubmit() {
     if (!this.registrationForm.valid) {
-      alert('Please fill out all form boxes.');
+      alert("Please fill out all form boxes.");
       return;
     }
 
@@ -35,21 +39,20 @@ export class RegistrationComponent {
 
     const tokenResult = this.connectionService.create_new_user(user);
 
-      // retrieve token or handle server error
-    tokenResult
-    .subscribe(
+    // retrieve token or handle server error
+    tokenResult.subscribe(
       result => {
         // HTTP result: config and data:
-        const config = { userToken: result['token'] };
+        const config = { userToken: result["token"] };
         return tokenResult;
       },
       err => {
         // HTTP error
-        this.connectionService.handleError(err);
+        this.errorHandler.handleError(err);
       },
       () => {
         // HTTP request completed
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       }
     );
   }
@@ -58,7 +61,6 @@ export class RegistrationComponent {
    * Triggers authentication check of user email and password
    */
   routeToLogin() {
-    this.router.navigate(['login']);
+    this.router.navigate(["login"]);
   }
-
 }
