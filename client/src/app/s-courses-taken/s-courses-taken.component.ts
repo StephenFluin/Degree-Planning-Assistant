@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ConnectionService } from "../connection.service";
+import { UserService } from "../user.service";
 
 @Component({
   selector: "app-s-courses-taken",
@@ -7,7 +7,7 @@ import { ConnectionService } from "../connection.service";
   styleUrls: ["./s-courses-taken.component.css"]
 })
 export class SCoursesTakenComponent implements OnInit {
-  constructor(private connectionService: ConnectionService) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit() {}
 }
