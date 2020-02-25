@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "../user.service";
+import { CourseService } from "../course.service";
 
 @Component({
   selector: "app-s-courses-taken",
@@ -7,7 +8,13 @@ import { UserService } from "../user.service";
   styleUrls: ["./s-courses-taken.component.css"]
 })
 export class SCoursesTakenComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  coursesTaken;
+  constructor(
+    private userService: UserService,
+    private courseService: CourseService
+  ) {
+    this.coursesTaken = courseService.getAllCourses();
+  }
 
   ngOnInit() {}
 }

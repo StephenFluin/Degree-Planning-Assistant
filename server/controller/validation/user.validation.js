@@ -286,3 +286,22 @@ export const validateFetchProfile = [
     .ltrim()
     .rtrim(),
 ];
+
+export const validateFetchCoursesTaken = [
+  param('userId')
+    .exists()
+    .withMessage(USER_ID_IS_REQUIRED)
+    .bail()
+    .escape()
+    .ltrim()
+    .rtrim()
+    .not()
+    .isEmpty()
+    .withMessage(USER_ID_IS_EMPTY)
+    .bail()
+    .isHexadecimal()
+    .withMessage(USER_ID_IS_INVALID)
+    .bail()
+    .isLength({ min: 24, max: 24 })
+    .withMessage(USER_ID_IS_INVALID),
+];

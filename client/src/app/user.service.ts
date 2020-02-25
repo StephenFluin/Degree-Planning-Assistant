@@ -62,4 +62,11 @@ export class UserService {
   logout() {
     localStorage.removeItem(this.tokenKey);
   }
+
+  /**
+   * Get courses taken by user
+   */
+  getCoursesTaken(userId) {
+    return this.http.get(`${this.uri}/coursesTaken/`, userId);
+  }
 }
