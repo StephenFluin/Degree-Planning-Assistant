@@ -15,13 +15,10 @@ import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 import {
-  generatehashedPassword,
+  generateHashedPassword,
   generateServerErrorCode,
 } from '../store/utils';
 import { config } from '../store/config';
-
-import { validationResult } from 'express-validator';
-import { validation } from "./validation/user.validation";
 
 import {
   SOME_THING_WENT_WRONG,
@@ -41,7 +38,7 @@ const userController = express.Router();
 function createUser(email, password) {
   const data = {
     email,
-    hashedPassword: generatehashedPassword(password),
+    hashedPassword: generateHashedPassword(password),
     avatarUrl: '',
     avatarType: '',
     firstName: '',
