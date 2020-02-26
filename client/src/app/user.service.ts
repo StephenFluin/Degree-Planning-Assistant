@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { CourseData } from "./course.service";
 
 export interface UserData {
   name?: string;
@@ -101,7 +102,7 @@ export class UserService {
   /**
    * Update courses taken
    */
-  addToCoursesTaken(coursesTaken: []) {
+  addToCoursesTaken(coursesTaken: [CourseData]) {
     return this.http.put(
       `${this.uri}/coursesTaken/`,
       coursesTaken,
