@@ -284,7 +284,7 @@ userController.put(
 userController.get(
   '/profile',
   passport.authenticate('jwt', { session: false }),
-  validateFetchProfile,
+  // validateFetchProfile,
   async (req, res) => {
     let errors = validationResult(req);
 
