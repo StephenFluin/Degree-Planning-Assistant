@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -63,10 +63,31 @@ export class UserService {
     localStorage.removeItem(this.tokenKey);
   }
 
+  getHttpHeaders() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.getCurrentStorageStatus()
+      })
+    };
+    return httpOptions;
+  }
+
   /**
    * Get courses taken by user
    */
-  getCoursesTaken(userId) {
-    return this.http.get(`${this.uri}/coursesTaken/`, userId);
+  getProfile() {
+    return this.http.get(`${this.uri}/profile/`, this.getHttpHeaders());
+  }
+
+  /**
+   * Update courses taken
+   */
+  addToCoursesTaken(coursesTaken: []) {
+    return this.http.put(
+      `${this.uri}/coursesTaken/`,
+      coursesTaken,
+      this.getHttpHeaders()
+    );
   }
 }

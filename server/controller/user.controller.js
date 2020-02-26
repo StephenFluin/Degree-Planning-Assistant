@@ -285,17 +285,20 @@ userController.put(
 //  @desc   Fetches a user's profile
 //  @access Private
 userController.get(
-  '/profile/:userId',
+  '/profile',
   passport.authenticate('jwt', { session: false }),
-  validateFetchProfile,
+  // validateFetchProfile,
   async (req, res) => {
     // Check if validators found invalid input
+    console.log('I am here!', req.user);
     const errors = validationResult(req);
     if (errors.isEmpty() === false) {
       return res.status(400).json(errors);
     }
 
-    const { userId } = req.params;
+    // const { userId } = req.params;
+    const { user } = req;
+    console.log('here: ', user._id);
     const {
       email,
       avatarUrl,
@@ -336,7 +339,10 @@ userController.get(
       }
 
       // Fetch the document using the projection object
-      const fetchedUser = await User.findOne({ _id: userId }, itemsToBeFetched);
+      const fetchedUser = await User.findOne(
+        { _id: user._id },
+        itemsToBeFetched
+      );
 
       // Check if document was fetched. if so, include in response
       if (fetchedUser) {
