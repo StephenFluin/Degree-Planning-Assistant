@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { UserService } from "../user.service";
+import { UserService, UserProfile } from "../user.service";
 import { CourseService } from "../course.service";
 import { ErrorHandlerService } from "../error-handler.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-s-courses-taken",
@@ -21,13 +22,14 @@ export class SCoursesTakenComponent implements OnInit {
   ngOnInit() {}
 
   getCurrentProfile() {
-    const profileObs = this.userService.getProfile();
+    const profileObs: Observable<UserProfile> = this.userService.getProfile();
 
     // retrieve token or handle server error
     profileObs.subscribe(
       result => {
         // HTTP result: config and data:
         console.log("Profile result: ", result);
+        console.log(result.courses_taken);
         return result;
       },
       err => {

@@ -9,6 +9,20 @@ export interface UserData {
   password: string;
 }
 
+export interface UserProfile {
+  first_name?: string;
+  last_name?: string;
+  bio?: string;
+  courses_taken?: [];
+  grad_date?: {
+    year?: number;
+    term?: string;
+  };
+  major?: string;
+  minor?: string;
+  catalog_year?: number;
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -77,7 +91,10 @@ export class UserService {
    * Get courses taken by user
    */
   getProfile() {
-    return this.http.get(`${this.uri}/profile/`, this.getHttpHeaders());
+    return this.http.get<UserProfile>(
+      `${this.uri}/profile/`,
+      this.getHttpHeaders()
+    );
   }
 
   /**
