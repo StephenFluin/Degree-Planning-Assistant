@@ -341,20 +341,14 @@ export const validateFetchCoursesTaken = [
 ];
 
 export const validateFetchCoursesTaken = [
-  param('userId')
+  query('user_id')
     .exists()
-    .withMessage(USER_ID_IS_REQUIRED)
-    .bail()
-    .escape()
-    .ltrim()
-    .rtrim()
+    .withMessage(USER_ID_IS_EMPTY)
     .not()
     .isEmpty()
-    .withMessage(USER_ID_IS_EMPTY)
-    .bail()
     .isHexadecimal()
-    .withMessage(USER_ID_IS_INVALID)
+    .withMessage(ID_IS_INVALID)
     .bail()
     .isLength({ min: 24, max: 24 })
-    .withMessage(USER_ID_IS_INVALID),
+    .withMessage(ID_IS_INVALID),
 ];
