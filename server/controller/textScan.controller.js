@@ -5,7 +5,6 @@
 import express from 'express';
 import multer from 'multer';
 import passport from 'passport';
-// import { Course, Semester } from '../database/models';
 
 import CloudOcr from '../Scanning/cloudOCR';
 
