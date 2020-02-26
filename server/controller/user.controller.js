@@ -369,46 +369,4 @@ userController.post('/identity', validateToken, async (req, res) => {
   });
 });
 
-//  @route  GET /coursesTaken
-//  @desc   Fetches a user's coursesTaken
-//  @access Private
-userController.get(
-  '/coursesTaken/:userId',
-  passport.authenticate('jwt', { session: false }),
-  validateFetchCoursesTaken,
-  async (req, res) => {
-    const errorsAfterValidation = validationResult(req);
-    if (!errorsAfterValidation.isEmpty()) {
-      res.status(400).json({
-        code: 400,
-        errors: errorsAfterValidation.mapped(),
-      });
-    } else {
-      try {
-        // Get course ObjectId from query
-        const user_id = req.params;
-
-        // fetch user and populate coursesTaken
-        const fetchedUser = await Course.findOne({
-          _id: user_id,
-        }).populate('coursesTaken');
-
-        if (fetchedUser) {
-          res.status(200).json(fetchedUser);
-        } else {
-          generateServerErrorCode(
-            res,
-            403,
-            'courses taken retrieval error',
-            USER_NOT_FOUND,
-            'user_id'
-          );
-        }
-      } catch (e) {
-        generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
-      }
-    }
-  }
-);
-
 export default userController;
