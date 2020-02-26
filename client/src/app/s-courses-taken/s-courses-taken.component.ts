@@ -33,13 +33,14 @@ export class SCoursesTakenComponent implements OnInit {
   ngOnInit() {}
 
   getCurrentProfile() {
-    const profileObs = this.userService.getProfile();
+    const profileObs: Observable<UserProfile> = this.userService.getProfile();
 
     // retrieve token or handle server error
     profileObs.subscribe(
       result => {
         // HTTP result: config and data:
         console.log("Profile result: ", result);
+        console.log(result.courses_taken);
         return result;
       },
       err => {
