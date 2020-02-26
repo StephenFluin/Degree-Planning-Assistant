@@ -23,6 +23,7 @@ import {
   PASSWORD_LENGTH_MUST_BE_MORE_THAN_8,
   EMAIL_IS_EMPTY,
   EMAIL_IS_IN_WRONG_FORMAT,
+  ID_IS_INVALID,
 } from '../constant';
 
 const checkIfLettersOnly = str => {
@@ -288,20 +289,14 @@ export const validateFetchProfile = [
 ];
 
 export const validateFetchCoursesTaken = [
-  param('userId')
+  query('user_id')
     .exists()
-    .withMessage(USER_ID_IS_REQUIRED)
-    .bail()
-    .escape()
-    .ltrim()
-    .rtrim()
+    .withMessage(USER_ID_IS_EMPTY)
     .not()
     .isEmpty()
-    .withMessage(USER_ID_IS_EMPTY)
-    .bail()
     .isHexadecimal()
-    .withMessage(USER_ID_IS_INVALID)
+    .withMessage(ID_IS_INVALID)
     .bail()
     .isLength({ min: 24, max: 24 })
-    .withMessage(USER_ID_IS_INVALID),
+    .withMessage(ID_IS_INVALID),
 ];

@@ -236,6 +236,51 @@ userController.put(
   }
 );
 
+//  @route  PUT /coursesTaken
+//  @desc   Updates a user's coursesTaken
+//  @access Private
+userController.put(
+  '/coursesTaken',
+  passport.authenticate('jwt', { session: false }),
+  validateFetchCoursesTaken,
+  async (req, res) => {
+    const errorsAfterValidation = validationResult(req);
+    if (!errorsAfterValidation.isEmpty()) {
+      res.status(400).json({
+        code: 400,
+        errors: errorsAfterValidation.mapped(),
+      });
+    } else {
+      try {
+        // Get course ObjectId from query
+        const user_id = req.query.user_id;
+        const coursesTaken = req.body;
+
+        // Query the database with the data to be changed and the id of the user to be changed
+        const updatedUser = await User.updateOne(
+          { _id: user_id },
+          coursesTaken
+        );
+
+        // If there is a value that had been modified then the update was successful.
+        if (updatedUser.n > 0) {
+          res.status(200).json(updatedUser.n);
+        } else {
+          generateServerErrorCode(
+            res,
+            403,
+            'courses taken update error',
+            USER_NOT_FOUND,
+            'user_id'
+          );
+        }
+      } catch (e) {
+        generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
+      }
+    }
+  }
+);
+
 //  @route  GET /profile
 //  @desc   Fetches a user's profile
 //  @access Private
@@ -303,48 +348,6 @@ userController.get(
     } catch (databaseError) {
       logger.info(databaseError);
       return res.status(500).json({ errors: SERVER_ERROR });
-    }
-  }
-);
-
-//  @route  GET /coursesTaken
-//  @desc   Fetches a user's coursesTaken
-//  @access Private
-userController.get(
-  '/coursesTaken/:userId',
-  passport.authenticate('jwt', { session: false }),
-  validateFetchCoursesTaken,
-  async (req, res) => {
-    const errorsAfterValidation = validationResult(req);
-    if (!errorsAfterValidation.isEmpty()) {
-      res.status(400).json({
-        code: 400,
-        errors: errorsAfterValidation.mapped(),
-      });
-    } else {
-      try {
-        // Get course ObjectId from query
-        const user_id = req.params;
-
-        // fetch user and populate coursesTaken
-        const fetchedUser = await Course.findOne({
-          _id: user_id,
-        }).populate('coursesTaken');
-
-        if (fetchedUser) {
-          res.status(200).json(fetchedUser);
-        } else {
-          generateServerErrorCode(
-            res,
-            403,
-            'courses taken retrieval error',
-            USER_NOT_FOUND,
-            'user_id'
-          );
-        }
-      } catch (e) {
-        generateServerErrorCode(res, 500, e, SOME_THING_WENT_WRONG);
-      }
     }
   }
 );
