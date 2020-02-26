@@ -31,4 +31,29 @@ export class SCoursesTakenComponent implements OnInit {
   }
 
   ngOnInit() {}
+
+  getCurrentProfile() {
+    const profileObs = this.userService.getProfile();
+
+    // retrieve token or handle server error
+    profileObs.subscribe(
+      result => {
+        // HTTP result: config and data:
+        console.log("Profile result: ", result);
+        return result;
+      },
+      err => {
+        // HTTP error
+        this.errorHandler.handleError(err);
+      },
+      () => {
+        // HTTP request completed
+        console.log("Profile data: ", profileObs);
+      }
+    );
+
+    console.log("obser", profileObs);
+  }
+
+  addCourse() {}
 }
