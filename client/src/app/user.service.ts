@@ -81,7 +81,8 @@ export class UserService {
     const httpOptions = {
       headers: new HttpHeaders({
         "Content-Type": "application/json",
-        Authorization: "Bearer " + this.getCurrentStorageStatus()
+        Authorization: "Bearer " + this.getCurrentStorageStatus(),
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict"
       })
     };
     return httpOptions;
