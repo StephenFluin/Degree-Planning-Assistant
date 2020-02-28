@@ -7,6 +7,14 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatCardModule } from "@angular/material/card";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatButtonModule } from "@angular/material/button";
+import { LayoutModule } from "@angular/cdk/layout";
+import { MatIconModule } from "@angular/material/icon";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatChipsModule } from "@angular/material/chips";
 
 import { AppComponent } from "./app.component";
 import { LandingComponent } from "./landing/landing.component";
@@ -16,13 +24,6 @@ import { UserService } from "./user.service";
 import { NavbarComponent } from "./navbar/navbar.component";
 import { FooterComponent } from "./footer/footer.component";
 import { SCoursesTakenComponent } from "./s-courses-taken/s-courses-taken.component";
-
-import { MatMenuModule } from "@angular/material/menu";
-import { MatCardModule } from "@angular/material/card";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatButtonModule } from "@angular/material/button";
-import { LayoutModule } from "@angular/cdk/layout";
-import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,9 @@ import { MatIconModule } from "@angular/material/icon";
     MatToolbarModule,
     MatButtonModule,
     LayoutModule,
-    MatIconModule
+    MatIconModule,
+    MatExpansionModule,
+    MatChipsModule
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

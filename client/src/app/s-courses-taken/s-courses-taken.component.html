@@ -1,10 +1,12 @@
-<mat-card *ngIf="profile | async as userProfile">
-  <mat-card-header>
-    <mat-card-title>
+<mat-expansion-panel *ngIf="profile | async as userProfile">
+  <mat-expansion-panel-header>
+    <mat-panel-title class="module-header">
       Courses Taken
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    {{ userProfile.courses_taken }}
-  </mat-card-content>
-</mat-card>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <mat-chip-list>
+    <mat-chip *ngFor="let course of userProfile.courses_taken">
+      {{ course }}
+    </mat-chip>
+  </mat-chip-list>
+</mat-expansion-panel>

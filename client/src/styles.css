@@ -1,7 +1,7 @@
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 * {
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: "Roboto", Arial, sans-serif;
   font-size: 14px;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -117,7 +117,7 @@ footer a {
   justify-content: center;
 }
 .justify-content-space-between {
-  justify-content: space-between
+  justify-content: space-between;
 }
 .justify-content-end {
   justify-content: flex-end;
@@ -140,4 +140,8 @@ footer a {
 
 .p0 {
   padding: 0;
+}
+
+.module-header {
+  font-size: 25px;
 }
