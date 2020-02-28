@@ -84,7 +84,7 @@ programController.post(
 
       // return code 200 as resource is successfully saved
       return res.status(200).json();
-    } catch {
+    } catch (e) {
       // return code 500 in the case of database error
       return res.status(500).json({ error: SERVER_ERROR });
     }
@@ -138,7 +138,7 @@ programController.get(
       }
       // No degree program that contains the parameters have been found
       return res.status(404).json({ error: DEGREE_PROGRAM_NOT_FOUND });
-    } catch {
+    } catch (e) {
       // Database error
       return res.status(500).json({ error: SERVER_ERROR });
     }
