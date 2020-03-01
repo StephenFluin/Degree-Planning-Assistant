@@ -30,5 +30,20 @@ export class SCoursesTakenComponent implements OnInit {
     this.popupData = $event;
   }
 
+  /**
+   * Recieve a boolean from the child component PopupComponent
+   * to determine if the popup is closed.
+   * @param $event
+   */
+  popupStatus($event) {
+    console.log("The event: ", $event);
+    this.showPopup = $event;
+  }
+
+  getPopupData($event) {
+    console.log("The data event: ", $event);
+    this.popupData = $event;
+  }
+
   ngOnInit() {}
 }
