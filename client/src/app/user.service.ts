@@ -37,7 +37,7 @@ export class UserService {
    * Register a new user
    * @param user
    */
-  create_new_user(user: UserData) {
+  registerNewUser(user: UserData) {
     return this.http.post(`${this.uri}/register`, user);
   }
 
