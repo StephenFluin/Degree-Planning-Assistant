@@ -12,7 +12,7 @@ export class SCoursesTakenComponent implements OnInit {
   showPopup = false;
   popupData: string;
   constructor(private userService: UserService) {
-    this.profile = this.userService.getProfile();
+    this.profile = this.userService.getProfile("coursesTaken");
   }
 
   /**

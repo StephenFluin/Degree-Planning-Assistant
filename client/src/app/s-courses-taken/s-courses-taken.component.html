@@ -5,12 +5,14 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <mat-chip-list>
-    <mat-chip *ngFor="let course of userProfile.coursesTaken">
-      {{ course }}
+    <mat-chip *ngFor="let course of userProfile?.coursesTaken">
+      <span *ngIf="course?.code">{{ course.code }}</span>
     </mat-chip>
   </mat-chip-list>
   <p>
-    <button class="modal-button" (click)="showPopup = true">Show pop-up</button>
+    <button class="modal-button" (click)="showPopup = true">
+      Show pop-up
+    </button>
     <app-popup
       [isOpen]="showPopup"
       title="Test pop-up"
@@ -19,7 +21,10 @@
     >
       This is the content of the pop-up (thanks to transclusion aka content
       projection)
-      {{ userProfile.coursesTaken }}
+      <h3>Courses Taken:</h3>
+      <p *ngFor="let course of userProfile?.coursesTaken">
+        <span *ngIf="course?.code">{{ course.code }}</span>
+      </p>
     </app-popup>
   </p>
 </mat-expansion-panel>

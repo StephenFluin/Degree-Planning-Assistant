@@ -90,9 +90,16 @@ export class UserService {
   }
 
   /**
-   * Get courses taken by user
+   * Get the profile or just an attribute of the profile object
+   * @param attribute (optional)
    */
-  getProfile() {
+  getProfile(attribute?: string) {
+    if (attribute) {
+      return this.http.get<UserProfile>(
+        `${this.uri}/profile/?` + attribute + "=true",
+        this.getHttpHeaders()
+      );
+    }
     return this.http.get<UserProfile>(
       `${this.uri}/profile/`,
       this.getHttpHeaders()
