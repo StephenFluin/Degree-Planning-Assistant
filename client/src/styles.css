@@ -10,20 +10,13 @@
 
 body {
   margin: 0;
-  width: 100%;
-  height: 100%;
 }
 
 #root-content {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 0 auto;
-  padding: 0;
+  box-sizing: border-box;
   width: 100%;
-  height: 100%;
   min-height: 84vh;
+  margin: 48px 0;
 }
 
 a {
@@ -83,7 +76,7 @@ button:disabled {
 
 .flex-column {
   display: flex;
-  flex-direction: ;
+  flex-direction: column;
 }
 
 .flex-column-card {
@@ -113,6 +106,10 @@ button:disabled {
 
 .align-items-center {
   align-items: center;
+}
+
+.align-items-start {
+  align-items: start;
 }
 
 .text-align-center {
@@ -160,10 +157,28 @@ button:disabled {
   padding: 0;
 }
 
-.big-header {
-  font-size: 25px;
+.width100vw {
+  width: 100vw;
+}
+
+.card-section {
+  width: 80%;
+}
+
+.section-header {
+  font-size: 20px;
+  font-weight: bold;
+  color: #707070;
 }
 
 /* Component CSS */
 app-landing {
+}
+
+.body1 {
+  font-size: 16px;
+}
+
+.chip-clr {
+  color: #7f8c8d;
 }
