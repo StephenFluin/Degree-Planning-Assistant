@@ -15,7 +15,6 @@ import { LayoutModule } from "@angular/cdk/layout";
 import { MatIconModule } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatDialogModule } from "@angular/material/dialog";
 
 import { AppComponent } from "./app.component";
 import { LandingComponent } from "./landing/landing.component";
@@ -55,8 +54,7 @@ import { PopupComponent } from "./popup/popup.component";
     LayoutModule,
     MatIconModule,
     MatExpansionModule,
-    MatChipsModule,
-    MatDialogModule
+    MatChipsModule
   ],
   entryComponents: [PopupComponent],
   providers: [UserService],

@@ -1,38 +1,56 @@
 <div class="width100vw flex-column align-items-center">
-  <mat-expansion-panel
-    *ngIf="profile | async as userProfile"
-    class="card-section"
-  >
+  <mat-expansion-panel *ngIf="profile | async as userProfile" class="card-section">
     <mat-expansion-panel-header>
-      <mat-panel-title>
+      <mat-panel-title class="big-header">
         <p class="section-header">Courses Taken</p>
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="flex-column align-items-start">
       <mat-chip-list>
-        <mat-chip *ngFor="let course of userProfile?.coursesTaken" class="chip">
-          <span *ngIf="course?.code" class="body1 chip-clr">{{
-            course.code
-          }}</span>
+        <mat-chip
+          *ngFor="let course of userProfile?.coursesTaken"
+          [matMenuTriggerFor]="menu"
+          class="chip"
+        >
+          <span *ngIf="course?.code" class="body1 chip-clr">{{ course.code | titlecase }}</span>
+          <mat-menu #menu="matMenu" style="padding: 0px;">
+            <mat-card class="mini-card">
+              <mat-card-header>
+                <mat-card-title *ngIf="course?.school && course?.code">
+                  {{ course.school | uppercase }} {{ course.code | titlecase }}
+                </mat-card-title>
+                <mat-card-subtitle *ngIf="course?.title">
+                  {{ course.title | titlecase }}
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <span class="mini-card-content-title">Description</span>
+                <p class="mini-card-description" *ngIf="course?.description">
+                  {{ course.description }}
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </mat-menu>
         </mat-chip>
       </mat-chip-list>
-      <div class="add-courses-btn" (click)="showPopup = true">
-        +
-      </div>
     </div>
+    <p>
+      <button class="add-courses-btn (click)="showPopup = true">
+       +
+      </button>
+      <app-popup
+        [isOpen]="showPopup"
+        title="Test pop-up"
+        (onClose)="popupStatus($event)"
+        (onInput)="getPopupData($event)"
+      >
+        This is the content of the pop-up (thanks to transclusion aka content
+        projection)
+        <h3>Courses Taken:</h3>
+        <p *ngFor="let course of userProfile?.coursesTaken">
+          <span *ngIf="course?.code">{{ course.code }}</span>
+        </p>
+      </app-popup>
+    </p>
   </mat-expansion-panel>
 </div>
-
-<app-popup
-  [isOpen]="showPopup"
-  title="Test pop-up"
-  (onClose)="popupStatus($event)"
-  (onInput)="getPopupData($event)"
->
-  This is the content of the pop-up (thanks to transclusion aka content
-  projection)
-  <h3>Courses Taken:</h3>
-  <p *ngFor="let course of userProfile?.coursesTaken">
-    <span *ngIf="course?.code">{{ course.code }}</span>
-  </p>
-</app-popup>
