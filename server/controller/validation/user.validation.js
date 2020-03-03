@@ -153,7 +153,7 @@ export const validateEditProfile = [
       }
     }),
   body('lastName') // Optional
-    .if(body('lastName').exists()) // IF the client included last_name, then validate it
+    .if(body('lastName').exists()) // IF the client included lastName, then validate it
     .not()
     .isEmpty()
     .withMessage(LAST_NAME_IS_EMPTY)
@@ -247,22 +247,22 @@ export const validateFetchProfile = [
     .ltrim()
     .rtrim(),
   query('avatarUrl') // Optional
-    .if(query('avatarUrl').exists()) // IF the client included avatar_url, then validate it
+    .if(query('avatarUrl').exists()) // IF the client included avatarUrl, then validate it
     .escape()
     .ltrim()
     .rtrim(),
   query('avatarType') // Optional
-    .if(query('avatarType').exists()) // IF the client included avatar_type, then validate it
+    .if(query('avatarType').exists()) // IF the client included avatarType, then validate it
     .escape()
     .ltrim()
     .rtrim(),
   query('firstName') // Optional
-    .if(query('firstName').exists()) // IF the client included first_name, then validate it
+    .if(query('firstName').exists()) // IF the client included firstName, then validate it
     .escape()
     .ltrim()
     .rtrim(),
   query('lastName') // Optional
-    .if(query('lastName').exists()) // IF the client included last_name, then validate it
+    .if(query('lastName').exists()) // IF the client included lastName, then validate it
     .escape()
     .ltrim()
     .rtrim(),
@@ -282,14 +282,14 @@ export const validateFetchProfile = [
     .ltrim()
     .rtrim(),
   query('catalogYear') // Optional
-    .if(query('catalogYear').exists()) // IF the client included catalog_year, then validate it
+    .if(query('catalogYear').exists()) // IF the client included catalogYear, then validate it
     .escape()
     .ltrim()
     .rtrim(),
 ];
 
 export const validateFetchCoursesTaken = [
-  query('user_id')
+  query('userId')
     .exists()
     .withMessage(USER_ID_IS_EMPTY)
     .not()

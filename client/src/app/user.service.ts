@@ -11,17 +11,17 @@ export interface UserData {
 }
 
 export interface UserProfile {
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   bio?: string;
-  courses_taken?: [];
-  grad_date?: {
+  coursesTaken?: [];
+  gradDate?: {
     year?: number;
     term?: string;
   };
   major?: string;
   minor?: string;
-  catalog_year?: number;
+  catalogYear?: number;
 }
 
 @Injectable({

@@ -5,7 +5,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <mat-chip-list>
-    <mat-chip *ngFor="let course of userProfile.courses_taken">
+    <mat-chip *ngFor="let course of userProfile.coursesTaken">
       {{ course }}
     </mat-chip>
   </mat-chip-list>
@@ -19,7 +19,7 @@
     >
       This is the content of the pop-up (thanks to transclusion aka content
       projection)
-      {{ userProfile.courses_taken }}
+      {{ userProfile.coursesTaken }}
     </app-popup>
   </p>
 </mat-expansion-panel>

@@ -54,7 +54,7 @@ function createUser(email, password) {
     degreePlanId: undefined,
   };
 
-  user = new User(data);
+  const user = new User(data);
   return user.save();
 }
 
@@ -204,15 +204,15 @@ userController.put(
       // exists before adding it into the object. It is important that we don't include keys that
       // don't exist so that their values in the database aren't changed.
       const itemsToBeUpdated = {
-        ...(avatarUrl && { avatar_url: avatarUrl }),
-        ...(avatarType && { avatar_type: avatarType }),
-        ...(firstName && { first_name: firstName }),
-        ...(lastName && { last_name: lastName }),
+        ...(avatarUrl && { avatarUrl: avatarUrl }),
+        ...(avatarType && { avatarType: avatarType }),
+        ...(firstName && { firstName: firstName }),
+        ...(lastName && { lastName: lastName }),
         ...(bio && { bio }),
         ...(major && { major }),
         ...(minor && { minor }),
-        ...(catalogYear && { catalog_year: catalogYear }),
-        ...(gradDate && { grad_date: gradDate }),
+        ...(catalogYear && { catalogYear: catalogYear }),
+        ...(gradDate && { gradDate: gradDate }),
       };
 
       // Query the database with the data to be changed and the id of the user to be changed
@@ -253,14 +253,11 @@ userController.put(
     } else {
       try {
         // Get course ObjectId from query
-        const user_id = req.query.user_id;
+        const userId = req.query.userId;
         const coursesTaken = req.body;
 
         // Query the database with the data to be changed and the id of the user to be changed
-        const updatedUser = await User.updateOne(
-          { _id: user_id },
-          coursesTaken
-        );
+        const updatedUser = await User.updateOne({ _id: userId }, coursesTaken);
 
         // If there is a value that had been modified then the update was successful.
         if (updatedUser.n > 0) {
@@ -271,7 +268,7 @@ userController.put(
             403,
             'courses taken update error',
             USER_NOT_FOUND,
-            'user_id'
+            'userId'
           );
         }
       } catch (e) {
@@ -289,16 +286,12 @@ userController.get(
   passport.authenticate('jwt', { session: false }),
   // validateFetchProfile,
   async (req, res) => {
-    // Check if validators found invalid input
-    console.log('I am here!', req.user);
     const errors = validationResult(req);
     if (errors.isEmpty() === false) {
       return res.status(400).json(errors);
     }
 
-    // const { userId } = req.params;
     const { user } = req;
-    console.log('here: ', user._id);
     const {
       email,
       avatarUrl,
@@ -306,6 +299,7 @@ userController.get(
       firstName,
       lastName,
       bio,
+      coursesTaken,
       major,
       minor,
       catalogYear,
@@ -322,27 +316,37 @@ userController.get(
         ...(firstName && { firstName: true }),
         ...(lastName && { lastName: true }),
         ...(bio && { bio: true }),
+        ...(coursesTaken && { coursesTaken: true }),
         ...(major && { major: true }),
         ...(minor && { minor: true }),
         ...(catalogYear && { catalogYear: true }),
         ...(gradDate && { gradDate: true }),
       };
 
+      let fetchedUser;
+
+      console.log('Items to be fetched: ', itemsToBeFetched);
       // If client doesn't specify anything, fetch everything but the unnecessary fields
       if (Object.keys(itemsToBeFetched).length === 0) {
         itemsToBeFetched = {
           _id: false,
           hashedPassword: false,
-          degree_plan_id: false,
-          is_admin: false,
+          degreePlanId: false,
+          isAdmin: false,
         };
+        fetchedUser = await User.findOne(
+          { _id: user._id },
+          itemsToBeFetched
+        ).populate('coursesTaken');
+      } else if (itemsToBeFetched.coursesTaken) {
+        fetchedUser = await User.findOne(
+          { _id: user._id },
+          itemsToBeFetched
+        ).populate('coursesTaken');
+      } else {
+        // Fetch the document using the projection object
+        fetchedUser = await User.findOne({ _id: user._id }, itemsToBeFetched);
       }
-
-      // Fetch the document using the projection object
-      const fetchedUser = await User.findOne(
-        { _id: user._id },
-        itemsToBeFetched
-      );
 
       // Check if document was fetched. if so, include in response
       if (fetchedUser) {
@@ -353,6 +357,7 @@ userController.get(
       }
     } catch (databaseError) {
       logger.info(databaseError);
+      console.log('Thee error: ', databaseError);
       return res.status(500).json({ errors: SERVER_ERROR });
     }
   }
