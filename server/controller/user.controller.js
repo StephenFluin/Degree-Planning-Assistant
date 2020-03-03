@@ -284,9 +284,10 @@ userController.put(
 userController.get(
   '/profile',
   passport.authenticate('jwt', { session: false }),
-  // validateFetchProfile,
+  validateFetchProfile,
   async (req, res) => {
-    const errors = validationResult(req);
+    let errors = validationResult(req);
+
     if (errors.isEmpty() === false) {
       return res.status(400).json(errors);
     }
@@ -325,7 +326,6 @@ userController.get(
 
       let fetchedUser;
 
-      console.log('Items to be fetched: ', itemsToBeFetched);
       // If client doesn't specify anything, fetch everything but the unnecessary fields
       if (Object.keys(itemsToBeFetched).length === 0) {
         itemsToBeFetched = {
@@ -356,8 +356,8 @@ userController.get(
         return res.status(404).json({ errors: USER_NOT_FOUND });
       }
     } catch (databaseError) {
+      console.log(databaseError);
       logger.info(databaseError);
-      console.log('Thee error: ', databaseError);
       return res.status(500).json({ errors: SERVER_ERROR });
     }
   }
