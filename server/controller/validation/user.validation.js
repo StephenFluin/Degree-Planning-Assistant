@@ -341,7 +341,7 @@ export const validateFetchCoursesTaken = [
 ];
 
 export const validateFetchCoursesTaken = [
-  query('user_id')
+  query('userId')
     .exists()
     .withMessage(USER_ID_IS_EMPTY)
     .not()
