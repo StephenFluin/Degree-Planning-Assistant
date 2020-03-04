@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService, UserProfile } from "../user.service";
 import { Observable } from "rxjs";
+import { CourseData, CourseService } from "../course.service";
 
 @Component({
   selector: "app-s-courses-taken",
@@ -9,25 +10,35 @@ import { Observable } from "rxjs";
 })
 export class SCoursesTakenComponent implements OnInit {
   profile: Observable<UserProfile>;
-  showPopup = false;
-  popupData: string;
-  constructor(private userService: UserService) {
+  showModal = false;
+  modalData: string;
+  currentCourse: Observable<CourseData>;
+  constructor(
+    private userService: UserService,
+    private courseService: CourseService
+  ) {
     this.profile = this.userService.getProfile("coursesTaken");
   }
 
   /**
-   * Recieve a boolean from the child component PopupComponent
-   * to determine if the popup is closed.
+   * Recieve a boolean from the child component ModalComponent
+   * to determine if the modal is closed.
    * @param $event
    */
-  popupStatus($event) {
+  modalStatus($event) {
     console.log("The event: ", $event);
-    this.showPopup = $event;
+    this.showModal = $event;
   }
 
-  getPopupData($event) {
+  getmodalData($event) {
     console.log("The data event: ", $event);
-    this.popupData = $event;
+    this.modalData = $event;
+  }
+
+  displayCourseInfo(courseId: string) {
+    console.log("Display course info: ", courseId);
+    this.currentCourse = this.courseService.getCourseById(courseId);
+    this.showModal = true;
   }
 
   ngOnInit() {}

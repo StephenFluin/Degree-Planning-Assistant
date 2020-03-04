@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
-  selector: "app-popup",
-  templateUrl: "./popup.component.html",
-  styleUrls: ["./popup.component.css"]
+  selector: "app-modal",
+  templateUrl: "./modal.component.html",
+  styleUrls: ["./modal.component.css"]
 })
-export class PopupComponent implements OnInit {
-  popupData;
+export class ModalComponent implements OnInit {
+  modalData;
   constructor() {}
 
   // From parent component
@@ -26,18 +26,18 @@ export class PopupComponent implements OnInit {
   ngOnInit() {}
 
   /**
-   * Send popup status of closed to parent component
+   * Send modal status of closed to parent component
    */
-  closePopup() {
+  closeModal() {
     this.isOpen = false;
     this.onClose.emit(this.isOpen);
   }
 
   /**
-   * Send input data from popup to parent component
+   * Send input data from modal to parent component
    */
   sendInputData() {
-    console.log("Sending input data ", this.popupData);
-    this.onInput.emit(this.popupData);
+    console.log("Sending input data ", this.modalData);
+    this.onInput.emit(this.modalData);
   }
 }

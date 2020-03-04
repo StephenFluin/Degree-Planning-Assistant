@@ -35,22 +35,22 @@
       </mat-chip-list>
     </div>
     <p>
-      <button class="add-courses-btn (click)="showPopup = true">
+      <button class="add-courses-btn (click)="showModal = true">
        +
       </button>
-      <app-popup
-        [isOpen]="showPopup"
-        title="Test pop-up"
-        (onClose)="popupStatus($event)"
-        (onInput)="getPopupData($event)"
-      >
-        This is the content of the pop-up (thanks to transclusion aka content
-        projection)
-        <h3>Courses Taken:</h3>
-        <p *ngFor="let course of userProfile?.coursesTaken">
-          <span *ngIf="course?.code">{{ course.code }}</span>
-        </p>
-      </app-popup>
+      <app-modal
+      [isOpen]="showModal"
+      title="Test modal"
+      (onClose)="modalStatus($event)"
+      (onInput)="getModalData($event)"
+    >
+      This is the content of the modal (thanks to transclusion aka content
+      projection)
+      <h3>Courses Taken:</h3>
+      <p *ngFor="let course of userProfile?.coursesTaken">
+        <span *ngIf="course?.code">{{ course.code }}</span>
+      </p>
+    </app-modal>
     </p>
   </mat-expansion-panel>
 </div>
