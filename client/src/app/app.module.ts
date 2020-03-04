@@ -25,6 +25,7 @@ import { NavbarComponent } from "./navbar/navbar.component";
 import { FooterComponent } from "./footer/footer.component";
 import { SCoursesTakenComponent } from "./s-courses-taken/s-courses-taken.component";
 import { ModalComponent } from "./modal/modal.component";
+import { PopupComponent } from "./popup/popup.component";
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ModalComponent } from "./modal/modal.component";
     NavbarComponent,
     FooterComponent,
     SCoursesTakenComponent,
-    ModalComponent
+    ModalComponent,
+    PopupComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +58,7 @@ import { ModalComponent } from "./modal/modal.component";
     MatExpansionModule,
     MatChipsModule
   ],
-  entryComponents: [ModalComponent],
+  entryComponents: [ModalComponent, PopupComponent],
   providers: [UserService],
   bootstrap: [AppComponent]
 })

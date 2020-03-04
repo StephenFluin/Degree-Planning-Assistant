@@ -14,22 +14,15 @@
         >
           <span *ngIf="course?.code" class="body1 chip-clr">{{ course.code | titlecase }}</span>
           <mat-menu #menu="matMenu" style="padding: 0px;">
-            <mat-card class="mini-card">
-              <mat-card-header>
-                <mat-card-title *ngIf="course?.school && course?.code">
-                  {{ course.school | uppercase }} {{ course.code | titlecase }}
-                </mat-card-title>
-                <mat-card-subtitle *ngIf="course?.title">
-                  {{ course.title | titlecase }}
-                </mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content>
-                <span class="mini-card-content-title">Description</span>
-                <p class="mini-card-description" *ngIf="course?.description">
-                  {{ course.description }}
-                </p>
-              </mat-card-content>
-            </mat-card>
+            <app-popup
+              [title]="course.school + ' ' + course.code"
+              [subtitle]="course.title"
+              contentTitle="Description"
+            >
+              <p *ngIf="course?.description">
+                {{ course.description }}
+              </p>
+            </app-popup>
           </mat-menu>
         </mat-chip>
       </mat-chip-list>

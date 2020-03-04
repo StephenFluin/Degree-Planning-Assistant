@@ -1,0 +1,12 @@
+.mini-card {
+  margin-top: -8px;
+  margin-bottom: -8px;
+}
+
+.mini-card-content-title {
+  font-weight: 600;
+}
+
+.mini-card-description {
+  margin-top: 2px;
+}
