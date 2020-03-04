@@ -339,16 +339,3 @@ export const validateFetchCoursesTaken = [
     .isLength({ min: 24, max: 24 })
     .withMessage(ID_IS_INVALID),
 ];
-
-export const validateFetchCoursesTaken = [
-  query('userId')
-    .exists()
-    .withMessage(USER_ID_IS_EMPTY)
-    .not()
-    .isEmpty()
-    .isHexadecimal()
-    .withMessage(ID_IS_INVALID)
-    .bail()
-    .isLength({ min: 24, max: 24 })
-    .withMessage(ID_IS_INVALID),
-];
