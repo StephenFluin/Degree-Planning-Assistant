@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService, UserProfile } from "../user.service";
 import { Observable } from "rxjs";
-import { CourseData, CourseService } from "../course.service";
 
 @Component({
   selector: "app-s-courses-taken",
@@ -12,11 +11,7 @@ export class SCoursesTakenComponent implements OnInit {
   profile: Observable<UserProfile>;
   showModal = false;
   modalData: string;
-  currentCourse: Observable<CourseData>;
-  constructor(
-    private userService: UserService,
-    private courseService: CourseService
-  ) {
+  constructor(private userService: UserService) {
     this.profile = this.userService.getProfile("coursesTaken");
   }
 
@@ -30,15 +25,9 @@ export class SCoursesTakenComponent implements OnInit {
     this.showModal = $event;
   }
 
-  getmodalData($event) {
+  getModalData($event) {
     console.log("The data event: ", $event);
     this.modalData = $event;
-  }
-
-  displayCourseInfo(courseId: string) {
-    console.log("Display course info: ", courseId);
-    this.currentCourse = this.courseService.getCourseById(courseId);
-    this.showModal = true;
   }
 
   ngOnInit() {}

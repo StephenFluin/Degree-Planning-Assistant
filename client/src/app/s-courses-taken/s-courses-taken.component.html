@@ -1,5 +1,8 @@
 <div class="width100vw flex-column align-items-center">
-  <mat-expansion-panel *ngIf="profile | async as userProfile" class="card-section">
+  <mat-expansion-panel
+    *ngIf="profile | async as userProfile"
+    class="card-section"
+  >
     <mat-expansion-panel-header>
       <mat-panel-title class="big-header">
         <p class="section-header">Courses Taken</p>
@@ -12,7 +15,9 @@
           [matMenuTriggerFor]="menu"
           class="chip"
         >
-          <span *ngIf="course?.code" class="body1 chip-clr">{{ course.code | titlecase }}</span>
+          <span *ngIf="course?.code" class="body1 chip-clr">{{
+            course.code | titlecase
+          }}</span>
           <mat-menu #menu="matMenu" style="padding: 0px;">
             <app-popup
               [title]="course.school + ' ' + course.code"
@@ -28,22 +33,20 @@
       </mat-chip-list>
     </div>
     <p>
-      <button class="add-courses-btn (click)="showModal = true">
-       +
-      </button>
+      <button class="add-courses-btn" (click)="showModal = true">+</button>
       <app-modal
-      [isOpen]="showModal"
-      title="Test modal"
-      (onClose)="modalStatus($event)"
-      (onInput)="getModalData($event)"
-    >
-      This is the content of the modal (thanks to transclusion aka content
-      projection)
-      <h3>Courses Taken:</h3>
-      <p *ngFor="let course of userProfile?.coursesTaken">
-        <span *ngIf="course?.code">{{ course.code }}</span>
-      </p>
-    </app-modal>
+        [isOpen]="showModal"
+        title="Test modal"
+        (onClose)="modalStatus($event)"
+        (onInput)="getModalData($event)"
+      >
+        This is the content of the modal (thanks to transclusion aka content
+        projection)
+        <h3>Courses Taken:</h3>
+        <p *ngFor="let course of userProfile?.coursesTaken">
+          <span *ngIf="course?.code">{{ course.code }}</span>
+        </p>
+      </app-modal>
     </p>
   </mat-expansion-panel>
 </div>
