@@ -11,9 +11,4 @@ export class LandingComponent implements OnInit {
   constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit() {}
-
-  logoutButton() {
-    this.userService.logout();
-    this.router.navigate(["login"]);
-  }
 }

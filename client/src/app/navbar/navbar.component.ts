@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { UserService } from "../user.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-navbar",
@@ -14,7 +15,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     breakpointObserver: BreakpointObserver,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
     this.isSmallScreen = breakpointObserver.isMatched("(max-width: 599px)");
     this.userLoggedIn = this.userService.isLoggedIn();
@@ -22,5 +24,10 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.userLoggedIn = this.userService.isLoggedIn();
+  }
+
+  logoutButton() {
+    this.userService.logout();
+    this.router.navigate(["login"]);
   }
 }
