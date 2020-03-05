@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ChangeDetectorRef } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -41,8 +41,15 @@ export interface CourseData {
 export class UserService {
   uri = "http://localhost:8080";
   tokenKey = "tokenKey";
+  detection: () => void;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
+    localStorage.addEventListener();
+    this.detection = () => changeDetectorRef.detectChanges();
+  }
 
   /**
    * Register a new user

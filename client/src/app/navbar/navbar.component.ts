@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { UserService } from "../user.service";
@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 })
 export class NavbarComponent implements OnInit {
   isSmallScreen;
-  userLoggedIn;
+  userLoggedIn = false;
 
   constructor(
     breakpointObserver: BreakpointObserver,
@@ -23,6 +23,10 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.userLoggedIn = this.userService.isLoggedIn();
+  }
+
+  ngAfterViewInit() {
     this.userLoggedIn = this.userService.isLoggedIn();
   }
 
