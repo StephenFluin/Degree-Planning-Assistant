@@ -1,21 +1,16 @@
 <div class="flex-column align-items-center">
   <div class="card flex-column align-items-center profile-card-size">
     <img src="../../assets/profile-pic-92.png" class="profile-pic-92 mb16" />
-    <span class="h5 neutral-gray-clr mb32">Dale Christian Seen</span>
+    <span
+      class="h5 neutral-gray-clr mb32"
+      [innerText]="profile.firstName"
+    ></span>
     <div class="flex-column align-items-center w80 mb32">
       <div class="flex-row align-items-center">
         <img src="../../assets/bio_16.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">Bio</span>
       </div>
-      <span class="body1 italic">
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum."
-      </span>
+      <span class="body1 italic" [innerText]="profile.bio"> </span>
     </div>
     <div
       class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -24,7 +19,7 @@
         <img src="../../assets/email_16.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">Email</span>
       </div>
-      <span class="h6">Dale.Seen@gmail.com</span>
+      <span class="h6" [innerText]="profile.email"></span>
     </div>
     <div
       class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -33,7 +28,7 @@
         <img src="../../assets/school_16.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">School</span>
       </div>
-      <span class="h6">San Jose State University</span>
+      <span class="h6" [innerText]="profile.school"></span>
     </div>
     <div
       class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
@@ -42,7 +37,7 @@
         <img src="../../assets/major_16.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">Major</span>
       </div>
-      <span class="h6">Software Engineering</span>
+      <span class="h6" [innerText]="profile.major"></span>
     </div>
     <div
       class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
@@ -51,7 +46,7 @@
         <img src="../../assets/major_16.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">Minor</span>
       </div>
-      <span class="h6">---</span>
+      <span class="h6" [innerText]="profile.minor"></span>
     </div>
     <div
       class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -60,7 +55,7 @@
         <img src="../../assets/degree_program.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">Catalog Year</span>
       </div>
-      <span class="h6">2017</span>
+      <span class="h6" [innerText]="profile.catalogYear"></span>
     </div>
     <div
       class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -69,7 +64,7 @@
         <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
         <span class="h6 neutral-gray-clr">Expected Graduation Date</span>
       </div>
-      <span class="h6">Spring 2020</span>
+      <span class="h6" [innerText]="profile.expectedGradTerm"></span>
     </div>
     <div class="flex-row justify-content-space-between align-items-center w100">
       <div class="back btn">Back</div>
