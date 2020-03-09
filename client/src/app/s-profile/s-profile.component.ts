@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { UserService, UserProfile } from "../user.service";
-import { Observable } from "rxjs";
+import { UserService } from "../user.service";
 
 @Component({
   selector: "app-s-profile",
@@ -9,6 +8,8 @@ import { Observable } from "rxjs";
 })
 export class SProfileComponent implements OnInit {
   // profile: Observable<UserProfile>;
+
+  // Temp placeholders
   profile = {
     firstName: "Dale Christian",
     lastName: "Seen",
@@ -19,8 +20,35 @@ export class SProfileComponent implements OnInit {
     catalogYear: 2017,
     expectedGradTerm: "Spring",
     expectedGradYear: 2020,
-    bio: "Kimi no sei, Kimi no sei, Kimi no sei!"
+    bio: "bruh I eat there like once a week."
   };
+
+  editProfile: boolean = false;
+
+  switchEditMode() {
+    this.editProfile = !this.editProfile;
+  }
+
+  onEditProfile() {
+    const editProfileForm = document.getElementById("editProfileForm");
+
+    if (editProfileForm) {
+      const payload = {
+        firstName: editProfileForm["firstNameField"].value,
+        lastName: editProfileForm["lastNameField"].value,
+        email: editProfileForm["emailField"].value,
+        school: "San Jose State University",
+        major: "Software Engineering",
+        minor: "---",
+        bio: editProfileForm["bioField"].value,
+        gradDate: `${editProfileForm["gradTermField"].value} ${editProfileForm["gradYearField"].value}`
+      };
+
+      console.log(payload);
+
+      // TODO: Call backend to edit profile c:
+    }
+  }
 
   constructor(private userService: UserService) {
     // TODO: Set profile to refer to profile in userService

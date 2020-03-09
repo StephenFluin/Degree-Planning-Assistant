@@ -120,6 +120,10 @@ button:disabled {
   flex-wrap: wrap;
 }
 
+.justify-content-start {
+  justify-content: start;
+}
+
 .justify-content-center {
   justify-content: center;
 }
@@ -237,6 +241,10 @@ button:disabled {
 
 .mt4 {
   margin-top: 4px;
+}
+
+.pr8 {
+  padding-right: 8px;
 }
 
 .p0 {

@@ -1,74 +1,214 @@
 <div class="flex-column align-items-center">
-  <div class="card flex-column align-items-center profile-card-size">
-    <img src="../../assets/profile-pic-92.png" class="profile-pic-92 mb16" />
-    <span
-      class="h5 neutral-gray-clr mb32"
-      [innerText]="profile.firstName"
-    ></span>
-    <div class="flex-column align-items-center w80 mb32">
-      <div class="flex-row align-items-center">
-        <img src="../../assets/bio_16.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">Bio</span>
-      </div>
-      <span class="body1 italic" [innerText]="profile.bio"> </span>
-    </div>
+  <div class="card profile-card-size">
     <div
-      class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
+      *ngIf="editProfile == false"
+      id="displayProfile"
+      class="flex-column align-items-center fadeIn"
     >
-      <div class="flex-row align-items-center">
-        <img src="../../assets/email_16.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">Email</span>
+      <img src="../../assets/profile-pic-92.png" class="profile-pic-92 mb16" />
+      <span class="h5 neutral-gray-clr mb32"
+        >{{ profile.firstName }} {{ profile.lastName }}</span
+      >
+      <div class="flex-column align-items-center w80 mb32">
+        <div class="flex-row align-items-center">
+          <img src="../../assets/bio_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">Bio</span>
+        </div>
+        <span class="body1 italic" [innerText]="profile.bio"> </span>
       </div>
-      <span class="h6" [innerText]="profile.email"></span>
+      <div
+        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
+      >
+        <div class="flex-row align-items-center">
+          <img src="../../assets/email_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">Email</span>
+        </div>
+        <span class="h6">{{ profile.email }}</span>
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
+      >
+        <div class="flex-row align-items-center">
+          <img src="../../assets/school_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">School</span>
+        </div>
+        <span class="h6">{{ profile.school }}</span>
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
+      >
+        <div class="flex-row align-items-center">
+          <img src="../../assets/major_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">Major</span>
+        </div>
+        <span class="h6">{{ profile.major }}</span>
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
+      >
+        <div class="flex-row align-items-center">
+          <img src="../../assets/major_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">Minor</span>
+        </div>
+        <span class="h6">{{ profile.minor }}</span>
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
+      >
+        <div class="flex-row align-items-center">
+          <img src="../../assets/degree_program.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">Catalog Year</span>
+        </div>
+        <span class="h6">{{ profile.catalogYear }}</span>
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
+      >
+        <div class="flex-row align-items-center">
+          <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr">Expected Graduation Date</span>
+        </div>
+        <span class="h6"
+          >{{ profile.expectedGradTerm }} {{ profile.expectedGradYear }}</span
+        >
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center w100"
+      >
+        <div class="back btn">Back</div>
+        <div class="btn" (click)="switchEditMode()">
+          Edit profile
+        </div>
+      </div>
     </div>
-    <div
-      class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
+    <form
+      *ngIf="this.editProfile == true"
+      class="flex-column align-items-start fadeIn"
+      id="editProfileForm"
     >
-      <div class="flex-row align-items-center">
-        <img src="../../assets/school_16.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">School</span>
+      <span class="h6 neutral-gray-clr">Editing Profile...</span>
+      <img
+        src="../../assets/profile-pic-92.png"
+        class="profile-pic-92 align-self-center mb16"
+      />
+      <div class="flex-row justify-content-center align-items-center w100 mb8">
+        <div class="flex-row justify-content-end flex-2">
+          <span class="h6 neutral-gray-clr mr8">First Name</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <input
+            type="text"
+            class="text-field field60 ml8"
+            name="firstNameField"
+          />
+        </div>
       </div>
-      <span class="h6" [innerText]="profile.school"></span>
-    </div>
-    <div
-      class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
-    >
-      <div class="flex-row align-items-center">
-        <img src="../../assets/major_16.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">Major</span>
+      <div class="flex-row justify-content-center align-items-center w100 mb32">
+        <div class="flex-row justify-content-end flex-2">
+          <span class="h6 neutral-gray-clr mr8">Last Name</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <input
+            type="text"
+            class="text-field field60 ml8"
+            name="lastNameField"
+          />
+        </div>
       </div>
-      <span class="h6" [innerText]="profile.major"></span>
-    </div>
-    <div
-      class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
-    >
-      <div class="flex-row align-items-center">
-        <img src="../../assets/major_16.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">Minor</span>
+      <div class="flex-row justify-content-center align-items-center w100 mb32">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/email_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Email</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <input type="text" class="text-field field80 ml8" name="emailField" />
+        </div>
       </div>
-      <span class="h6" [innerText]="profile.minor"></span>
-    </div>
-    <div
-      class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
-    >
-      <div class="flex-row align-items-center">
-        <img src="../../assets/degree_program.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">Catalog Year</span>
+      <div class="flex-row justify-content-center align-items-center w100 mb32">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/school_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">School</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <span class="body1 ml8">San Jose State University</span>
+        </div>
       </div>
-      <span class="h6" [innerText]="profile.catalogYear"></span>
-    </div>
-    <div
-      class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
-    >
-      <div class="flex-row align-items-center">
-        <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
-        <span class="h6 neutral-gray-clr">Expected Graduation Date</span>
+      <div class="flex-row justify-content-center align-items-center w100 mb32">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/bio_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Bio</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <textarea
+            class="text-area field80 ml8"
+            rows="4"
+            name="bioField"
+          ></textarea>
+        </div>
       </div>
-      <span class="h6" [innerText]="profile.expectedGradTerm"></span>
-    </div>
-    <div class="flex-row justify-content-space-between align-items-center w100">
-      <div class="back btn">Back</div>
-      <div class="btn">Edit profile</div>
-    </div>
+      <div class="flex-row justify-content-center align-items-center w100 mb8">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/major_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Major</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <span class="body1 ml8">Software Engineering</span>
+        </div>
+      </div>
+      <div class="flex-row justify-content-center align-items-center w100 mb8">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/major_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Minor</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <span class="body1 ml8">---</span>
+        </div>
+      </div>
+      <div class="flex-row justify-content-center align-items-center w100 mb32">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/degree_program.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Catalog Year</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <input
+            type="text"
+            class="text-field field25 ml8"
+            name="catalogYearField"
+          />
+        </div>
+      </div>
+      <div class="flex-row justify-content-center align-items-center w100 mb8">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Graduation Term</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <input
+            type="text"
+            class="text-field field25 ml8"
+            name="gradTermField"
+          />
+        </div>
+      </div>
+      <div class="flex-row justify-content-center align-items-center w100 mb32">
+        <div class="flex-row justify-content-end align-items-center flex-2">
+          <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
+          <span class="h6 neutral-gray-clr mr8">Graduation Year</span>
+        </div>
+        <div class="flex-row justify-content-start flex-3 border-left">
+          <input
+            type="text"
+            class="text-field field25 ml8"
+            name="gradYearField"
+          />
+        </div>
+      </div>
+      <div
+        class="flex-row justify-content-space-between align-items-center w100"
+      >
+        <div class="back btn" (click)="switchEditMode()">Cancel</div>
+        <div class="back btn" (click)="onEditProfile()">Save changes</div>
+      </div>
+    </form>
   </div>
 </div>
