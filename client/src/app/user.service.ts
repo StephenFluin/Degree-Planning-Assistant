@@ -177,4 +177,16 @@ export class UserService {
     }
     return true;
   }
+
+  /**
+   * Edit the user's profile
+   * @param profileChanges
+   */
+  editProfile(profileChanges: Object) {
+    return this.http.put(
+      `${this.uri}/profile`,
+      profileChanges,
+      this.getHttpHeaders()
+    );
+  }
 }

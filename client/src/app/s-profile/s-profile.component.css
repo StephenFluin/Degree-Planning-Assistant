@@ -77,6 +77,14 @@
   height: auto;
 }
 
+.error {
+  color: #e74c3c !important;
+}
+
+.error-text-field {
+  border-color: #e74c3c !important;
+}
+
 /* Flexbox classes */
 .flex-1 {
   flex-grow: 1;
