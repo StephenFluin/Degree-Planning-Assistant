@@ -1,0 +1,106 @@
+:host {
+  width: 100%;
+}
+
+/* Custom Classes */
+.expansion-panel {
+  min-width: 960px;
+  width: 80%;
+}
+
+.card {
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  box-shadow: 0px 3px 6px #ecf0f1;
+  padding: 16px;
+  transition: height 1s;
+}
+
+.horizontal-line {
+  border: 1px solid #7f8c8d;
+}
+
+.bottom-border {
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.top-border {
+  border-top: 1px solid #ecf0f1;
+}
+
+.difficulty-chip-1 {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 25%;
+  background-color: #2ecc71;
+  padding: 4px 8px 4px 8px;
+}
+
+.difficulty-chip-2 {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 25%;
+  background-color: #ffa250;
+  padding: 4px 8px 4px 8px;
+}
+
+.difficulty-chip-3 {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 25%;
+  background-color: #ff7d6f;
+  padding: 4px 8px 4px 8px;
+}
+
+/* Sizing */
+.w80 {
+  width: 80%;
+}
+
+.w25 {
+  width: 25%;
+}
+
+/* Spacing */
+.flex-1 {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.flex-2 {
+  flex-grow: 2;
+  flex-basis: 0;
+}
+
+.flex-3 {
+  flex-grow: 3;
+  flex-basis: 0;
+}
+
+.flex-4 {
+  flex-grow: 4;
+  flex-basis: 0;
+}
+
+.pt8 {
+  padding-top: 8px;
+}
+
+.ptb8 {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.plr8 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.mr8 {
+  margin-right: 8px;
+}
+
+/*  */

@@ -30,6 +30,7 @@ import { PopupComponent } from "./popup/popup.component";
 import { SDashboardComponent } from "./s-dashboard/s-dashboard.component";
 import { SProfileDashComponent } from "./s-profile-dash/s-profile-dash.component";
 import { SProfileComponent } from "./s-profile/s-profile.component";
+import { SDegreePlanComponent } from "./s-degree-plan/s-degree-plan.component";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { SProfileComponent } from "./s-profile/s-profile.component";
     SDashboardComponent,
     SProfileDashComponent,
     SProfileComponent,
+    SDegreePlanComponent,
   ],
   imports: [
     BrowserModule,
