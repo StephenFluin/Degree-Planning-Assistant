@@ -11,7 +11,6 @@ import {
   validateFetchProfile,
   validateFetchCoursesTaken,
   checkIfCorrectGradDate,
-  validateToken,
 } from './validation/user.validation';
 
 import {
@@ -330,7 +329,7 @@ userController.get(
 //  @route  POST /
 //  @desc   Verfiy JWT & Fetches all of a user's data except their password
 //  @access Private
-userController.post('/identity', validateToken, async (req, res) => {
+userController.post('/identity', async (req, res) => {
   validationHandler(req, res, () => {
     const { token } = req.body;
     jwt.verify(token, config.passport.secret, async (err, decodedToken) => {
