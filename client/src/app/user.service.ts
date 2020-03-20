@@ -28,6 +28,7 @@ export interface UserProfile {
   avatarUrl: string;
   avatarType: string;
   isAdmin: boolean;
+  school: string;
 }
 
 export interface CourseData {
@@ -49,7 +50,7 @@ export class UserService {
   uri = "http://localhost:8080";
   tokenKey = "tokenKey";
   private logger = new Subject<boolean>();
-  userData: Observable<UserProfile>;
+  private userData: Observable<UserProfile>;
 
   constructor(
     private http: HttpClient,
@@ -162,7 +163,7 @@ export class UserService {
   /**
    *  Fetches the user's data and stores it into this.userData.
    */
-  getUserData(): Boolean {
+  fetchUserData(): Boolean {
     // Check if this.userData is empty. If it is, re-fetch the user's data. Otherwise, no need to fetch.
     if (this.userData === undefined) {
       const tokenObj: Object = {
@@ -188,5 +189,12 @@ export class UserService {
       profileChanges,
       this.getHttpHeaders()
     );
+  }
+
+  /**
+   * Getter method for userData
+   */
+  getUserData() {
+    return this.userData;
   }
 }

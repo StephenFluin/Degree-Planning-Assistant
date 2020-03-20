@@ -1,5 +1,5 @@
 <div class="flex-column align-items-center">
-  <div class="card profile-card-size">
+  <div *ngIf="profile | async as userProfile" class="card profile-card-size">
     <div
       *ngIf="editProfile == false"
       id="displayProfile"
@@ -7,14 +7,14 @@
     >
       <img src="../../assets/profile-pic-92.png" class="profile-pic-92 mb16" />
       <span class="h5 neutral-gray-clr mb32"
-        >{{ profile.firstName }} {{ profile.lastName }}</span
+        >{{ userProfile.firstName }} {{ userProfile.lastName }}</span
       >
       <div class="flex-column align-items-center w80 mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/bio_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Bio</span>
         </div>
-        <span class="body1 italic" [innerText]="profile.bio"> </span>
+        <span class="body1 italic" [innerText]="userProfile.bio"> </span>
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -23,7 +23,7 @@
           <img src="../../assets/email_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Email</span>
         </div>
-        <span class="h6">{{ profile.email }}</span>
+        <span class="h6">{{ userProfile.email }}</span>
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -32,7 +32,7 @@
           <img src="../../assets/school_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">School</span>
         </div>
-        <span class="h6">{{ profile.school }}</span>
+        <span class="h6">{{ userProfile.school }}</span>
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
@@ -41,7 +41,7 @@
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Major</span>
         </div>
-        <span class="h6">{{ profile.major }}</span>
+        <span class="h6">{{ userProfile.major }}</span>
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
@@ -50,7 +50,7 @@
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Minor</span>
         </div>
-        <span class="h6">{{ profile.minor }}</span>
+        <span class="h6">{{ userProfile.minor }}</span>
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -59,7 +59,7 @@
           <img src="../../assets/degree_program.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Catalog Year</span>
         </div>
-        <span class="h6">{{ profile.catalogYear }}</span>
+        <span class="h6">{{ userProfile.catalogYear }}</span>
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
@@ -69,13 +69,13 @@
           <span class="h6 neutral-gray-clr">Expected Graduation Date</span>
         </div>
         <span class="h6"
-          >{{ profile.expectedGradTerm }} {{ profile.expectedGradYear }}</span
+          >{{ userProfile.gradDate.term }} {{ userProfile.gradDate.year }}</span
         >
       </div>
       <div
         class="flex-row justify-content-space-between align-items-center w100"
       >
-        <div class="back btn">Back</div>
+        <div class="back btn" (click)="onClickBack()">Back</div>
         <div class="btn" (click)="switchEditMode()">
           Edit profile
         </div>

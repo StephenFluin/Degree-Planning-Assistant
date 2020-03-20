@@ -239,6 +239,10 @@ button:disabled {
   margin-bottom: 16px;
 }
 
+.mb32 {
+  margin-bottom: 32px;
+}
+
 .mt4 {
   margin-top: 4px;
 }

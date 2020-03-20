@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { UserService } from "../user.service";
+import { UserService, UserProfile } from "../user.service";
+import { Observable } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-s-profile",
@@ -7,28 +9,14 @@ import { UserService } from "../user.service";
   styleUrls: ["./s-profile.component.css"]
 })
 export class SProfileComponent implements OnInit {
-  // Temp placeholders
-  profile = {
-    firstName: "Dale Christian",
-    lastName: "Seen",
-    major: "Software Engineering",
-    minor: "---",
-    school: "San Jose State University",
-    email: "Dale.Seen@gmail.com",
-    catalogYear: 2017,
-    expectedGradTerm: "Spring",
-    expectedGradYear: 2020,
-    bio: "bruh I eat there like once a week."
-  };
-
+  profile: Observable<UserProfile>;
   editProfile: boolean = false;
 
-  constructor(private userService: UserService) {
-    // TODO: Set profile to refer to profile in userService
-    // this.profile = this.userService.getProfile();
+  constructor(private router: Router, private userService: UserService) {
+    this.profile = this.userService.getUserData();
   }
 
-  // profile: Observable<UserProfile>;
+  ngOnInit() {}
 
   errors: Object = {
     firstNameField: "",
@@ -112,12 +100,12 @@ export class SProfileComponent implements OnInit {
           }
         };
 
-        this.userService.editProfile(payload).subscribe(
-          res => {
+        this.userService.editProfile(payload).subscribe({
+          complete: () => {
+            this.profile = this.userService.getUserData();
             this.editProfile = false;
-          },
-          err => {}
-        );
+          }
+        });
       } else {
         for (const prop in this.errors) {
           if (this.errors[prop].length > 0) {
@@ -133,5 +121,7 @@ export class SProfileComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  onClickBack() {
+    this.router.navigate(["dashboard"]);
+  }
 }
