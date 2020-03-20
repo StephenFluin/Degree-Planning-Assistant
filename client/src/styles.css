@@ -244,6 +244,10 @@ button:disabled {
   width: 100vw;
 }
 
+.w80 {
+  width: 80%;
+}
+
 /* Margins and Paddings */
 .m0 {
   margin: 0;
