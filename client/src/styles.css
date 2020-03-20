@@ -202,6 +202,13 @@ button:disabled {
   cursor: pointer;
 }
 
+.horizontal-line {
+  width: 90%;
+  border-bottom: 1px solid #95a5a6;
+  margin: auto;
+  padding: 0;
+}
+
 /* Small dropdown description card */
 .mini-card {
   margin-top: -8px;
@@ -226,13 +233,6 @@ button:disabled {
   width: 96px;
   height: 96px;
   object-fit: contain;
-}
-
-<<<<<<< HEAD .horizontal-line {
-  width: 90%;
-  border-bottom: 1px solid #95a5a6;
-  margin: auto;
-  padding: 0;
 }
 
 /* Sizing */
@@ -263,6 +263,10 @@ button:disabled {
 
 .mt4 {
   margin-top: 4px;
+}
+
+.mt8 {
+  margin-top: 8px;
 }
 
 .p8 {
@@ -332,4 +336,23 @@ button:disabled {
 
 .border {
   border: 1px solid black;
+}
+
+.btn {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #ecf0f1;
+  font-size: 16px;
+  transition: background-color 0.25s;
+}
+
+.btn.edit-plan-btn {
+  background-color: #2ecc71;
+  color: #ffffff;
+}
+
+.btn.edit-plan-btn:hover {
+  background-color: #27ae60;
+  color: #ffffff;
 }

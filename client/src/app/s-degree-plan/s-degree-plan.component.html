@@ -1,9 +1,9 @@
 <div class="flex-row justify-content-center align-items-center w100">
-  <mat-expansion-panel class="expansion-panel">
+  <mat-expansion-panel class="expansion-panel" [expanded]="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <!-- Expansion Panel Title -->
-        <span class="h5 neutral-gray-clr">Degree Plan</span>
+        <span class="h5 neutral-gray-clr bold">Degree Plan</span>
       </mat-panel-title>
     </mat-expansion-panel-header>
     <!-- Expansion Panel Content -->
@@ -373,6 +373,11 @@
               <span class="body2 neutral-gray-clr bold">= 9 units</span>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="flex-row justify-content-center align-items-center">
+        <div class="btn edit-plan-btn mt8" (click)="onClickEditPlan()">
+          Edit Plan
         </div>
       </div>
     </div>

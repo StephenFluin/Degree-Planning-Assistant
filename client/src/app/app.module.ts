@@ -31,6 +31,7 @@ import { SDashboardComponent } from "./s-dashboard/s-dashboard.component";
 import { SProfileDashComponent } from "./s-profile-dash/s-profile-dash.component";
 import { SProfileComponent } from "./s-profile/s-profile.component";
 import { SDegreePlanComponent } from "./s-degree-plan/s-degree-plan.component";
+import { SDegreePlanEditorComponent } from "./s-degree-plan-editor/s-degree-plan-editor.component";
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { SDegreePlanComponent } from "./s-degree-plan/s-degree-plan.component";
     SProfileDashComponent,
     SProfileComponent,
     SDegreePlanComponent,
+    SDegreePlanEditorComponent,
   ],
   imports: [
     BrowserModule,
