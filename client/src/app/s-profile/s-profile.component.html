@@ -16,54 +16,42 @@
         </div>
         <span class="body1 italic" [innerText]="userProfile.bio"> </span>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
-      >
+      <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/email_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Email</span>
         </div>
         <span class="h6">{{ userProfile.email }}</span>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
-      >
+      <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/school_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">School</span>
         </div>
         <span class="h6">{{ userProfile.school }}</span>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
-      >
+      <div class="displayProfileLine mb8">
         <div class="flex-row align-items-center">
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Major</span>
         </div>
         <span class="h6">{{ userProfile.major }}</span>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb8"
-      >
+      <div class="displayProfileLine mb8">
         <div class="flex-row align-items-center">
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Minor</span>
         </div>
         <span class="h6">{{ userProfile.minor }}</span>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
-      >
+      <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/degree_program.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Catalog Year</span>
         </div>
         <span class="h6">{{ userProfile.catalogYear }}</span>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center border-bot-gray-1 flex-1 w100 mb32"
-      >
+      <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Expected Graduation Date</span>
@@ -72,9 +60,7 @@
           >{{ userProfile.gradDate.term }} {{ userProfile.gradDate.year }}</span
         >
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center w100"
-      >
+      <div class="bottomBtns">
         <div class="back btn" (click)="onClickBack()">Back</div>
         <div class="btn" (click)="switchEditMode()">
           Edit profile
@@ -82,7 +68,7 @@
       </div>
     </div>
     <form
-      *ngIf="this.editProfile == true"
+      *ngIf="this.editProfile"
       class="flex-column align-items-start fadeIn"
       id="editProfileForm"
     >
@@ -91,159 +77,144 @@
         src="../../assets/profile-pic-92.png"
         class="profile-pic-92 align-self-center mb16"
       />
-      <div class="flex-row justify-content-center align-items-center w100 mb8">
+      <div class="editProfileLine mb8">
         <div class="flex-row justify-content-end flex-2">
           <span class="h6 neutral-gray-clr mr8">First Name</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <input
             type="text"
             class="text-field field60 ml8"
             id="firstNameField"
             name="firstNameField"
+            value="{{ userProfile.firstName }}"
           />
           <span id="firstNameFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb32">
+      <div class="editProfileLine mb32">
         <div class="flex-row justify-content-end flex-2">
           <span class="h6 neutral-gray-clr mr8">Last Name</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <input
             type="text"
             class="text-field field60 ml8"
             id="lastNameField"
             name="lastNameField"
+            value="{{ userProfile.lastName }}"
           />
           <span id="lastNameFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb32">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb32">
+        <div class="labelStyling">
           <img src="../../assets/email_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Email</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <input
             type="text"
             class="text-field field80 ml8"
             id="emailField"
             name="emailField"
+            value="{{ userProfile.email }}"
           />
           <span id="emailFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb32">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb32">
+        <div class="labelStyling">
           <img src="../../assets/school_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">School</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <span class="body1 ml8">San Jose State University</span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb32">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb32">
+        <div class="labelStyling">
           <img src="../../assets/bio_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Bio</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <textarea
             class="text-area field80 ml8"
             rows="4"
             id="bioField"
             name="bioField"
+            value="{{ userProfile.bio }}"
           ></textarea>
           <span id="bioFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb8">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb8">
+        <div class="labelStyling">
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Major</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <span class="body1 ml8">Software Engineering</span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb8">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb8">
+        <div class="labelStyling">
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Minor</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <span class="body1 ml8">---</span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb32">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb32">
+        <div class="labelStyling">
           <img src="../../assets/degree_program.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Catalog Year</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <input
             type="text"
             class="text-field field25 ml8"
             id="catalogYearField"
             name="catalogYearField"
+            value="{{ userProfile.catalogYear }}"
           />
           <span id="catalogYearFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb8">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb8">
+        <div class="labelStyling">
           <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Graduation Term</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <input
             type="text"
             class="text-field field25 ml8"
             id="gradTermField"
             name="gradTermField"
+            value="{{ userProfile.gradDate.term }}"
           />
           <span id="gradTermFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div class="flex-row justify-content-center align-items-center w100 mb32">
-        <div class="flex-row justify-content-end align-items-center flex-2">
+      <div class="editProfileLine mb32">
+        <div class="labelStyling">
           <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr mr8">Graduation Year</span>
         </div>
-        <div
-          class="flex-column align-items-start justify-content-center flex-3 border-left"
-        >
+        <div class="textFieldStyling">
           <input
             type="text"
             class="text-field field25 ml8"
             id="gradYearField"
             name="gradYearField"
+            value="{{ userProfile.gradDate.year }}"
           />
           <span id="gradYearFieldError" class="caption ml8 error"></span>
         </div>
       </div>
-      <div
-        class="flex-row justify-content-space-between align-items-center w100"
-      >
+      <div class="bottomBtns">
         <div class="back btn" (click)="switchEditMode()">Cancel</div>
         <div class="back btn" (click)="onEditProfile()">Save changes</div>
       </div>

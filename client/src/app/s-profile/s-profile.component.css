@@ -3,6 +3,54 @@
 }
 
 /* Custom classes */
+.displayProfileLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px #95a5a6;
+  border-style: none none dashed none;
+  padding-bottom: 4px;
+  flex-grow: 1;
+  flex-basis: 0;
+  width: 100%;
+}
+
+.editProfileLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.textFieldStyling {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex-grow: 3;
+  flex-basis: 0;
+  border-left: 1px solid #7f8c8d;
+}
+
+.bottomBtns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.labelStyling {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 2;
+  flex-basis: 0;
+}
+
 .profile-card-size {
   width: 600px;
 }

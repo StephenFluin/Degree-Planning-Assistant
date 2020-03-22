@@ -154,10 +154,6 @@ export const validateEditProfile = [
     }),
   body('bio') // Optional
     .if(body('bio').exists()) // IF the client included bio, then validate it
-    .not()
-    .isEmpty()
-    .withMessage(BIO_IS_EMPTY)
-    .bail()
     .escape()
     .ltrim()
     .rtrim()

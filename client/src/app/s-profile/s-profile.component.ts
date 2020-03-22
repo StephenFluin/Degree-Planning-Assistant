@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { UserService, UserProfile } from "../user.service";
-import { Observable } from "rxjs";
 import { Router } from "@angular/router";
+import { Observable } from "rxjs";
+
+import { UserService, UserProfile } from "../user.service";
+import { ErrorHandlerService } from "../error-handler.service";
 
 @Component({
   selector: "app-s-profile",
@@ -10,15 +12,8 @@ import { Router } from "@angular/router";
 })
 export class SProfileComponent implements OnInit {
   profile: Observable<UserProfile>;
-  editProfile: boolean = false;
-
-  constructor(private router: Router, private userService: UserService) {
-    this.profile = this.userService.getUserData();
-  }
-
-  ngOnInit() {}
-
-  errors: Object = {
+  editProfile = false;
+  errors = {
     firstNameField: "",
     lastNameField: "",
     emailField: "",
@@ -27,6 +22,16 @@ export class SProfileComponent implements OnInit {
     gradYearField: ""
   };
 
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private errorHandler: ErrorHandlerService
+  ) {
+    this.profile = this.userService.getUserData();
+  }
+
+  ngOnInit() {}
+
   switchEditMode() {
     this.editProfile = !this.editProfile;
   }
@@ -34,13 +39,14 @@ export class SProfileComponent implements OnInit {
   onEditProfile() {
     const editProfileForm = document.getElementById("editProfileForm");
 
-    for (const prop in this.errors) {
+    const errorsObjKeys = Object.keys(this.errors);
+    errorsObjKeys.forEach((prop, index) => {
       document.getElementById(prop).classList.remove("error-text-field");
       const element = document.getElementById(`${prop}Error`);
       element.classList.remove("error");
       element.innerHTML = "";
       this.errors[prop] = "";
-    }
+    });
 
     if (editProfileForm) {
       const validateStringInput = element => {
@@ -56,7 +62,7 @@ export class SProfileComponent implements OnInit {
 
       const validateNumInput = element => {
         if (element.value.length > 0) {
-          if (isNaN(element.value) === true) {
+          if (isNaN(element.value)) {
             this.errors[element.name] = "Field contains invalid characters";
           }
         } else {
@@ -65,13 +71,9 @@ export class SProfileComponent implements OnInit {
       };
 
       const objIsEmpty = obj => {
-        for (const prop in obj) {
-          if (obj[prop].length > 0) {
-            return false;
-          }
-        }
-
-        return true;
+        return Object.keys(obj).every(prop => {
+          return obj[prop].length === 0;
+        });
       };
 
       validateStringInput(editProfileForm["firstNameField"]);
@@ -84,7 +86,7 @@ export class SProfileComponent implements OnInit {
         this.errors["emailField"] = "Field cannot be empty";
       }
 
-      if (objIsEmpty(this.errors) === true) {
+      if (objIsEmpty(this.errors)) {
         const payload = {
           firstName: editProfileForm["firstNameField"].value,
           lastName: editProfileForm["lastNameField"].value,
@@ -101,13 +103,17 @@ export class SProfileComponent implements OnInit {
         };
 
         this.userService.editProfile(payload).subscribe({
+          error: errorMsg => {
+            this.errorHandler.handleError(errorMsg);
+          },
           complete: () => {
+            this.userService.fetchUserData();
             this.profile = this.userService.getUserData();
             this.editProfile = false;
           }
         });
       } else {
-        for (const prop in this.errors) {
+        errorsObjKeys.forEach((prop, index) => {
           if (this.errors[prop].length > 0) {
             document
               .getElementById(`${prop}`)
@@ -116,7 +122,7 @@ export class SProfileComponent implements OnInit {
             caption.classList.add("error");
             caption.innerHTML = this.errors[prop];
           }
-        }
+        });
       }
     }
   }

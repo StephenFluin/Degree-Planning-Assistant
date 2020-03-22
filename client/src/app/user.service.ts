@@ -81,11 +81,11 @@ export class UserService {
       this.logger.next(true);
 
       let removedToken = <UserProfile>{};
-      for (const prop in userDetails) {
+      Object.keys(userDetails).forEach((prop, index) => {
         if (prop !== "token") {
           removedToken[prop] = userDetails[prop];
         }
-      }
+      });
 
       return removedToken;
     };
@@ -161,10 +161,10 @@ export class UserService {
   }
 
   /**
-   *  Fetches the user's data and stores it into this.userData.
+   *  Fetches the user's data using backendAPI then stores it in to this.userData
    */
-  fetchUserData(): Boolean {
-    // Check if this.userData is empty. If it is, re-fetch the user's data. Otherwise, no need to fetch.
+  fetchUserData(): boolean {
+    // Check if this.userData is empty. If it is, re-fetch the user's data. Otherwise, no need to fetch
     if (this.userData === undefined) {
       const tokenObj: Object = {
         token: localStorage.getItem(this.tokenKey)
@@ -183,7 +183,7 @@ export class UserService {
    * Edit the user's profile
    * @param profileChanges
    */
-  editProfile(profileChanges: Object) {
+  editProfile(profileChanges: object) {
     return this.http.put(
       `${this.uri}/profile`,
       profileChanges,
