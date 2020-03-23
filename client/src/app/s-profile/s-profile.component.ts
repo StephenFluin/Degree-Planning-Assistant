@@ -5,6 +5,8 @@ import { Observable } from "rxjs";
 import { UserService, UserProfile } from "../user.service";
 import { ErrorHandlerService } from "../error-handler.service";
 
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+
 @Component({
   selector: "app-s-profile",
   templateUrl: "./s-profile.component.html",
@@ -13,6 +15,31 @@ import { ErrorHandlerService } from "../error-handler.service";
 export class SProfileComponent implements OnInit {
   profile: Observable<UserProfile>;
   editProfile = false;
+  editProfileForm = new FormGroup({
+    firstNameField: new FormControl("", [
+      Validators.required,
+      Validators.pattern(/^[a-zA-Z ]*$/)
+    ]),
+    lastNameField: new FormControl("", [
+      Validators.required,
+      Validators.pattern(/^[a-zA-Z ]*$/)
+    ]),
+    emailField: new FormControl("", [Validators.required, Validators.email]),
+    bioField: new FormControl(""),
+    catalogYearField: new FormControl("", [
+      Validators.required,
+      Validators.pattern(/^\d+$/)
+    ]),
+    gradTermField: new FormControl("", [
+      Validators.required,
+      Validators.pattern(/^[a-zA-Z ]*$/)
+    ]),
+    gradYearField: new FormControl("", [
+      Validators.required,
+      Validators.pattern(/^\d+$/)
+    ])
+  });
+
   errors = {
     firstNameField: "",
     lastNameField: "",
@@ -37,8 +64,6 @@ export class SProfileComponent implements OnInit {
   }
 
   onEditProfile() {
-    const editProfileForm = document.getElementById("editProfileForm");
-
     const errorsObjKeys = Object.keys(this.errors);
     errorsObjKeys.forEach((prop, index) => {
       document.getElementById(prop).classList.remove("error-text-field");
@@ -48,82 +73,60 @@ export class SProfileComponent implements OnInit {
       this.errors[prop] = "";
     });
 
-    if (editProfileForm) {
-      const validateStringInput = element => {
-        if (element.value.length > 0) {
-          if (new RegExp(/[^a-zA-Z\s]/).test(element.value) === false) {
-          } else {
-            this.errors[element.name] = "Field contains invalid characters";
-          }
-        } else {
-          this.errors[element.name] = "Field cannot be empty";
+    Object.keys(this.editProfileForm.value).forEach(key => {
+      if (this.editProfileForm.controls[key].errors) {
+        const errors = this.editProfileForm.controls[key].errors;
+        if (errors.hasOwnProperty("required")) {
+          this.errors[key] = "Field is required";
+        } else if (errors.hasOwnProperty("pattern")) {
+          this.errors[key] = "Field has invalid characters";
+        } else if (errors.hasOwnProperty("email")) {
+          this.errors[key] = "Email is invalid";
+        }
+      }
+    });
+
+    const objIsEmpty = obj => {
+      return Object.keys(obj).every(prop => {
+        return obj[prop].length === 0;
+      });
+    };
+
+    if (objIsEmpty(this.errors)) {
+      const payload = {
+        firstName: this.editProfileForm.value.firstNameField,
+        lastName: this.editProfileForm.value.lastNameField,
+        email: this.editProfileForm.value.email,
+        school: "San Jose State University",
+        major: "Software Engineering",
+        minor: "---",
+        bio: this.editProfileForm.value.bioField,
+        catalogYear: Number(this.editProfileForm.value.catalogYearField),
+        gradDate: {
+          term: this.editProfileForm.value.gradTermField,
+          year: Number(this.editProfileForm.value.gradYearField)
         }
       };
 
-      const validateNumInput = element => {
-        if (element.value.length > 0) {
-          if (isNaN(element.value)) {
-            this.errors[element.name] = "Field contains invalid characters";
-          }
-        } else {
-          this.errors[element.name] = "Field cannot be empty";
+      this.userService.editProfile(payload).subscribe({
+        error: errorMsg => {
+          this.errorHandler.handleError(errorMsg);
+        },
+        complete: () => {
+          this.userService.fetchUserData();
+          this.profile = this.userService.getUserData();
+          this.editProfile = false;
         }
-      };
-
-      const objIsEmpty = obj => {
-        return Object.keys(obj).every(prop => {
-          return obj[prop].length === 0;
-        });
-      };
-
-      validateStringInput(editProfileForm["firstNameField"]);
-      validateStringInput(editProfileForm["lastNameField"]);
-      validateStringInput(editProfileForm["gradTermField"]);
-      validateNumInput(editProfileForm["catalogYearField"]);
-      validateNumInput(editProfileForm["gradYearField"]);
-
-      if (editProfileForm["emailField"].value.length == 0) {
-        this.errors["emailField"] = "Field cannot be empty";
-      }
-
-      if (objIsEmpty(this.errors)) {
-        const payload = {
-          firstName: editProfileForm["firstNameField"].value,
-          lastName: editProfileForm["lastNameField"].value,
-          email: editProfileForm["emailField"].value,
-          school: "San Jose State University",
-          major: "Software Engineering",
-          minor: "---",
-          bio: editProfileForm["bioField"].value,
-          catalogYear: Number(editProfileForm["catalogYearField"].value),
-          gradDate: {
-            term: editProfileForm["gradTermField"].value,
-            year: Number(editProfileForm["gradYearField"].value)
-          }
-        };
-
-        this.userService.editProfile(payload).subscribe({
-          error: errorMsg => {
-            this.errorHandler.handleError(errorMsg);
-          },
-          complete: () => {
-            this.userService.fetchUserData();
-            this.profile = this.userService.getUserData();
-            this.editProfile = false;
-          }
-        });
-      } else {
-        errorsObjKeys.forEach((prop, index) => {
-          if (this.errors[prop].length > 0) {
-            document
-              .getElementById(`${prop}`)
-              .classList.add("error-text-field");
-            const caption = document.getElementById(`${prop}Error`);
-            caption.classList.add("error");
-            caption.innerHTML = this.errors[prop];
-          }
-        });
-      }
+      });
+    } else {
+      errorsObjKeys.forEach((prop, index) => {
+        if (this.errors[prop].length > 0) {
+          document.getElementById(`${prop}`).classList.add("error-text-field");
+          const caption = document.getElementById(`${prop}Error`);
+          caption.classList.add("error");
+          caption.innerHTML = this.errors[prop];
+        }
+      });
     }
   }
 

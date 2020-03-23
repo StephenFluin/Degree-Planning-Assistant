@@ -70,6 +70,7 @@
     <form
       *ngIf="this.editProfile"
       class="flex-column align-items-start fadeIn"
+      [formGroup]="editProfileForm"
       id="editProfileForm"
     >
       <span class="h6 neutral-gray-clr">Editing Profile...</span>
@@ -85,9 +86,9 @@
           <input
             type="text"
             class="text-field field60 ml8"
+            formControlName="firstNameField"
+            matInput
             id="firstNameField"
-            name="firstNameField"
-            value="{{ userProfile.firstName }}"
           />
           <span id="firstNameFieldError" class="caption ml8 error"></span>
         </div>
@@ -100,9 +101,8 @@
           <input
             type="text"
             class="text-field field60 ml8"
+            formControlName="lastNameField"
             id="lastNameField"
-            name="lastNameField"
-            value="{{ userProfile.lastName }}"
           />
           <span id="lastNameFieldError" class="caption ml8 error"></span>
         </div>
@@ -116,9 +116,8 @@
           <input
             type="text"
             class="text-field field80 ml8"
+            formControlName="emailField"
             id="emailField"
-            name="emailField"
-            value="{{ userProfile.email }}"
           />
           <span id="emailFieldError" class="caption ml8 error"></span>
         </div>
@@ -141,9 +140,8 @@
           <textarea
             class="text-area field80 ml8"
             rows="4"
+            formControlName="bioField"
             id="bioField"
-            name="bioField"
-            value="{{ userProfile.bio }}"
           ></textarea>
           <span id="bioFieldError" class="caption ml8 error"></span>
         </div>
@@ -175,9 +173,8 @@
           <input
             type="text"
             class="text-field field25 ml8"
+            formControlName="catalogYearField"
             id="catalogYearField"
-            name="catalogYearField"
-            value="{{ userProfile.catalogYear }}"
           />
           <span id="catalogYearFieldError" class="caption ml8 error"></span>
         </div>
@@ -191,9 +188,8 @@
           <input
             type="text"
             class="text-field field25 ml8"
+            formControlName="gradTermField"
             id="gradTermField"
-            name="gradTermField"
-            value="{{ userProfile.gradDate.term }}"
           />
           <span id="gradTermFieldError" class="caption ml8 error"></span>
         </div>
@@ -207,9 +203,8 @@
           <input
             type="text"
             class="text-field field25 ml8"
+            formControlName="gradYearField"
             id="gradYearField"
-            name="gradYearField"
-            value="{{ userProfile.gradDate.year }}"
           />
           <span id="gradYearFieldError" class="caption ml8 error"></span>
         </div>
