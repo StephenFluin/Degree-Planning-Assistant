@@ -16,7 +16,7 @@ export class SCoursesTakenComponent implements OnInit {
   modalData: string;
   openPanel = false;
   searchResults: Observable<CourseData[]>;
-  listOfCourses: CourseData[] = [];
+  private listOfCourses: CourseData[] = [];
 
   searchForm = new FormGroup({
     searchTerm: new FormControl("", [Validators.required]),
@@ -35,15 +35,7 @@ export class SCoursesTakenComponent implements OnInit {
     this.allCourses = this.courseService.getAllCourses();
   }
 
-  remove(course: CourseData): void {
-    const index = this.listOfCourses.indexOf(course);
-
-    if (index >= 0) {
-      this.listOfCourses.splice(index, 1);
-    }
-    console.log(this.listOfCourses);
-    this.selectable = false;
-  }
+  ngOnInit() {}
 
   @Input() set hasNewProfile(event: Event) {
     if (event) {
@@ -64,6 +56,11 @@ export class SCoursesTakenComponent implements OnInit {
     this.searchForm.reset();
   }
 
+  /**
+   * Adds course to listOfCourses that represents the newly
+   * inputted courses taken.
+   * @param course
+   */
   addToListOfCourses(course: CourseData) {
     if (!this.listOfCourses.includes(course)) {
       this.listOfCourses.push(course);
@@ -71,22 +68,62 @@ export class SCoursesTakenComponent implements OnInit {
     console.log(this.listOfCourses);
   }
 
-  saveToUserProfile(courses: CourseData[]) {}
+  /**
+   * Saves listOfCourses to the user's profile
+   * @param courses
+   */
+  saveToUserProfile() {
+    const queryResult = this.userService.addToCoursesTaken(this.listOfCourses);
+    queryResult.subscribe((res) => console.log("Query Result: ", res));
+    this.userService.getUserData();
+    this.profile = this.userService.userData;
+  }
+
+  /**
+   * Recieve a boolean from the child component ModalComponent
+   * to determine if the modal 'Submit' button was clicked.
+   * @param $event
+   */
+  modalSubmission($event) {
+    console.log("submission: ", $event);
+    const submitted = $event;
+    if (submitted) {
+      this.saveToUserProfile();
+      // save list to user profile
+      // trigger a requery so to display the new data in the courses taken
+    }
+  }
 
   /**
    * Recieve a boolean from the child component ModalComponent
    * to determine if the modal is closed.
    * @param $event
    */
-  modalStatus($event) {
-    console.log("The event: ", $event);
+  modalClose($event) {
+    console.log("close: ", !$event);
     this.showModal = $event;
   }
 
+  /**
+   * Recieve data from the child component ModalComponent.
+   * @param $event
+   */
   getModalData($event) {
     console.log("The data event: ", $event);
     this.modalData = $event;
   }
 
-  ngOnInit() {}
+  /**
+   * Removes an item from the chip list in the template
+   * @param course
+   */
+  removeChipFromList(course: CourseData): void {
+    const index = this.listOfCourses.indexOf(course);
+
+    if (index >= 0) {
+      this.listOfCourses.splice(index, 1);
+    }
+    console.log(this.listOfCourses);
+    this.selectable = false;
+  }
 }

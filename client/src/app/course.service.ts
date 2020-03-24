@@ -5,6 +5,7 @@ import { ErrorHandlerService } from "./error-handler.service";
 import { UserService } from "./user.service";
 
 export interface CourseData {
+  id?: string;
   school: string;
   code: string;
   title: string;

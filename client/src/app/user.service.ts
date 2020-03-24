@@ -158,10 +158,12 @@ export class UserService {
   /**
    * Update courses taken
    */
-  addToCoursesTaken(coursesTaken: [CourseData]) {
+  addToCoursesTaken(coursesTaken: CourseData[]): Observable<any> {
+    const courseIds = coursesTaken.filter((course) => course.id);
+    console.log("Course IDs: ", courseIds);
     return this.http.put(
-      `${this.uri}/coursesTaken/`,
-      coursesTaken,
+      `${this.uri}/coursesTaken`,
+      courseIds,
       this.getHttpHeaders()
     );
   }
@@ -172,7 +174,7 @@ export class UserService {
   fetchUserData(update?: boolean): boolean {
     // Check if this.userData is empty. If it is, re-fetch the user's data. Otherwise, no need to fetch
     if (this.userData === undefined || update) {
-      const tokenObj: object = {
+      const tokenObj = {
         token: localStorage.getItem(this.tokenKey),
       };
 

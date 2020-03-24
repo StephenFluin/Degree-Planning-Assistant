@@ -42,7 +42,8 @@
       <app-modal
         [isOpen]="showModal"
         title="Search & Add Courses"
-        (onClose)="modalStatus($event)"
+        (onClose)="modalClose($event)"
+        (onSubmit)="modalSubmission($event)"
         (onInput)="getModalData($event)"
       >
         <div class="flex-row">
@@ -77,7 +78,7 @@
                 *ngFor="let item of listOfCourses"
                 [selectable]="selectable"
                 [removable]="removable"
-                (removed)="remove(item)"
+                (removed)="removeChipFromList(item)"
               >
                 {{ item.code }}
                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
