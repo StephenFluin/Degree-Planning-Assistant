@@ -6,6 +6,7 @@ import { Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { ErrorHandlerService } from "./error-handler.service";
+import { CourseData } from "./course.service";
 
 export interface UserData {
   name?: string;
