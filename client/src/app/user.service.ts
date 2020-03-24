@@ -14,10 +14,11 @@ export interface UserData {
 }
 
 export interface UserProfile {
+  email: string;
   firstName: string;
   lastName: string;
   bio: string;
-  coursesTaken: Array<Object>;
+  coursesTaken: Array<object>;
   gradDate?: {
     year?: number;
     term: string;
@@ -76,11 +77,11 @@ export class UserService {
      * Stores the token into local storage and removes the token field in the object returned by the HTTP request
      * @param userDetails
      */
-    const mapCallback: (userDetails: Object) => UserProfile = userDetails => {
-      localStorage.setItem(this.tokenKey, userDetails["token"]);
+    const mapCallback = userDetails => {
+      localStorage.setItem(this.tokenKey, userDetails.token);
       this.logger.next(true);
 
-      let removedToken = <UserProfile>{};
+      const removedToken = {} as UserProfile;
       Object.keys(userDetails).forEach((prop, index) => {
         if (prop !== "token") {
           removedToken[prop] = userDetails[prop];
@@ -163,10 +164,10 @@ export class UserService {
   /**
    *  Fetches the user's data using backendAPI then stores it in to this.userData
    */
-  fetchUserData(): boolean {
+  fetchUserData(update?: boolean): boolean {
     // Check if this.userData is empty. If it is, re-fetch the user's data. Otherwise, no need to fetch
-    if (this.userData === undefined) {
-      const tokenObj: Object = {
+    if (this.userData === undefined || update) {
+      const tokenObj: object = {
         token: localStorage.getItem(this.tokenKey)
       };
 

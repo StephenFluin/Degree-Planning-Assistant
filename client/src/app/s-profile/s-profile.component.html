@@ -6,7 +6,9 @@
       class="flex-column align-items-center fadeIn"
     >
       <img src="../../assets/profile-pic-92.png" class="profile-pic-92 mb16" />
-      <span class="h5 neutral-gray-clr mb32"
+      <span
+        *ngIf="userProfile.firstName && userProfile.lastName"
+        class="h5 neutral-gray-clr mb32"
         >{{ userProfile.firstName }} {{ userProfile.lastName }}</span
       >
       <div class="flex-column align-items-center w80 mb32">
@@ -21,42 +23,54 @@
           <img src="../../assets/email_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Email</span>
         </div>
-        <span class="h6">{{ userProfile.email }}</span>
+        <span *ngIf="userProfile.email" class="h6">{{
+          userProfile.email
+        }}</span>
       </div>
       <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/school_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">School</span>
         </div>
-        <span class="h6">{{ userProfile.school }}</span>
+        <span *ngIf="userProfile.school" class="h6">{{
+          userProfile.school
+        }}</span>
       </div>
       <div class="displayProfileLine mb8">
         <div class="flex-row align-items-center">
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Major</span>
         </div>
-        <span class="h6">{{ userProfile.major }}</span>
+        <span *ngIf="userProfile.major" class="h6">{{
+          userProfile.major
+        }}</span>
       </div>
       <div class="displayProfileLine mb8">
         <div class="flex-row align-items-center">
           <img src="../../assets/major_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Minor</span>
         </div>
-        <span class="h6">{{ userProfile.minor }}</span>
+        <span *ngIf="userProfile.minor" class="h6">{{
+          userProfile.minor
+        }}</span>
       </div>
       <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/degree_program.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Catalog Year</span>
         </div>
-        <span class="h6">{{ userProfile.catalogYear }}</span>
+        <span *ngIf="userProfile.catalogYear" class="h6">{{
+          userProfile.catalogYear
+        }}</span>
       </div>
       <div class="displayProfileLine mb32">
         <div class="flex-row align-items-center">
           <img src="../../assets/grad_date_16.png" class="icons-16 mr8" />
           <span class="h6 neutral-gray-clr">Expected Graduation Date</span>
         </div>
-        <span class="h6"
+        <span
+          *ngIf="userProfile.gradDate.term && userProfile.gradDate.year"
+          class="h6"
           >{{ userProfile.gradDate.term }} {{ userProfile.gradDate.year }}</span
         >
       </div>

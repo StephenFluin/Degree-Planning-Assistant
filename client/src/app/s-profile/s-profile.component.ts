@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { share } from "rxjs/operators";
 
 import { UserService, UserProfile } from "../user.service";
 import { ErrorHandlerService } from "../error-handler.service";
@@ -14,50 +15,71 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 })
 export class SProfileComponent implements OnInit {
   profile: Observable<UserProfile>;
-  editProfile = false;
-  editProfileForm = new FormGroup({
-    firstNameField: new FormControl("", [
-      Validators.required,
-      Validators.pattern(/^[a-zA-Z ]*$/)
-    ]),
-    lastNameField: new FormControl("", [
-      Validators.required,
-      Validators.pattern(/^[a-zA-Z ]*$/)
-    ]),
-    emailField: new FormControl("", [Validators.required, Validators.email]),
-    bioField: new FormControl(""),
-    catalogYearField: new FormControl("", [
-      Validators.required,
-      Validators.pattern(/^\d+$/)
-    ]),
-    gradTermField: new FormControl("", [
-      Validators.required,
-      Validators.pattern(/^[a-zA-Z ]*$/)
-    ]),
-    gradYearField: new FormControl("", [
-      Validators.required,
-      Validators.pattern(/^\d+$/)
-    ])
-  });
+  editProfile: boolean;
+  editProfileForm: FormGroup;
 
-  errors = {
-    firstNameField: "",
-    lastNameField: "",
-    emailField: "",
-    catalogYearField: "",
-    gradTermField: "",
-    gradYearField: ""
-  };
+  errors: object;
 
   constructor(
     private router: Router,
     private userService: UserService,
     private errorHandler: ErrorHandlerService
   ) {
-    this.profile = this.userService.getUserData();
+    this.profile = this.userService.getUserData().pipe(share());
+    this.editProfile = false;
+    this.errors = {
+      firstNameField: "",
+      lastNameField: "",
+      emailField: "",
+      catalogYearField: "",
+      gradTermField: "",
+      gradYearField: ""
+    };
+
+    this.editProfileForm = new FormGroup({
+      firstNameField: new FormControl("", [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z ]*$/)
+      ]),
+      lastNameField: new FormControl("", [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z ]*$/)
+      ]),
+      emailField: new FormControl("", [Validators.required, Validators.email]),
+      bioField: new FormControl(""),
+      catalogYearField: new FormControl("", [
+        Validators.required,
+        Validators.pattern(/^\d+$/)
+      ]),
+      gradTermField: new FormControl("", [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z ]*$/)
+      ]),
+      gradYearField: new FormControl("", [
+        Validators.required,
+        Validators.pattern(/^\d+$/)
+      ])
+    });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.profile.subscribe({
+      next: res => {
+        this.editProfileForm.controls.firstNameField.setValue(res.firstName);
+        this.editProfileForm.controls.lastNameField.setValue(res.lastName);
+        this.editProfileForm.controls.emailField.setValue(res.email);
+        this.editProfileForm.controls.bioField.setValue(res.bio);
+        this.editProfileForm.controls.catalogYearField.setValue(
+          res.catalogYear
+        );
+        this.editProfileForm.controls.gradTermField.setValue(res.gradDate.term);
+        this.editProfileForm.controls.gradYearField.setValue(res.gradDate.year);
+      },
+      error: err => {
+        this.errorHandler.handleError(err);
+      }
+    });
+  }
 
   switchEditMode() {
     this.editProfile = !this.editProfile;
@@ -113,8 +135,8 @@ export class SProfileComponent implements OnInit {
           this.errorHandler.handleError(errorMsg);
         },
         complete: () => {
-          this.userService.fetchUserData();
-          this.profile = this.userService.getUserData();
+          this.userService.fetchUserData(true); // Make a 'hot' observable
+          this.profile = this.userService.getUserData(); // Set reference to the new 'hot' observable
           this.editProfile = false;
         }
       });
