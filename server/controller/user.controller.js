@@ -9,7 +9,6 @@ import {
   validateLoginUser,
   validateEditProfile,
   validateFetchProfile,
-  validateFetchCoursesTaken,
   validateToken,
   checkIfCorrectGradDate,
 } from './validation/user.validation';
@@ -244,7 +243,6 @@ userController.put(
 userController.put(
   '/coursesTaken',
   passport.authenticate('jwt', { session: false }),
-  validateFetchCoursesTaken,
   (req, res) => {
     validationHandler(req, res, async () => {
       try {
@@ -256,10 +254,11 @@ userController.put(
         } else {
           User.findByIdAndUpdate(
             { _id: user._id },
-            coursesTaken,
+            { coursesTaken },
             { useFindAndModify: false, new: true },
             (err, updatedCourses) => {
               if (updatedCourses) {
+                console.log(updatedCourses);
                 res.status(200).json(updatedCourses);
               } else {
                 generateServerErrorCode(

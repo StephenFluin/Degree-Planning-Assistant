@@ -176,7 +176,7 @@ semesterController.put(
         } else {
           Semester.findByIdAndUpdate(
             { _id },
-            updateData,
+            { updateData },
             { useFindAndModify: false, new: true },
             (err, updatedSemester) => {
               if (updatedSemester) {
