@@ -247,14 +247,14 @@ userController.put(
     validationHandler(req, res, async () => {
       try {
         const { user } = req;
-        const coursesTaken = removeUndefinedObjectProps(req.body);
+        const newCoursesTaken = removeUndefinedObjectProps(req.body);
 
-        if (isObjectEmpty(coursesTaken)) {
+        if (isObjectEmpty(newCoursesTaken)) {
           res.status(400).json({ error: NO_DATA_TO_UPDATE });
         } else {
           User.findByIdAndUpdate(
             { _id: user._id },
-            { coursesTaken },
+            { coursesTaken: newCoursesTaken },
             { useFindAndModify: false, new: true },
             (err, updatedCourses) => {
               if (updatedCourses) {

@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { Observable, Subject } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, Subject, from, forkJoin } from "rxjs";
+import { map, switchMap, mergeMap } from "rxjs/operators";
 
 import { ErrorHandlerService } from "./error-handler.service";
 import { CourseData } from "./course.service";
@@ -19,7 +19,7 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   bio: string;
-  coursesTaken: Array<object>;
+  coursesTaken: CourseData[];
   gradDate?: {
     year?: number;
     term: string;
@@ -159,12 +159,20 @@ export class UserService {
    * Update courses taken
    */
   addToCoursesTaken(coursesTaken: CourseData[]): Observable<any> {
-    const courseIds = coursesTaken.filter((course) => course.id);
-    console.log("Course IDs: ", courseIds);
-    return this.http.put(
-      `${this.uri}/coursesTaken`,
-      courseIds,
-      this.getHttpHeaders()
+    const courseIds = [];
+    coursesTaken.forEach((course) => courseIds.push(course._id));
+
+    return this.userData.pipe(
+      map((user: UserProfile) =>
+        user.coursesTaken.forEach((course) => courseIds.push(course._id))
+      ),
+      switchMap((ids) =>
+        this.http.put(
+          `${this.uri}/coursesTaken`,
+          courseIds,
+          this.getHttpHeaders()
+        )
+      )
     );
   }
 

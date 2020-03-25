@@ -76,7 +76,7 @@ export class SCoursesTakenComponent implements OnInit {
     const queryResult = this.userService.addToCoursesTaken(this.listOfCourses);
     queryResult.subscribe((res) => console.log("Query Result: ", res));
     this.userService.getUserData();
-    this.profile = this.userService.userData;
+    this.profile = this.userService.getUserData();
   }
 
   /**
