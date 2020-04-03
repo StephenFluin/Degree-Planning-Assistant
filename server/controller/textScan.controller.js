@@ -6,7 +6,7 @@ import express from 'express';
 import multer from 'multer';
 import passport from 'passport';
 
-import CloudOcr from '../Scanning/cloudOCR';
+import CloudOcr from '../store/Scanning/cloudOCR';
 
 import CloudOcr from '../store/Scanning/cloudOCR';
 
