@@ -92,7 +92,7 @@ export class UserService {
       return removedToken;
     };
 
-    // Call Backend API for login then call the 'completeCallback' callback function passed by LoginComponent
+    // Call Backend API f login then call the 'completeCallback' callback function passed by LoginComponent
     // Alternatively, call errorhandler service in case of errors
     this.http
       .post(`${this.uri}/login`, user)

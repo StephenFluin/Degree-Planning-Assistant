@@ -333,11 +333,11 @@ userController.post('/identity', validateToken, async (req, res) => {
     const { token } = req.body;
     jwt.verify(token, config.passport.secret, async (err, decodedToken) => {
       if (err) {
-        generateServerErrorCode(res, 500, SOME_THING_WENT_WRONG);
+        generateServerErrorCode(res, 403, SOME_THING_WENT_WRONG);
       } else {
         const { email } = decodedToken;
         if (!email || email === '') {
-          generateServerErrorCode(res, 500, SOME_THING_WENT_WRONG);
+          generateServerErrorCode(res, 403, SOME_THING_WENT_WRONG);
         } else {
           User.findOne({ email }, { hashedPassword: 0 })
             .lean()
