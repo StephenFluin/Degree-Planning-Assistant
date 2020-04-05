@@ -8,7 +8,52 @@
   width: 80%;
 }
 
+.year {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.year-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.year-range {
+  font-size: 20px;
+  color: #707070;
+  font-weight: bold;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.year-hori-line {
+  border: 1px solid #7f8c8d;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.semester-cards-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 8px;
+  width: 100%;
+}
+
 .semester-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 25%;
   border: 1px solid #ecf0f1;
   border-radius: 8px;
   box-shadow: 0px 3px 6px #ecf0f1;
@@ -17,15 +62,44 @@
   transition: height 1s;
 }
 
-.horizontal-line {
-  border: 1px solid #7f8c8d;
+.semester-card-term {
+  font-size: 16px;
+  font-weight: bold;
+  color: #707070;
+  margin-bottom: 8px;
 }
 
-.bottom-border {
+.semester-card-course {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  width: 100%;
   border-bottom: 1px solid #ecf0f1;
 }
 
-.top-border {
+.semester-card-course-chip-and-difficulty {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.semester-card-course-units {
+  font-size: 14px;
+  color: #707070;
+  font-weight: bold;
+}
+
+.semester-card-total-difficulty-and-units {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  width: 100%;
   border-top: 1px solid #ecf0f1;
 }
 
