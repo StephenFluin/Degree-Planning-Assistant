@@ -24,7 +24,7 @@
           <!-- Semester Cards -->
           <div *ngFor="let semester of year.semesters" class="semester-card">
             <span class="semester-card-term"
-              >{{ semester.term }} {{ semester.year }}</span
+              >{{ semester.term | titlecase }} {{ semester.year }}</span
             >
             <!-- Course Rows -->
             <!-- Fall 2017 -->
@@ -33,9 +33,9 @@
               class="semester-card-course"
             >
               <div class="semester-card-course-chip-and-difficulty">
-                <div class="course-chip mr8" [matMenuTriggerFor]="menu">
+                <mat-chip [matMenuTriggerFor]="menu" class="chip mr8">
                   {{ course.code }}
-                </div>
+                </mat-chip>
                 <mat-menu #menu="matMenu" style="padding: 0px;">
                   <app-popup
                     [title]="course.school + ' ' + course.code"
@@ -47,14 +47,56 @@
                     </p>
                   </app-popup>
                 </mat-menu>
-                <div *ngIf="course.difficulty == 1" class="difficulty-chip-1">
+                <div
+                  *ngIf="course.difficulty == 1"
+                  class="statistic-chip-1 mr8"
+                >
+                  <img
+                    src="../../assets/difficulty-16.png"
+                    class="icon-16 mr8"
+                  />
                   {{ course.difficulty }}
                 </div>
-                <div *ngIf="course.difficulty == 2" class="difficulty-chip-2">
+                <div
+                  *ngIf="course.difficulty == 2"
+                  class="statistic-chip-2 mr8"
+                >
+                  <img
+                    src="../../assets/difficulty-16.png"
+                    class="icon-16 mr8"
+                  />
                   {{ course.difficulty }}
                 </div>
-                <div *ngIf="course.difficulty == 3" class="difficulty-chip-3">
+                <div
+                  *ngIf="course.difficulty == 3"
+                  class="statistic-chip-3 mr8"
+                >
+                  <img
+                    src="../../assets/difficulty-16.png"
+                    class="icon-16 mr8"
+                  />
                   {{ course.difficulty }}
+                </div>
+                <div *ngIf="course.impaction == 1" class="statistic-chip-1 mr8">
+                  <img
+                    src="../../assets/impaction-16.png"
+                    class="icon-16 mr8"
+                  />
+                  {{ course.impaction }}
+                </div>
+                <div *ngIf="course.impaction == 2" class="statistic-chip-2 mr8">
+                  <img
+                    src="../../assets/impaction-16.png"
+                    class="icon-16 mr8"
+                  />
+                  {{ course.impaction }}
+                </div>
+                <div *ngIf="course.impaction == 3" class="statistic-chip-3 mr8">
+                  <img
+                    src="../../assets/impaction-16.png"
+                    class="icon-16 mr8"
+                  />
+                  {{ course.impaction }}
                 </div>
               </div>
               <span class="semester-card-course-units"
@@ -66,17 +108,29 @@
               <div class="semester-card-course-chip-and-difficulty">
                 <div
                   *ngIf="semester.difficulty >= 1 && semester.difficulty < 2"
-                  class="difficulty-chip-1"
+                  class="statistic-chip-1"
                 >
+                  <img
+                    src="../../assets/difficulty-16.png"
+                    class="icon-16 mr8"
+                  />
                   {{ semester.difficulty }}
                 </div>
                 <div
                   *ngIf="semester.difficulty >= 2 && semester.difficulty < 3"
-                  class="difficulty-chip-2"
+                  class="statistic-chip-2"
                 >
+                  <img
+                    src="../../assets/difficulty-16.png"
+                    class="icon-16 mr8"
+                  />
                   {{ semester.difficulty }}
                 </div>
-                <div *ngIf="semester.difficulty >= 3" class="difficulty-chip-3">
+                <div *ngIf="semester.difficulty >= 3" class="statistic-chip-3">
+                  <img
+                    src="../../assets/difficulty-16.png"
+                    class="icon-16 mr8"
+                  />
                   {{ semester.difficulty }}
                 </div>
               </div>

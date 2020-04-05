@@ -48,16 +48,18 @@ export class PlanService {
 
         let yearCounter = 0;
         semesters.forEach((semester) => {
-          let creditSum = 0,
-            difficultySum = 0;
+          let creditSum = 0;
+          let difficultySum = 0;
+          let impactionSum = 0;
           semester.courses.forEach((course) => {
             creditSum += Number(course.credit);
             difficultySum += course.difficulty;
+            impactionSum += course.impaction;
           });
 
-          let numOfCourses = semester.courses.length,
-            semesterDifficulty = 0,
-            difficultyModifier = 0;
+          const numOfCourses = semester.courses.length;
+          let semesterDifficulty = 0;
+          let difficultyModifier = 0;
 
           if (numOfCourses === 1) {
             difficultyModifier = 0.25;
