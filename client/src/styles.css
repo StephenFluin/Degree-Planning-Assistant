@@ -273,6 +273,10 @@ button:disabled {
   margin-top: 8px;
 }
 
+.mr8 {
+  margin-right: 8px;
+}
+
 .p8 {
   padding: 8px;
 }
@@ -314,6 +318,10 @@ button:disabled {
 
 .h5 {
   font-size: 24px;
+}
+
+.h4 {
+  font-size: 34px;
 }
 
 .big-header {

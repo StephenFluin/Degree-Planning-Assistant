@@ -1,6 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
+
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
@@ -16,6 +17,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatSelectModule } from "@angular/material/select";
 
 import { UserService } from "./user.service";
 import { PlanService } from "./plan.service";
@@ -71,6 +73,7 @@ import { SDegreePlanEditorComponent } from "./s-degree-plan-editor/s-degree-plan
     MatExpansionModule,
     MatChipsModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
   ],
   entryComponents: [ModalComponent, PopupComponent],
   providers: [UserService, PlanService],
