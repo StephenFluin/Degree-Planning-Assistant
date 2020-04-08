@@ -45,7 +45,7 @@ export interface CourseData {
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class UserService {
   uri = "http://localhost:8080";
@@ -77,7 +77,7 @@ export class UserService {
      * Stores the token into local storage and removes the token field in the object returned by the HTTP request
      * @param userDetails
      */
-    const mapCallback = userDetails => {
+    const mapCallback = (userDetails) => {
       localStorage.setItem(this.tokenKey, userDetails.token);
       this.logger.next(true);
 
@@ -97,10 +97,10 @@ export class UserService {
       .post(`${this.uri}/login`, user)
       .pipe(map(mapCallback))
       .subscribe({
-        error: errorResponse => {
+        error: (errorResponse) => {
           this.errorHandler.handleError(errorResponse);
         },
-        complete: completeCallback
+        complete: completeCallback,
       });
   }
 
@@ -136,8 +136,8 @@ export class UserService {
       headers: new HttpHeaders({
         "Content-Type": "application/json",
         Authorization: "Bearer " + this.getCurrentStorageStatus(),
-        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict"
-      })
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+      }),
     };
     return httpOptions;
   }
@@ -168,7 +168,7 @@ export class UserService {
     // Check if this.userData is empty. If it is, re-fetch the user's data. Otherwise, no need to fetch
     if (this.userData === undefined || update) {
       const tokenObj: object = {
-        token: localStorage.getItem(this.tokenKey)
+        token: localStorage.getItem(this.tokenKey),
       };
 
       this.userData = this.http.post<UserProfile>(
@@ -197,5 +197,13 @@ export class UserService {
    */
   getUserData() {
     return this.userData;
+  }
+
+  scanFile(file: File, option: string) {
+    return this.http.post(
+      `${this.uri}/scan?option=` + option,
+      file,
+      this.getHttpHeaders()
+    );
   }
 }

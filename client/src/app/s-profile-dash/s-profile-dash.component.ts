@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 @Component({
   selector: "app-s-profile-dash",
   templateUrl: "./s-profile-dash.component.html",
-  styleUrls: ["./s-profile-dash.component.css"]
+  styleUrls: ["./s-profile-dash.component.css"],
 })
 export class SProfileDashComponent implements OnInit {
   profile: Observable<UserProfile>;
@@ -19,5 +19,11 @@ export class SProfileDashComponent implements OnInit {
 
   onClickEditProfile() {
     this.router.navigate(["profile"]);
+  }
+
+  uploadFile($event) {
+    const file = $event.target.files[0];
+    console.log(file, file.path, file.name); // outputs the first file
+    this.userService.scanFile(file);
   }
 }
