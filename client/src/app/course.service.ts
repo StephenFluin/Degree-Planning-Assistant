@@ -5,9 +5,10 @@ import { ErrorHandlerService } from "./error-handler.service";
 import { UserService } from "./user.service";
 
 export interface CourseData {
-  id?: string;
+  _id?: string;
   school: string;
   code: string;
+  department: string;
   title: string;
   description: string;
   prerequisites: [CourseData];
@@ -18,7 +19,7 @@ export interface CourseData {
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class CourseService {
   uri = "http://localhost:8080";
@@ -34,7 +35,7 @@ export class CourseService {
   fetchAllCourses(school: string) {
     if (this.allCourses === undefined) {
       const tokenObj = {
-        token: this.userService.getCurrentStorageStatus()
+        token: this.userService.getCurrentStorageStatus(),
       };
 
       this.allCourses = this.http.get<CourseData[]>(
@@ -57,13 +58,10 @@ export class CourseService {
     const results: CourseData[] = [];
     const resultsSubject = new Subject<CourseData[]>();
 
-    this.allCourses.subscribe(courses => {
-      courses.forEach(course => {
-        const searchCourses = element =>
-          element
-            .toString()
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
+    this.allCourses.subscribe((courses) => {
+      courses.forEach((course) => {
+        const searchCourses = (element) =>
+          element.toString().toLowerCase().includes(searchTerm.toLowerCase());
 
         if (Object.values(course).some(searchCourses)) {
           results.push(course);

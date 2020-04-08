@@ -17,8 +17,12 @@
           [matMenuTriggerFor]="menu"
           class="chip"
         >
-          <span *ngIf="course.department && course.code" class="body1 chip-clr">
-            {{ course.department }} {{ course.code }}
+          <span
+            *ngIf="course?.code && course.department"
+            class="body1 chip-clr"
+          >
+            {{ course.department | uppercase }}
+            {{ course.code }}
           </span>
           <mat-menu #menu="matMenu" style="padding: 0px;">
             <app-popup
@@ -61,10 +65,11 @@
             <ul *ngIf="searchResults | async as results">
               <li *ngFor="let result of results">
                 <button
-                  *ngIf="result.code"
+                  *ngIf="result.code && result.department"
                   (click)="addToListOfCourses(result)"
                   style="padding: 2px; margin: 2px;"
                 >
+                  {{ result.department | uppercase }}
                   {{ result.code }}
                 </button>
               </li>
@@ -80,13 +85,14 @@
                 [removable]="removable"
                 (removed)="removeChipFromList(item)"
               >
+                {{ item.department | uppercase }}
                 {{ item.code }}
                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
               </mat-chip>
             </mat-chip-list>
           </div>
         </div>
-        <p>Please make suer that the courses you've entered are correct.</p>
+        <p>Please check that the courses you've entered are correct.</p>
         <!-- <p *ngFor="let course of allCourses | async">
           <span *ngIf="course">{{ course.code }}</span>
         </p> -->
