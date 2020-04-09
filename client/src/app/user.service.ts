@@ -223,7 +223,7 @@ export class UserService {
     formData.append("pdf", file);
 
     return this.http.post(
-      `${this.uri}/scan?option=` + option + "/",
+      `${this.uri}/scan?option=` + option,
       formData,
       this.getHttpHeadersFormData()
     );
