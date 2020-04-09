@@ -7,10 +7,7 @@ import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
 import { LandingComponent } from "./landing/landing.component";
 import { SDashboardComponent } from "./s-dashboard/s-dashboard.component";
-import { SCoursesTakenComponent } from "./s-courses-taken/s-courses-taken.component";
 import { SProfileComponent } from "./s-profile/s-profile.component";
-import { SDegreePlanComponent } from "./s-degree-plan/s-degree-plan.component";
-import { SDegreePlanEditorComponent } from "./s-degree-plan-editor/s-degree-plan-editor.component";
 
 const routes: Routes = [
   { path: "", component: LandingComponent },
@@ -24,11 +21,6 @@ const routes: Routes = [
   {
     path: "profile",
     component: SProfileComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: "plan-editor",
-    component: SDegreePlanEditorComponent,
     canActivate: [AuthGuard],
   },
 ];
