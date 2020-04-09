@@ -21,12 +21,17 @@
 </div>
 
 <div class="flex-column align-items-center mp0">
-  <h2>Upload Transcript</h2>
-  <input
-    type="file"
-    #file
-    accept="application/pdf"
-    (change)="uploadFile($event)"
-  />
-  <!-- <button (click)="file.click()">Upload file</button> -->
+  <form
+    [formGroup]="uploadForm"
+    enctype="multipart/form-data"
+    (ngSubmit)="uploadFile()"
+  >
+    <input
+      type="file"
+      accept="application/pdf"
+      name="file"
+      (change)="onFileSelect($event)"
+    />
+    <button type="submit">Upload</button>
+  </form>
 </div>

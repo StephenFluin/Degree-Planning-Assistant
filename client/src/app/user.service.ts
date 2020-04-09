@@ -199,11 +199,33 @@ export class UserService {
     return this.userData;
   }
 
-  scanFile(file: File, option: string) {
+  /**
+   * Headers for Form Data using multer
+   * Do not set content type
+   */
+  getHttpHeadersFormData() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: "Bearer " + this.getCurrentStorageStatus(),
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+      }),
+    };
+    return httpOptions;
+  }
+
+  /**
+   * Can file with option to return a degree plan
+   * @param file
+   * @param option
+   */
+  scanFile(file, option: string) {
+    const formData = new FormData();
+    formData.append("pdf", file);
+
     return this.http.post(
-      `${this.uri}/scan?option=` + option,
-      file,
-      this.getHttpHeaders()
+      `${this.uri}/scan?option=` + option + "/",
+      formData,
+      this.getHttpHeadersFormData()
     );
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { UserProfile, UserService } from "../user.service";
 import { Observable } from "rxjs";
 import { Router } from "@angular/router";
+import { FormBuilder } from "@angular/forms";
 
 @Component({
   selector: "app-s-profile-dash",
@@ -10,20 +11,47 @@ import { Router } from "@angular/router";
 })
 export class SProfileDashComponent implements OnInit {
   profile: Observable<UserProfile>;
+  uploadForm: any;
 
-  constructor(private router: Router, private userService: UserService) {
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private formBuilder: FormBuilder
+  ) {
     this.profile = this.userService.getUserData();
   }
 
-  ngOnInit() {}
-
-  onClickEditProfile() {
-    this.router.navigate(["profile"]);
+  ngOnInit() {
+    this.uploadForm = this.formBuilder.group({
+      file: [""],
+    });
   }
 
-  uploadFile($event) {
-    const file = $event.target.files[0];
-    console.log(file, file.path, file.name); // outputs the first file
-    this.userService.scanFile(file);
+  /**
+   * Check if file is selected and set form
+   * @param event
+   */
+  onFileSelect(event) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.uploadForm.get("file").setValue(file);
+    }
+  }
+
+  /**
+   * Upload form value to scan the file
+   */
+  uploadFile() {
+    this.userService
+      .scanFile(this.uploadForm.get("file").value, "transcript")
+      .subscribe(
+        (res) => console.log("Scanned File res: ", res),
+        (err) => console.log("Scanned file error", err)
+      );
+  }
+
+  //----------------------------------------------
+  onClickEditProfile() {
+    this.router.navigate(["profile"]);
   }
 }
