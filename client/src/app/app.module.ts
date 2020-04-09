@@ -18,10 +18,13 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSelectModule } from "@angular/material/select";
+<<<<<<< HEAD
 import { MatDividerModule } from "@angular/material/divider";
 
 import { UserService } from "./user.service";
 import { PlanService } from "./plan.service";
+=======
+>>>>>>> moved some images
 
 import { AppComponent } from "./app.component";
 import { LandingComponent } from "./landing/landing.component";

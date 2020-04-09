@@ -13,16 +13,22 @@
         <div *ngIf="newSemesterIsActive" class="new-semester-active">
           <mat-form-field>
             <mat-label>Term</mat-label>
-            <mat-select>
-              <mat-option value="summer">Summer</mat-option>
-              <mat-option value="fall">Fall</mat-option>
-              <mat-option value="winter">Winter</mat-option>
-              <mat-option value="spring">Spring</mat-option>
+            <mat-select class="roboto">
+              <mat-option value="summer" class="roboto">Summer</mat-option>
+              <mat-option value="fall" class="roboto">Fall</mat-option>
+              <mat-option value="winter" class="roboto">Winter</mat-option>
+              <mat-option value="spring" class="roboto">Spring</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
             <mat-label>Year</mat-label>
-            <input matInput placeholder="Ex. 2020" type="number" min="2020" />
+            <input
+              matInput
+              placeholder="Ex. 2020"
+              type="number"
+              min="2020"
+              class="roboto"
+            />
           </mat-form-field>
           <div class="flex-row justify-content-center align-items-center">
             <button mat-button class="mr8" (click)="onClickNewSemester()">

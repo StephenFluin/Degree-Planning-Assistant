@@ -344,6 +344,17 @@ button:disabled {
   font-style: italic;
 }
 
+.roboto {
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+/* Image Styling */
+.profile-img-92 {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+
 /* Utilities */
 
 .border {
