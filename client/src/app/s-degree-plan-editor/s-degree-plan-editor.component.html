@@ -1,0 +1,47 @@
+<div class="flex-row justify-content-center align-items-center w100">
+  <mat-card class="flex-column justify-content-center w80">
+    <span class="section-header mb16">Degree Plan</span>
+    <div
+      class="flex-row justify-content-space-around align-items-center flex-wrap w100"
+    >
+      <!-- Empty Semester -->
+      <div class="semester-card">
+        <span class="semester-card-term">Fall 2017</span>
+      </div>
+      <!-- New Semester -->
+      <div class="new-semester">
+        <div *ngIf="newSemesterIsActive" class="new-semester-active">
+          <mat-form-field>
+            <mat-label>Term</mat-label>
+            <mat-select>
+              <mat-option value="summer">Summer</mat-option>
+              <mat-option value="fall">Fall</mat-option>
+              <mat-option value="winter">Winter</mat-option>
+              <mat-option value="spring">Spring</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Year</mat-label>
+            <input matInput placeholder="Ex. 2020" type="number" min="2020" />
+          </mat-form-field>
+          <div class="flex-row justify-content-center align-items-center">
+            <button mat-button class="mr8" (click)="onClickNewSemester()">
+              Cancel
+            </button>
+            <button mat-button class="new-semester-add-btn">Add</button>
+          </div>
+        </div>
+        <div
+          *ngIf="newSemesterIsActive == false"
+          class="new-semester-inactive"
+          (click)="onClickNewSemester()"
+        >
+          <img src="../../assets/add-48.png" class="mb8" />
+          <span class="new-semester-header">
+            Add a semester
+          </span>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

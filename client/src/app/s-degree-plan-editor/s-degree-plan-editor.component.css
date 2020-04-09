@@ -1,0 +1,94 @@
+:host {
+  width: 100%;
+}
+
+/* Custom Styling */
+.new-semester {
+  min-width: 320px;
+  max-width: 25%;
+  flex-grow: 1;
+  flex-basis: 0;
+  height: 192px;
+  border: 4px dashed #7f8c8d;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.new-semester-active {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+
+.new-semester-inactive {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+
+.new-semester-inactive:hover {
+  background-color: #e3e3e3;
+}
+
+.new-semester-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #7f8c8d;
+}
+
+.new-semester-add-btn {
+  color: #ffffff;
+  background-color: #2ecc71;
+}
+
+.new-semester-add-btn:hover {
+  background-color: #27ae60;
+}
+
+.new-semester-modal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  border: 4px dashed #7f8c8d;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.semester-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 320px;
+  max-width: 25%;
+  flex-grow: 1;
+  flex-basis: 0;
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  box-shadow: 0px 3px 6px #ecf0f1;
+  padding: 16px;
+  margin-left: 4px;
+  margin-right: 4px;
+  background-color: #ffffff;
+  transition: height 1s;
+}
+
+.semester-card-term {
+  font-size: 16px;
+  font-weight: bold;
+  color: #707070;
+  margin-bottom: 8px;
+}
+
+/* Sizing */
