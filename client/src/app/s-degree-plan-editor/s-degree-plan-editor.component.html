@@ -29,15 +29,13 @@
                   <mat-form-field class="mr0">
                     <mat-label>Status</mat-label>
                     <mat-select class="roboto" [(ngModel)]="semester.status">
-                      <mat-option value="completed" class="roboto"
+                      <mat-option value="1" class="roboto"
                         >Completed</mat-option
                       >
-                      <mat-option value="in-progress" class="roboto"
+                      <mat-option value="0" class="roboto"
                         >In-Progress</mat-option
                       >
-                      <mat-option value="planned" class="roboto"
-                        >Planned</mat-option
-                      >
+                      <mat-option value="-1" class="roboto">Planned</mat-option>
                     </mat-select>
                   </mat-form-field>
                 </div>
