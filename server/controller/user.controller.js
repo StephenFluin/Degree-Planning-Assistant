@@ -49,7 +49,10 @@ userController.createUser = (email, password) => {
     lastName: '',
     school: '',
     bio: '',
-    gradDate: '',
+    gradDate: {
+      term: '',
+      year: '',
+    },
     major: '',
     minor: '',
     catalogYear: '',

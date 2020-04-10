@@ -37,9 +37,10 @@ export class PlanService {
    */
   formatPlan() {
     const mapCallback = (userData) => {
-      if (userData.degreePlanId && userData.degreePlanId.semesters.length > 0) {
+      console.log(userData);
+      if (userData.degreePlan && userData.degreePlan.semesters.length > 0) {
         const yearArray = [];
-        const { semesters } = userData.degreePlanId;
+        const { semesters } = userData.degreePlan;
         semesters.sort((s1, s2) => {
           const num1 =
             s1.year - (this.TERMS[s1.term.toLowerCase()] > 2 ? 1 : 0);
