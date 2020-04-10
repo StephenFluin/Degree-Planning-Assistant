@@ -23,9 +23,12 @@
         <div class="semester-cards-container">
           <!-- Semester Cards -->
           <div *ngFor="let semester of year.semesters" class="semester-card">
-            <span class="semester-card-term"
-              >{{ semester.term | titlecase }} {{ semester.year }}</span
-            >
+            <div class="semester-card-term-and-status">
+              <span>{{ semester.term }} {{ semester.year }}</span>
+              <span *ngIf="semester.status === -1">Planned</span>
+              <span *ngIf="semester.status === 0">In-Progress</span>
+              <span *ngIf="semester.status === 1">Completed</span>
+            </div>
             <!-- Course Rows -->
             <!-- Fall 2017 -->
             <div

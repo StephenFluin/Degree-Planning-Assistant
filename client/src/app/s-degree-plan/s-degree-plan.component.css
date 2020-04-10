@@ -67,11 +67,16 @@
   transition: height 1s;
 }
 
-.semester-card-term {
+.semester-card-term-and-status {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   font-size: 16px;
   font-weight: bold;
   color: #707070;
   margin-bottom: 8px;
+  width: 100%;
 }
 
 .semester-card-course {
