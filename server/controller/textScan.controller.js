@@ -8,8 +8,6 @@ import passport from 'passport';
 
 import CloudOcr from '../store/Scanning/cloudOCR';
 
-import CloudOcr from '../store/Scanning/cloudOCR';
-
 import semesterController from './semester.controller';
 import courseController from './course.controller';
 import programController from './program.controller';

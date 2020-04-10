@@ -1,4 +1,4 @@
-import { schema } from 'mongoose';
+import { Schema } from 'mongoose';
 
 const courseSchema = new Schema({
   school: { type: String, required: true, uppercase: true, default: 'SJSU' },

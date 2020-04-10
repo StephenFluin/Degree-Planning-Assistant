@@ -46,12 +46,10 @@ export class SProfileDashComponent implements OnInit {
   uploadFile(event: Event): void {
     this.userService
       .scanFile(this.uploadForm.get("file").value, "transcript")
-      .subscribe(
-        (res) => console.log("Scanned File res: ", res),
-        (err) => console.log("Scanned file error", err)
-      );
-
-    this.profileUpdated.emit(event);
+      .subscribe({
+        complete: () => this.profileUpdated.emit(event),
+        error: (err) => console.log("Scanned file error", err),
+      });
   }
 
   //----------------------------------------------
