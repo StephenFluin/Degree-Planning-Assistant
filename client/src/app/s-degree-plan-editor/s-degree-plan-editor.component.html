@@ -3,8 +3,8 @@
     <span class="section-header mb16">Degree Plan</span>
     <div class="flex-row align-items-start w100">
       <div class="plan-editor">
-        <div *ngIf="semestersStub.length > 0; else emptyPlan" class="w100 mp0">
-          <div *ngFor="let year of semestersStub" class="year">
+        <div *ngIf="plan && plan.length > 0; else emptyPlan" class="w100 mp0">
+          <div *ngFor="let year of plan" class="year">
             <div class="year-title">
               <div class="year-hori-line"></div>
               <span class="year-range"
@@ -243,7 +243,7 @@
       <div class="available-courses-list">
         <span class="body1 neutral-gray-clr mb8">Eligible Courses:</span>
         <mat-chip-list
-          *ngFor="let courseType of coursesStub.eligible"
+          *ngFor="let courseType of courseSelection.eligible"
           class="mb16"
         >
           <mat-chip
@@ -257,7 +257,7 @@
         </mat-chip-list>
         <span class="body1 neutral-gray-clr mt8 mb8">Ineligible Courses:</span>
         <mat-chip-list
-          *ngFor="let courseType of coursesStub.ineligible"
+          *ngFor="let courseType of courseSelection.ineligible"
           class="mb16"
         >
           <mat-chip *ngFor="let course of courseType.courses" class="chip">

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-
 import { HttpClient } from "@angular/common/http";
+
+import { map } from "rxjs/operators";
+
 import { UserService } from "./user.service";
 import { ErrorHandlerService } from "./error-handler.service";
 import { CourseData } from "./course.service";
-
-import { map } from "rxjs/operators";
 
 export interface Year {
   beginning: number;
@@ -20,6 +20,17 @@ export interface Semester {
   courses?: Array<CourseData>;
   difficulty?: number;
   units?: number;
+}
+
+export interface CourseSelection {
+  eligible: Array<{
+    type: string;
+    courses: Array<string>;
+  }>;
+  ineligible: Array<{
+    type: string;
+    courses: Array<string>;
+  }>;
 }
 
 @Injectable({
@@ -101,54 +112,11 @@ export class PlanService {
   }
 
   /**
-   * Helper method for calculating a semester's total difficulty and units
-   * @param semester The semester to be calculated
+   * Adds a new semester in a given Year array
+   * @param term The term of the new semester
+   * @param year The year of the new semester
+   * @param yearArray The array of semesters in a given year
    */
-  private calculateSemesterStatistics(semester: Semester) {
-    if (semester.courses && semester.courses.length > 0) {
-      let unitsSum = 0;
-      let difficultySum = 0;
-      semester.courses.forEach((course: CourseData) => {
-        unitsSum += Number(course.credit);
-        difficultySum += course.difficulty;
-      });
-
-      const numOfCourses = semester.courses.length;
-      let difficultyModifier = 0;
-
-      switch (numOfCourses) {
-        case 1: {
-          difficultyModifier = 0.25;
-          break;
-        }
-        case 2: {
-          difficultyModifier = 0.5;
-          break;
-        }
-        case 3: {
-          difficultyModifier = 0.75;
-          break;
-        }
-        default: {
-          difficultyModifier = 1.0;
-          break;
-        }
-      }
-
-      const semesterDifficulty =
-        (difficultySum / numOfCourses) * difficultyModifier;
-
-      return {
-        units: unitsSum,
-        difficulty: semesterDifficulty,
-      };
-    } else {
-      return {
-        units: 0,
-        difficulty: 0,
-      };
-    }
-  }
   addNewSemester(term: string, year: number, yearArray: Array<Year>) {
     // TODO: Validate input
 
@@ -200,6 +168,13 @@ export class PlanService {
     return true;
   }
 
+  /**
+   * Adds a given course to a semester in a given Year array
+   * @param term The term of the new semester
+   * @param year The year of the new year
+   * @param yearArray The array of semesters in a given year
+   * @param code The course code of the new course to be added
+   */
   addNewCourseToSemester(
     term: string,
     year: number,
@@ -223,21 +198,27 @@ export class PlanService {
       );
 
       if (findSemester > -1) {
-        let course = [];
+        let courseAdded = false;
         this.fetchCourseData(code).subscribe({
           next: (courseData) => {
-            course = courseData;
+            yearArray[findYear].semesters[findSemester].courses.push(
+              courseData[0]
+            );
+            courseAdded = true;
           },
           error: (errResp) => {
             this.errorHandler.handleError(errResp);
             return false;
           },
           complete: () => {
-            if (course.length > 0) {
-              console.log(course);
-              yearArray[findYear].semesters[findSemester].courses.push(
-                course[0]
+            if (courseAdded) {
+              const semesterStats = this.calculateSemesterStatistics(
+                yearArray[findYear].semesters[findSemester]
               );
+              yearArray[findYear].semesters[findSemester].difficulty =
+                semesterStats.difficulty;
+              yearArray[findYear].semesters[findSemester].units =
+                semesterStats.units;
               return true;
             } else {
               return false;
@@ -267,10 +248,64 @@ export class PlanService {
     // TODO: Calculate difficulty
   }
 
+  /**
+   * Fetches the information of a given course
+   * @param code The course code of the course to be fetched
+   */
   private fetchCourseData(code: string) {
-    return this.http.get<Array<object>>(
+    return this.http.get<Array<CourseData>>(
       `${this.userService.uri}/course/San Jose State University/${code}`,
       this.userService.getHttpHeaders()
     );
+  }
+
+  /**
+   * Helper method for calculating a semester's total difficulty and units
+   * @param semester The semester to be calculated
+   */
+  private calculateSemesterStatistics(semester: Semester) {
+    if (semester.courses && semester.courses.length > 0) {
+      let unitsSum = 0;
+      let difficultySum = 0;
+      semester.courses.forEach((course: CourseData) => {
+        unitsSum += Number(course.credit);
+        difficultySum += course.difficulty;
+      });
+
+      const numOfCourses = semester.courses.length;
+      let difficultyModifier = 0;
+
+      switch (numOfCourses) {
+        case 1: {
+          difficultyModifier = 0.25;
+          break;
+        }
+        case 2: {
+          difficultyModifier = 0.5;
+          break;
+        }
+        case 3: {
+          difficultyModifier = 0.75;
+          break;
+        }
+        default: {
+          difficultyModifier = 1.0;
+          break;
+        }
+      }
+
+      const semesterDifficulty =
+        (difficultySum / numOfCourses) * difficultyModifier;
+
+      return {
+        units: unitsSum,
+        difficulty: semesterDifficulty,
+      };
+    } else {
+      return {
+        units: 0,
+        difficulty: 0,
+      };
+    }
   }
 }

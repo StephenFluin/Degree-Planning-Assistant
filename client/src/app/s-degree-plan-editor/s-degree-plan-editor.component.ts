@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 
-import { PlanService, YearStub, CoursesStub } from "../plan.service";
+import { CourseData } from "../user.service";
+import { PlanService, Year, CourseSelection } from "../plan.service";
+import { ErrorHandlerService } from "../error-handler.service";
 
 @Component({
   selector: "app-s-degree-plan-editor",
@@ -15,17 +17,26 @@ export class SDegreePlanEditorComponent implements OnInit {
 
   draggedCourse: string;
 
-  semestersStub: Array<YearStub>;
-  coursesStub: CoursesStub;
+  plan: Array<Year>;
+  courseSelection: CourseSelection;
 
-  constructor(private planService: PlanService) {
+  constructor(
+    private planService: PlanService,
+    private errorHandler: ErrorHandlerService
+  ) {
     this.newSemesterIsActive = false;
     this.newSemesterTermSelect = "";
-    this.newSemesterYearField = 2020;
 
-    this.semestersStub = [];
+    this.planService.formatPlan().subscribe({
+      next: (userData) => {
+        this.plan = userData;
+      },
+      error: (errResp) => {
+        this.errorHandler.handleError(errResp);
+      },
+    });
 
-    this.coursesStub = {
+    this.courseSelection = {
       eligible: [
         {
           type: "ENGL",
@@ -62,7 +73,7 @@ export class SDegreePlanEditorComponent implements OnInit {
           courses: ["CS157A", "CS166", "CS149"],
         },
       ],
-    } as CoursesStub;
+    } as CourseSelection;
   }
 
   ngOnInit() {}
@@ -80,7 +91,7 @@ export class SDegreePlanEditorComponent implements OnInit {
       this.planService.addNewSemester(
         this.newSemesterTermSelect,
         this.newSemesterYearField,
-        this.semestersStub
+        this.plan
       ) === false
     ) {
       console.log("Semester already exists!");
@@ -97,7 +108,7 @@ export class SDegreePlanEditorComponent implements OnInit {
       this.planService.addNewCourseToSemester(
         term,
         year,
-        this.semestersStub,
+        this.plan,
         this.draggedCourse
       )
     ) {
@@ -109,7 +120,7 @@ export class SDegreePlanEditorComponent implements OnInit {
 }
 
 /*
-  this.semestersStub = [
+  this.plan = [
       {
         beginning: 2017,
         ending: 2018,
