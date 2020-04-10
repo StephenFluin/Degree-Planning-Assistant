@@ -42,6 +42,7 @@ export interface CourseData {
   corequisites: [CourseData];
   difficulty?: number;
   impaction?: number;
+  credit: number;
   termsOffered: string;
 }
 

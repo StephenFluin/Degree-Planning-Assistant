@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { UserService } from "./user.service";
+import { UserService, CourseData } from "./user.service";
 
 import { map } from "rxjs/operators";
 
@@ -10,11 +10,20 @@ export interface Year {
   semesters: Array<object>;
 }
 
+export interface Semester {
+  term: string;
+  year: number;
+  status: number;
+  courses?: Array<object>;
+  difficulty?: number;
+  units?: number;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class PlanService {
-  termsValue = {
+  TERMS = {
     summer: 1,
     fall: 2,
     winter: 3,
@@ -33,13 +42,13 @@ export class PlanService {
         const { semesters } = userData.degreePlanId;
         semesters.sort((s1, s2) => {
           const num1 =
-            s1.year - (this.termsValue[s1.term.toLowerCase()] > 2 ? 1 : 0);
+            s1.year - (this.TERMS[s1.term.toLowerCase()] > 2 ? 1 : 0);
           const num2 =
-            s2.year - (this.termsValue[s2.term.toLowerCase()] > 2 ? 1 : 0);
+            s2.year - (this.TERMS[s2.term.toLowerCase()] > 2 ? 1 : 0);
           if (num1 === num2) {
             return (
-              this.termsValue[s1.term.toLowerCase()] -
-              this.termsValue[s2.term.toLowerCase()]
+              this.TERMS[s1.term.toLowerCase()] -
+              this.TERMS[s2.term.toLowerCase()]
             );
           } else {
             return num1 - num2;
@@ -48,35 +57,11 @@ export class PlanService {
 
         let yearCounter = 0;
         semesters.forEach((semester) => {
-          let creditSum = 0;
-          let difficultySum = 0;
-          let impactionSum = 0;
-          semester.courses.forEach((course) => {
-            creditSum += Number(course.credit);
-            difficultySum += course.difficulty;
-            impactionSum += course.impaction;
-          });
-
-          const numOfCourses = semester.courses.length;
-          let semesterDifficulty = 0;
-          let difficultyModifier = 0;
-
-          if (numOfCourses === 1) {
-            difficultyModifier = 0.25;
-          } else if (numOfCourses === 2) {
-            difficultyModifier = 0.5;
-          } else if (numOfCourses === 3) {
-            difficultyModifier = 0.75;
-          } else {
-            difficultyModifier = 1.0;
-          }
-
-          semesterDifficulty =
-            (difficultySum / numOfCourses) * difficultyModifier;
+          const semesterStats = this.calculateSemesterStatistics(semester);
 
           const currentYear =
             semester.year -
-            (this.termsValue[semester.term.toLowerCase()] > 2 ? 1 : 0);
+            (this.TERMS[semester.term.toLowerCase()] > 2 ? 1 : 0);
           if (currentYear > yearCounter) {
             const newYear = {
               beginning: currentYear,
@@ -84,8 +69,8 @@ export class PlanService {
               semesters: [
                 {
                   ...semester,
-                  units: creditSum,
-                  difficulty: semesterDifficulty,
+                  units: semesterStats.units,
+                  difficulty: semesterStats.difficulty,
                 },
               ],
             } as Year;
@@ -94,8 +79,8 @@ export class PlanService {
           } else {
             yearArray[yearArray.length - 1].semesters.push({
               ...semester,
-              units: creditSum,
-              difficulty: semesterDifficulty,
+              units: semesterStats.units,
+              difficulty: semesterStats.difficulty,
             });
           }
         });
@@ -106,5 +91,55 @@ export class PlanService {
     };
 
     return this.userService.getUserData().pipe(map(mapCallback));
+  }
+
+  /**
+   * Helper method for calculating a semester's total difficulty and units
+   * @param semester The semester to be calculated
+   */
+  private calculateSemesterStatistics(semester: Semester) {
+    if (semester.courses && semester.courses.length > 0) {
+      let unitsSum = 0;
+      let difficultySum = 0;
+      semester.courses.forEach((course: CourseData) => {
+        unitsSum += Number(course.credit);
+        difficultySum += course.difficulty;
+      });
+
+      const numOfCourses = semester.courses.length;
+      let difficultyModifier = 0;
+
+      switch (numOfCourses) {
+        case 1: {
+          difficultyModifier = 0.25;
+          break;
+        }
+        case 2: {
+          difficultyModifier = 0.5;
+          break;
+        }
+        case 3: {
+          difficultyModifier = 0.75;
+          break;
+        }
+        default: {
+          difficultyModifier = 1.0;
+          break;
+        }
+      }
+
+      const semesterDifficulty =
+        (difficultySum / numOfCourses) * difficultyModifier;
+
+      return {
+        units: unitsSum,
+        difficulty: semesterDifficulty,
+      };
+    } else {
+      return {
+        units: 0,
+        difficulty: 0,
+      };
+    }
   }
 }
