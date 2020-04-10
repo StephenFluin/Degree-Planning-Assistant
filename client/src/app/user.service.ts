@@ -33,22 +33,6 @@ export interface UserProfile {
   school: string;
 }
 
-export interface CourseData {
-  school: string;
-  department: string;
-  code: string;
-  title: string;
-  description: string;
-  prerequisites: [CourseData];
-  corequisites: [CourseData];
-  area: string;
-  type: number;
-  difficulty?: number;
-  impaction?: number;
-  credit: number;
-  termsOffered: string;
-}
-
 @Injectable({
   providedIn: "root",
 })

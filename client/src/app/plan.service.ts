@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 
-import { UserService, CourseData } from "./user.service";
+import { HttpClient } from "@angular/common/http";
+import { UserService } from "./user.service";
+import { ErrorHandlerService } from "./error-handler.service";
+import { CourseData } from "./course.service";
 
 import { map } from "rxjs/operators";
 
@@ -30,7 +33,11 @@ export class PlanService {
     spring: 4,
   };
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private http: HttpClient,
+    private errorHandler: ErrorHandlerService
+  ) {}
 
   /**
    * Formats the user's plan for rendering
@@ -141,5 +148,129 @@ export class PlanService {
         difficulty: 0,
       };
     }
+  }
+  addNewSemester(term: string, year: number, yearArray: Array<Year>) {
+    // TODO: Validate input
+
+    const beginningYear = this.TERMS[term.toLowerCase()] > 2 ? year - 1 : year;
+
+    const findYear = yearArray.findIndex((indexYear) => {
+      return indexYear.beginning === beginningYear;
+    });
+
+    const newSemester = {
+      term: term.toLowerCase(),
+      year,
+      status: -1,
+      courses: [],
+      difficulty: 0,
+      units: 0,
+    };
+
+    if (findYear > -1) {
+      const findExistingSemester = yearArray[findYear].semesters.findIndex(
+        (indexSemester) => {
+          return (
+            this.TERMS[indexSemester.term.toLowerCase()] ===
+            this.TERMS[term.toLowerCase()]
+          );
+        }
+      );
+
+      if (findExistingSemester > -1) {
+        return false;
+      }
+
+      yearArray[findYear].semesters.push(newSemester);
+      yearArray[findYear].semesters.sort((sem1, sem2) => {
+        return (
+          this.TERMS[sem1.term.toLowerCase()] -
+          this.TERMS[sem2.term.toLowerCase()]
+        );
+      });
+      console.log(yearArray[findYear].semesters);
+    } else {
+      yearArray.push({
+        beginning: beginningYear,
+        ending: beginningYear + 1,
+        semesters: [newSemester],
+      } as Year);
+    }
+
+    return true;
+  }
+
+  addNewCourseToSemester(
+    term: string,
+    year: number,
+    yearArray: Array<Year>,
+    code: string
+  ) {
+    const beginningYear = this.TERMS[term.toLowerCase()] > 2 ? year - 1 : year;
+
+    const findYear = yearArray.findIndex((indexYear) => {
+      return indexYear.beginning === beginningYear;
+    });
+
+    if (findYear > -1) {
+      const findSemester = yearArray[findYear].semesters.findIndex(
+        (indexSemester) => {
+          return (
+            this.TERMS[indexSemester.term.toLowerCase()] ===
+            this.TERMS[term.toLowerCase()]
+          );
+        }
+      );
+
+      if (findSemester > -1) {
+        let course = [];
+        this.fetchCourseData(code).subscribe({
+          next: (courseData) => {
+            course = courseData;
+          },
+          error: (errResp) => {
+            this.errorHandler.handleError(errResp);
+            return false;
+          },
+          complete: () => {
+            if (course.length > 0) {
+              console.log(course);
+              yearArray[findYear].semesters[findSemester].courses.push(
+                course[0]
+              );
+              return true;
+            } else {
+              return false;
+            }
+          },
+        });
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  private addCourseAndRecalculateSemester(
+    yearIndex: number,
+    semesterIndex: number,
+    newCourse: CourseData,
+    yearArray: Array<Year>
+  ) {
+    let unitsSum = 0;
+    yearArray[yearIndex].semesters[semesterIndex].courses.forEach((course) => {
+      unitsSum += Number(course.credit);
+    });
+    unitsSum += Number(newCourse.credit);
+
+    // TODO: Calculate difficulty
+  }
+
+  private fetchCourseData(code: string) {
+    return this.http.get<Array<object>>(
+      `${this.userService.uri}/course/San Jose State University/${code}`,
+      this.userService.getHttpHeaders()
+    );
   }
 }
