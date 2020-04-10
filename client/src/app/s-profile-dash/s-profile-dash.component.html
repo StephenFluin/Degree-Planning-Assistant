@@ -24,7 +24,7 @@
   <form
     [formGroup]="uploadForm"
     enctype="multipart/form-data"
-    (ngSubmit)="uploadFile()"
+    (ngSubmit)="uploadFile($event)"
   >
     <input
       type="file"

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { UserProfile, UserService } from "../user.service";
 import { Observable } from "rxjs";
 import { Router } from "@angular/router";
@@ -21,6 +21,8 @@ export class SProfileDashComponent implements OnInit {
     this.profile = this.userService.getUserData();
   }
 
+  @Output() profileUpdated = new EventEmitter<Event>();
+
   ngOnInit() {
     this.uploadForm = this.formBuilder.group({
       file: [""],
@@ -41,13 +43,15 @@ export class SProfileDashComponent implements OnInit {
   /**
    * Upload form value to scan the file
    */
-  uploadFile() {
+  uploadFile(event: Event): void {
     this.userService
       .scanFile(this.uploadForm.get("file").value, "transcript")
       .subscribe(
         (res) => console.log("Scanned File res: ", res),
         (err) => console.log("Scanned file error", err)
       );
+
+    this.profileUpdated.emit(event);
   }
 
   //----------------------------------------------
