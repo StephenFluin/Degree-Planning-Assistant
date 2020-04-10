@@ -35,6 +35,7 @@ export interface UserProfile {
 export interface CourseData {
   school: string;
   code: string;
+  department: string;
   title: string;
   description: string;
   prerequisites: [CourseData];
