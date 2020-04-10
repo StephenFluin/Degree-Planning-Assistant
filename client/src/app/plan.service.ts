@@ -37,7 +37,6 @@ export class PlanService {
    */
   formatPlan() {
     const mapCallback = (userData) => {
-      console.log(userData);
       if (userData.degreePlan && userData.degreePlan.semesters.length > 0) {
         const yearArray = [];
         const { semesters } = userData.degreePlan;
