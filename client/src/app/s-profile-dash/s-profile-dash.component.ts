@@ -12,6 +12,7 @@ import { FormBuilder } from "@angular/forms";
 export class SProfileDashComponent implements OnInit {
   profile: Observable<UserProfile>;
   uploadForm: any;
+  displayUploadSpinner = false;
 
   constructor(
     private router: Router,
@@ -44,11 +45,18 @@ export class SProfileDashComponent implements OnInit {
    * Upload form value to scan the file
    */
   uploadFile(event: Event): void {
+    this.displayUploadSpinner = true;
     this.userService
       .scanFile(this.uploadForm.get("file").value, "transcript")
       .subscribe({
-        complete: () => this.profileUpdated.emit(event),
-        error: (err) => console.log("Scanned file error", err),
+        complete: () => {
+          this.displayUploadSpinner = false;
+          this.profileUpdated.emit(event);
+        },
+        error: (err) => {
+          this.displayUploadSpinner = false;
+          console.log("Scanned file error", err);
+        },
       });
   }
 

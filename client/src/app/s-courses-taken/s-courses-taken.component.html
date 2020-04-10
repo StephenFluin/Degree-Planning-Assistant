@@ -1,5 +1,6 @@
 <div class="flex-column align-items-center">
   <mat-expansion-panel
+    [expanded]="openPanel"
     *ngIf="profile | async as userProfile"
     class="card-section"
   >
