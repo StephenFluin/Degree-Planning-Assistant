@@ -37,11 +37,13 @@
             >
               <div class="semester-card-course-chip-and-difficulty">
                 <mat-chip [matMenuTriggerFor]="menu" class="chip mr8">
-                  {{ course.code }}
+                  {{ course.department }}{{ course.code }}
                 </mat-chip>
                 <mat-menu #menu="matMenu" style="padding: 0px;">
                   <app-popup
-                    [title]="course.school + ' ' + course.code"
+                    [title]="
+                      course.school + ' ' + course.department + course.code
+                    "
                     [subtitle]="course.title"
                     contentTitle="Description"
                   >

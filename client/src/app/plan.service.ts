@@ -7,14 +7,14 @@ import { map } from "rxjs/operators";
 export interface Year {
   beginning: number;
   ending: number;
-  semesters: Array<object>;
+  semesters: Array<Semester>;
 }
 
 export interface Semester {
   term: string;
   year: number;
   status: number;
-  courses?: Array<object>;
+  courses?: Array<CourseData>;
   difficulty?: number;
   units?: number;
 }
