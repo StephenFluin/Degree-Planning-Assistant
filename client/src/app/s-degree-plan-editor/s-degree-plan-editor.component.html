@@ -44,11 +44,6 @@
                   *ngIf="semester.courses.length > 0; else emptySemester"
                   class="w100"
                 >
-                  <div class="semester-card-course-empty">
-                    <span class="body1 neutral-gray-clr"
-                      ><< Drag Courses Here >></span
-                    >
-                  </div>
                   <div
                     *ngFor="let course of semester.courses"
                     class="semester-card-course"
@@ -56,12 +51,17 @@
                     <div class="semester-card-course-chip-and-difficulty">
                       <mat-chip-list class="mr8">
                         <mat-chip [matMenuTriggerFor]="menu" class="chip">
-                          {{ course.code }}
+                          {{ course.department }}{{ course.code }}
                         </mat-chip>
                       </mat-chip-list>
                       <mat-menu #menu="matMenu" style="padding: 0px;">
                         <app-popup
-                          [title]="course.school + ' ' + course.code"
+                          [title]="
+                            course.school +
+                            ' ' +
+                            course.department +
+                            course.code
+                          "
                           [subtitle]="course.title"
                           contentTitle="Description"
                         >

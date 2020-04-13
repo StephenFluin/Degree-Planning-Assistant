@@ -26,16 +26,10 @@ export class SDegreePlanEditorComponent implements OnInit {
   ) {
     this.newSemesterIsActive = false;
     this.newSemesterTermSelect = "";
+    this.newSemesterYearField = new Date().getFullYear();
+    this.draggedCourse = "";
 
-    this.planService.formatPlan().subscribe({
-      next: (userData) => {
-        this.plan = userData;
-      },
-      error: (errResp) => {
-        this.errorHandler.handleError(errResp);
-      },
-    });
-
+    this.plan = [];
     this.courseSelection = {
       eligible: [
         {
@@ -76,7 +70,16 @@ export class SDegreePlanEditorComponent implements OnInit {
     } as CourseSelection;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.planService.formatPlan().subscribe({
+      next: (userData) => {
+        this.plan = userData;
+      },
+      error: (errResp) => {
+        this.errorHandler.handleError(errResp);
+      },
+    });
+  }
 
   onClickNewSemester() {
     if (this.newSemesterIsActive === true) {
