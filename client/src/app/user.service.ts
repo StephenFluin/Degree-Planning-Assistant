@@ -214,6 +214,11 @@ export class UserService {
     return this.userData;
   }
 
+  refreshAndGetUserData() {
+    this.fetchUserData(true);
+    return this.userData;
+  }
+
   /**
    * Headers for Form Data using multer
    * Do not set content type

@@ -39,8 +39,7 @@ export class SCoursesTakenComponent implements OnInit {
 
   @Input() set hasNewProfile(event: Event) {
     if (event) {
-      this.userService.fetchUserData(true);
-      this.profile = this.userService.getUserData();
+      this.profile = this.userService.refreshAndGetUserData();
       this.openPanel = true;
     }
   }
@@ -73,10 +72,10 @@ export class SCoursesTakenComponent implements OnInit {
    * @param courses
    */
   saveToUserProfile() {
-    const queryResult = this.userService.addToCoursesTaken(this.listOfCourses);
-    queryResult.subscribe((res) => console.log("Query Result: ", res));
-    this.userService.getUserData();
-    this.profile = this.userService.getUserData();
+    this.userService.addToCoursesTaken(this.listOfCourses).subscribe(() => {
+      this.profile = this.userService.refreshAndGetUserData();
+      this.openPanel = true;
+    });
   }
 
   /**
