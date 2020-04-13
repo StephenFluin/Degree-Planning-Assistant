@@ -26,6 +26,7 @@ export class SDegreePlanComponent implements OnInit {
   ngOnInit() {}
 
   onClickEditPlan() {
-    this.router.navigate(["plan-editor"]);
+    // TODO: ADD ROUTE AFTER ADDING EDIT PLAN
+    // this.router.navigate(["plan-editor"]);
   }
 }

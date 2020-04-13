@@ -36,7 +36,6 @@ export interface CourseData {
   school: string;
   department: string;
   code: string;
-  department: string;
   title: string;
   description: string;
   prerequisites: [CourseData];
