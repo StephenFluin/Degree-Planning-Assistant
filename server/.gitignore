@@ -60,7 +60,6 @@ typings/
 # next.js build output
 .next
 
-
 package-lock.json
 
 # Scan Gcloud OCR || Multer File Upload. Never upload `uploads files to git` || test.pdf
