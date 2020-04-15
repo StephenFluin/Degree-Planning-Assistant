@@ -18,13 +18,11 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSelectModule } from "@angular/material/select";
-<<<<<<< HEAD
 import { MatDividerModule } from "@angular/material/divider";
 
 import { UserService } from "./user.service";
 import { PlanService } from "./plan.service";
-=======
->>>>>>> moved some images
+import { CourseService } from "./course.service";
 
 import { AppComponent } from "./app.component";
 import { LandingComponent } from "./landing/landing.component";
@@ -81,7 +79,7 @@ import { SDegreePlanEditorComponent } from "./s-degree-plan-editor/s-degree-plan
     MatDividerModule,
   ],
   entryComponents: [ModalComponent, PopupComponent],
-  providers: [UserService, PlanService],
+  providers: [UserService, PlanService, CourseService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

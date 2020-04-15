@@ -175,6 +175,16 @@ export class UserService {
         tokenObj,
         this.getHttpHeaders()
       );
+
+      this.userData.subscribe((data) => {
+        console.log(data);
+      });
+
+      this.userData = this.http.post<UserProfile>(
+        `${this.uri}/identity`,
+        tokenObj,
+        this.getHttpHeaders()
+      );
     }
     return true;
   }

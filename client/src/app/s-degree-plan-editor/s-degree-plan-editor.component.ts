@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 
-import { CourseData } from "../user.service";
 import { PlanService, Year, CourseSelection } from "../plan.service";
 import { ErrorHandlerService } from "../error-handler.service";
 
@@ -107,18 +106,12 @@ export class SDegreePlanEditorComponent implements OnInit {
   }
 
   onDropCourse(term: string, year: number) {
-    if (
-      this.planService.addNewCourseToSemester(
-        term,
-        year,
-        this.plan,
-        this.draggedCourse
-      )
-    ) {
-      console.log("passed");
-    } else {
-      console.log("failed");
-    }
+    this.planService.addNewCourseToSemester(
+      term,
+      year,
+      this.plan,
+      this.draggedCourse
+    );
   }
 }
 

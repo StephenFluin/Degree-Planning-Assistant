@@ -131,7 +131,9 @@
                         {{ course.impaction }}
                       </div>
                     </div>
-                    <span class="semester-card-course-units"
+                    <span
+                      *ngIf="course.credit"
+                      class="semester-card-course-units"
                       >{{ course.credit }} units</span
                     >
                   </div>

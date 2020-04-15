@@ -129,11 +129,11 @@ export class PlanService {
     const newSemester = {
       term: term.toLowerCase(),
       year,
-      status: -1,
+      status: 0,
       courses: [],
       difficulty: 0,
       units: 0,
-    };
+    } as Semester;
 
     if (findYear > -1) {
       const findExistingSemester = yearArray[findYear].semesters.findIndex(
@@ -156,7 +156,6 @@ export class PlanService {
           this.TERMS[sem2.term.toLowerCase()]
         );
       });
-      console.log(yearArray[findYear].semesters);
     } else {
       yearArray.push({
         beginning: beginningYear,
@@ -233,28 +232,13 @@ export class PlanService {
     }
   }
 
-  private addCourseAndRecalculateSemester(
-    yearIndex: number,
-    semesterIndex: number,
-    newCourse: CourseData,
-    yearArray: Array<Year>
-  ) {
-    let unitsSum = 0;
-    yearArray[yearIndex].semesters[semesterIndex].courses.forEach((course) => {
-      unitsSum += Number(course.credit);
-    });
-    unitsSum += Number(newCourse.credit);
-
-    // TODO: Calculate difficulty
-  }
-
   /**
    * Fetches the information of a given course
    * @param code The course code of the course to be fetched
    */
   private fetchCourseData(code: string) {
     return this.http.get<Array<CourseData>>(
-      `${this.userService.uri}/course/San Jose State University/${code}`,
+      `${this.userService.uri}/course/SJSU/${code}`,
       this.userService.getHttpHeaders()
     );
   }
@@ -268,8 +252,25 @@ export class PlanService {
       let unitsSum = 0;
       let difficultySum = 0;
       semester.courses.forEach((course: CourseData) => {
-        unitsSum += Number(course.credit);
-        difficultySum += course.difficulty;
+        if (course.credit && course.credit.constructor === String) {
+          unitsSum += Number(course.credit);
+        } else {
+          console.log(
+            `Course ${course.department}${course.code} is missing credits or incorrect type!`
+          );
+        }
+        if (course.difficulty && course.credit.constructor === Number) {
+          difficultySum += course.difficulty;
+        } else {
+          console.log(
+            `Course ${course.department}${course.code} is missing difficulty or incorrect type!`
+          );
+        }
+        if (!course.impaction || course.impaction.constructor === Number) {
+          console.log(
+            `Course ${course.department}${course.code} is missing impaction or incorrect type!`
+          );
+        }
       });
 
       const numOfCourses = semester.courses.length;
