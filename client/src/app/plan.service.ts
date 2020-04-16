@@ -6,6 +6,7 @@ import { map } from "rxjs/operators";
 import { UserService } from "./user.service";
 import { ErrorHandlerService } from "./error-handler.service";
 import { CourseData } from "./course.service";
+import { Observable } from "rxjs";
 
 export interface Year {
   beginning: number;
@@ -31,6 +32,13 @@ export interface CourseSelection {
     type: string;
     courses: Array<string>;
   }>;
+}
+
+export interface Program {
+  school: string;
+  major: string;
+  catalogYear: string;
+  requirements?: string;
 }
 
 @Injectable({
@@ -349,5 +357,15 @@ export class PlanService {
         difficulty: 0,
       };
     }
+  }
+
+  /**
+   * @return An observable that returns a Program object
+   */
+  private fetchProgram(): Observable<Program> {
+    return this.http.get<Program>(
+      `${this.userService.uri}/program/?major=Software Engineering`,
+      this.userService.getHttpHeaders()
+    );
   }
 }
