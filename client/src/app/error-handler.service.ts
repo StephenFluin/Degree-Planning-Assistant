@@ -12,11 +12,11 @@ import {
   USER_EXISTS_ALREADY,
   USER_DOES_NOT_EXIST,
   TOKEN_IS_EMPTY,
-  NAME_IS_INVALID
+  NAME_IS_INVALID,
 } from "./constant";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ErrorHandlerService {
   constructor() {}
@@ -90,5 +90,9 @@ export class ErrorHandlerService {
         break;
     }
     return resultString;
+  }
+
+  showGenericError(error) {
+    window.alert(error);
   }
 }

@@ -4,18 +4,16 @@
     <div class="flex-row align-items-start w100">
       <div class="plan-editor">
         <div *ngIf="plan && plan.length > 0; else emptyPlan" class="w100 mp0">
-          <div *ngFor="let year of plan" class="year">
+          <div *ngFor="let year of plan; index as yearIndex" class="year">
             <div class="year-title">
               <div class="year-hori-line"></div>
-              <span class="year-range"
-                >{{ year.beginning }} - {{ year.ending }}</span
-              >
+              <span class="year-range">Year {{ yearIndex + 1 }}</span>
               <div class="year-hori-line"></div>
             </div>
             <div class="semester-cards-container">
               <!-- Semester Cards -->
               <div
-                *ngFor="let semester of year.semesters"
+                *ngFor="let semester of year.semesters; index as semesterIndex"
                 class="semester-card"
                 (drop)="onDropCourse(semester.term, semester.year)"
                 (dragover)="(false)"
@@ -23,12 +21,16 @@
                 <div
                   class="flex-row justify-content-space-between align-items-center w100"
                 >
-                  <span class="semester-card-term"
-                    >{{ semester.term | titlecase }} {{ semester.year }}</span
-                  >
+                  <span class="semester-card-term test"
+                    >{{ semester.term | titlecase }} {{ semester.year }}
+                  </span>
                   <mat-form-field class="mr0">
                     <mat-label>Status</mat-label>
-                    <mat-select class="roboto" [(ngModel)]="semester.status">
+                    <mat-select
+                      class="roboto"
+                      [ngModel]="semester.status"
+                      (ngModelChange)="onChangeSemesterStatus(semester, $event)"
+                    >
                       <mat-option value="1" class="roboto"
                         >Completed</mat-option
                       >
@@ -45,12 +47,22 @@
                   class="w100"
                 >
                   <div
-                    *ngFor="let course of semester.courses"
+                    *ngFor="
+                      let course of semester.courses;
+                      index as courseIndex
+                    "
                     class="semester-card-course"
                   >
                     <div class="semester-card-course-chip-and-difficulty">
                       <mat-chip-list class="mr8">
-                        <mat-chip [matMenuTriggerFor]="menu" class="chip">
+                        <mat-chip
+                          [matMenuTriggerFor]="menu"
+                          class="chip"
+                          draggable="true"
+                          (dragstart)="
+                            onDragStartCourse(course.department + course.code)
+                          "
+                        >
                           {{ course.department }}{{ course.code }}
                         </mat-chip>
                       </mat-chip-list>
@@ -136,6 +148,17 @@
                       class="semester-card-course-units"
                       >{{ course.credit }} units</span
                     >
+                    <img
+                      src="../../assets/minus-16.png"
+                      class="semester-card-course-remove"
+                      (click)="
+                        onClickRemoveCourse(
+                          yearIndex,
+                          semesterIndex,
+                          courseIndex
+                        )
+                      "
+                    />
                   </div>
                 </div>
                 <ng-template #emptySemester>
@@ -240,73 +263,22 @@
           </div>
         </div>
       </div>
-      <div class="available-courses-list">
-        <span class="body1 neutral-gray-clr mb8">Eligible Courses:</span>
-        <mat-chip-list
-          *ngFor="let courseType of courseSelection.eligible"
-          class="mb16"
-        >
-          <mat-chip
-            *ngFor="let course of courseType.courses"
-            class="chip"
-            draggable="true"
-            (dragstart)="onDragStartCourse(course)"
-          >
-            {{ course }}
-          </mat-chip>
-        </mat-chip-list>
-        <span class="body1 neutral-gray-clr mt8 mb8">Ineligible Courses:</span>
-        <mat-chip-list
-          *ngFor="let courseType of courseSelection.ineligible"
-          class="mb16"
-        >
-          <mat-chip *ngFor="let course of courseType.courses" class="chip">
-            {{ course }}
-          </mat-chip>
-        </mat-chip-list>
+      <div class="vert-line-divider"></div>
+      <div class="courses-list">
+        <div class="courses-category">
+          <span class="courses-category-header">Major Courses</span>
+          <mat-chip-list class="mr8">
+            <mat-chip
+              [matMenuTriggerFor]="menu"
+              class="chip"
+              draggable="true"
+              (dragstart)="onDragStartCourse(course.department + course.code)"
+            >
+              {{ course.department }}{{ course.code }}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
       </div>
     </div>
   </mat-card>
 </div>
-
-<!-- New Semester
-  <div class="new-semester">
-    <div *ngIf="newSemesterIsActive" class="new-semester-active">
-      <mat-form-field>
-        <mat-label>Term</mat-label>
-        <mat-select class="roboto">
-          <mat-option value="summer" class="roboto">Summer</mat-option>
-          <mat-option value="fall" class="roboto">Fall</mat-option>
-          <mat-option value="winter" class="roboto">Winter</mat-option>
-          <mat-option value="spring" class="roboto">Spring</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Year</mat-label>
-        <input
-          matInput
-          placeholder="Ex. 2020"
-          type="number"
-          min="2020"
-          class="roboto"
-        />
-      </mat-form-field>
-      <div class="flex-row justify-content-center align-items-center">
-        <button mat-button class="mr8" (click)="onClickNewSemester()">
-          Cancel
-        </button>
-        <button mat-button class="new-semester-add-btn">Add</button>
-      </div>
-    </div>
-    <div
-      *ngIf="newSemesterIsActive == false"
-      class="new-semester-inactive"
-      (click)="onClickNewSemester()"
-    >
-      <img src="../../assets/add-48.png" class="mb8" />
-      <span class="new-semester-header">
-        Add a semester
-      </span>
-    </div>
-  </div>
--->

@@ -141,6 +141,7 @@
 }
 
 .semester-card-course {
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -183,6 +184,13 @@
   padding-top: 8px;
   width: 100%;
   border-top: 1px solid #ecf0f1;
+}
+
+.semester-card-course-remove {
+  position: absolute;
+  left: -40px;
+  cursor: pointer;
+  width: 16px;
 }
 
 .statistic-chip-1 {
@@ -239,18 +247,38 @@
   border-radius: 0;
 }
 
-.available-courses-list {
+.courses-list {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  border: 2px solid #7f8c8d;
-  border-radius: 4px;
   width: 20%;
   height: 100%;
   padding: 16px;
   box-sizing: border-box;
+}
+
+.courses-category {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16px;
+  border: 4px solid #7f8c8d;
+  border-radius: 8px;
+}
+
+.courses-category-header {
+  font-size: 20px;
+  font-weight: bold;
+  color: #707070;
+}
+
+.vert-line-divider {
+  border: 2px solid #7f8c8d;
+  align-self: stretch;
   margin-left: 16px;
+  border-radius: 8px;
 }
 
 /* Sizing */

@@ -197,39 +197,80 @@ export class PlanService {
       );
 
       if (findSemester > -1) {
-        let courseAdded = false;
-        this.fetchCourseData(code).subscribe({
-          next: (courseData) => {
-            yearArray[findYear].semesters[findSemester].courses.push(
-              courseData[0]
-            );
-            courseAdded = true;
-          },
-          error: (errResp) => {
-            this.errorHandler.handleError(errResp);
-            return false;
-          },
-          complete: () => {
-            if (courseAdded) {
-              const semesterStats = this.calculateSemesterStatistics(
-                yearArray[findYear].semesters[findSemester]
-              );
-              yearArray[findYear].semesters[findSemester].difficulty =
-                semesterStats.difficulty;
-              yearArray[findYear].semesters[findSemester].units =
-                semesterStats.units;
-              return true;
-            } else {
-              return false;
-            }
-          },
+        const courseNotInSemester = yearArray[findYear].semesters[
+          findSemester
+        ].courses.every((course) => {
+          return `${course.department}${course.code}` !== code;
         });
+
+        if (courseNotInSemester === true) {
+          let courseAdded = false;
+          this.fetchCourseData(code).subscribe({
+            next: (courseData) => {
+              if (courseData.length > 0) {
+                yearArray[findYear].semesters[findSemester].courses.push(
+                  courseData[0]
+                );
+                courseAdded = true;
+              } else {
+                this.errorHandler.showGenericError("An error has occured");
+                return false;
+              }
+            },
+            error: (errResp) => {
+              this.errorHandler.handleError(errResp);
+              return false;
+            },
+            complete: () => {
+              if (courseAdded) {
+                const semesterStats = this.calculateSemesterStatistics(
+                  yearArray[findYear].semesters[findSemester]
+                );
+                yearArray[findYear].semesters[findSemester].difficulty =
+                  semesterStats.difficulty;
+                yearArray[findYear].semesters[findSemester].units =
+                  semesterStats.units;
+                return true;
+              } else {
+                return false;
+              }
+            },
+          });
+        }
       } else {
         return false;
       }
     } else {
       return false;
     }
+  }
+
+  /**
+   * Removes a course from a specified semester
+   * @param yearArray
+   * @param yearIndex
+   * @param semesterIndex
+   * @param courseIndex
+   */
+  removeCourse(
+    yearArray: Array<Year>,
+    yearIndex: number,
+    semesterIndex: number,
+    courseIndex: number
+  ) {
+    yearArray[yearIndex].semesters[semesterIndex].courses.splice(
+      courseIndex,
+      1
+    );
+
+    const newSemesterStats = this.calculateSemesterStatistics(
+      yearArray[yearIndex].semesters[semesterIndex]
+    );
+
+    yearArray[yearIndex].semesters[semesterIndex].units =
+      newSemesterStats.units;
+    yearArray[yearIndex].semesters[semesterIndex].difficulty =
+      newSemesterStats.difficulty;
   }
 
   /**

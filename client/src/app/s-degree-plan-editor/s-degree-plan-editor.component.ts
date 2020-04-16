@@ -41,7 +41,7 @@ export class SDegreePlanEditorComponent implements OnInit {
         },
         {
           type: "MATH",
-          courses: ["MATH030", "MATH031", "MATH032", "MATH042"],
+          courses: ["MATH30", "MATH31", "MATH32", "MATH42"],
         },
         {
           type: "CMPE",
@@ -96,22 +96,43 @@ export class SDegreePlanEditorComponent implements OnInit {
         this.plan
       ) === false
     ) {
-      console.log("Semester already exists!");
-      // TODO: Show in UI that semester already exists
+      this.errorHandler.showGenericError(
+        `${this.newSemesterTermSelect} ${this.newSemesterYearField} already exists`
+      );
     }
   }
 
   onDragStartCourse(courseCode: string) {
+    console.log(courseCode);
     this.draggedCourse = courseCode;
   }
 
   onDropCourse(term: string, year: number) {
-    this.planService.addNewCourseToSemester(
-      term,
-      year,
+    if (this.draggedCourse.length > 0) {
+      this.planService.addNewCourseToSemester(
+        term,
+        year,
+        this.plan,
+        this.draggedCourse
+      );
+    }
+  }
+
+  onClickRemoveCourse(yearIndex, semesterIndex, courseIndex) {
+    this.planService.removeCourse(
       this.plan,
-      this.draggedCourse
+      yearIndex,
+      semesterIndex,
+      courseIndex
     );
+  }
+
+  onChangeSemesterStatus(semester, newValue) {
+    semester.status = Number(newValue);
+  }
+
+  compareObjects(o1: any, o2: any) {
+    return o1.constructor === o2.constructor;
   }
 }
 
