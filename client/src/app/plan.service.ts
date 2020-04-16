@@ -35,10 +35,11 @@ export interface CourseSelection {
 }
 
 export interface Program {
+  _id: any;
   school: string;
   major: string;
   catalogYear: string;
-  requirements?: string;
+  requirements?: Array<any>;
 }
 
 @Injectable({
@@ -358,6 +359,8 @@ export class PlanService {
       };
     }
   }
+
+  fetchCourseSelection;
 
   /**
    * @return An observable that returns a Program object
