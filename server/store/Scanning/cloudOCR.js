@@ -142,7 +142,7 @@ const transcriptParser = async paragraph => {
           }
         })
         .catch(e => {
-          console.log(`Db error`, e);
+          return e;
         });
 
       break;

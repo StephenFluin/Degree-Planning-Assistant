@@ -14,7 +14,7 @@ import {
   getRemainingRequirement,
 } from '../store/utils';
 
-import { PLAN_NOT_FOUND } from './constant';
+import { PLAN_NOT_FOUND, FAILED_TO_UPDATE_USER } from './constant';
 
 // import response from '../store/Scanning/sampleData/scanResult';
 
@@ -48,6 +48,8 @@ textScanController.post(
         semesters: semesters
           .filter(semester => semester._id)
           .map(semester => semester._id),
+        remainingRequirement,
+        user: user._id,
       })
         .save()
         .then(newPlan => {
@@ -56,7 +58,6 @@ textScanController.post(
             {
               coursesTaken: coursesTaken.map(course => course._id),
               degreePlan: newPlan._id,
-              user: user._id,
             },
             { new: true }
           )
@@ -74,9 +75,17 @@ textScanController.post(
               },
             })
             .populate('coursesTaken')
-
             .then(updatedUser => {
-              res.status(200).json({ updatedUser, remainingRequirement });
+              res.status(200).json(updatedUser);
+            })
+            .catch(e => {
+              generateServerErrorCode(
+                res,
+                500,
+                e,
+                FAILED_TO_UPDATE_USER,
+                'Plan'
+              );
             });
         })
         .catch(e => {
