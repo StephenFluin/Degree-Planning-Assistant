@@ -3,6 +3,7 @@ import fs from 'fs';
 import { promisify } from 'util';
 import gCloudVision from '@google-cloud/vision';
 import { Course } from '../../database/models';
+import { createOrGetOneCourse } from '../utils';
 
 const { ImageAnnotatorClient } = gCloudVision.v1p4beta1;
 const readFileAsync = promisify(fs.readFile);
@@ -49,7 +50,6 @@ const transcriptParser = async paragraph => {
   );
 
   const sentence = words.join(' ');
-  console.log(sentence);
 
   switch (true) {
     // Check for Enrolling Semester
@@ -93,27 +93,23 @@ const transcriptParser = async paragraph => {
     case creditCondition.some(
       credit => words.includes(credit) && words[0].length <= 4
     ) ||
-      (words[0].length <= 4 &&
-        // words[1].length <= 4 &&
+      ((await Course.findOne({ department: words[0] })) &&
+        words[1] &&
+        words[1].length <= 4 &&
         semesterSeason.every(semester => !words.includes(semester))):
       if (words[0] === 'SE') {
         if (csCode.includes(words[1])) words[0] = 'CS';
         else words[0] = 'CMPE';
       }
-      await Course.findOne({
-        department: words[0],
-        code: words[1],
+
+      await createOrGetOneCourse({
+        code: `${words[0]} ${words[1]}`,
+        title: words.slice(2, words.length - 5).join(' '),
+        credit: words[words.length - 5],
       })
-        .then(foundCourse => {
-          if (foundCourse) {
-            const { department, code, title } = foundCourse;
-            if (TranscriptMap.semesterList[currentSemIndex])
-              TranscriptMap.semesterList[currentSemIndex].courses.push({
-                school,
-                code: `${department} ${code}`,
-                title,
-              });
-          }
+        .then(course => {
+          if (TranscriptMap.semesterList[currentSemIndex])
+            TranscriptMap.semesterList[currentSemIndex].courses.push(course);
         })
         .catch(e => {
           return e;
@@ -133,7 +129,6 @@ const transcriptParser = async paragraph => {
         );
       }
       break;
-
     default:
       break;
   }
@@ -169,6 +164,7 @@ const documentHandler = async (responses, option) => {
  */
 CloudOCR.scan = async (fileName, option) => {
   TranscriptMap = resetMap();
+
   const inputConfig = {
     mimeType: 'application/pdf',
     content: await readFileAsync(fileName),

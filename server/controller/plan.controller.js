@@ -54,15 +54,16 @@ planController.post(
       if (req.query.year === 1) {
         // TO-DO: If Freshman, generate all fixed plans
       } else {
-        const [takenSemester, coursesTaken, newSemester] = await Promise.all([
+        const [takenSemester, coursesTaken, newSemesters] = await Promise.all([
+          // Maybe getting takenSemester is redundant
           Plan.findById(...(planId && { planId })).populate('semesters'),
           User.findById(userId).select('coursesTaken'),
           createSemesterList(req.body.semesters),
         ]);
 
-        const semesters = await takenSemester.concat(newSemester);
+        courseCheck(coursesTaken, newSemesters);
 
-        courseCheck(coursesTaken, semesters);
+        const semesters = await takenSemester.concat(newSemesters);
 
         // const randomSemesterList = await generateSemesters(
         //   remainingCourses

@@ -67,7 +67,7 @@ courseController.post(
           { new: true, upsert: true }
         )
           .then(updatedCourse => {
-            console.log(updatedCourse.department, updatedCourse.code);
+            console.log(updatedCourse.department + updatedCourse.code);
           })
           .catch(e =>
             generateServerErrorCode(

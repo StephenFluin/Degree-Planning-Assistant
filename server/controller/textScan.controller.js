@@ -5,7 +5,7 @@ import passport from 'passport';
 
 import CloudOcr from '../store/Scanning/cloudOCR';
 
-import { User, Plan } from '../database/models';
+import { User, Plan, Semester } from '../database/models';
 
 import {
   generateServerErrorCode,
@@ -38,20 +38,40 @@ textScanController.post(
       // const scanResult = response;
       const { semesterList, major, addedInfo } = scanResult;
 
-      const semesters = await createSemesterList(semesterList);
+      let semesters = await Promise.all(
+        semesterList.map(async semester => {
+          if (semester.courses.length > 0) {
+            return Semester.findOne({
+              courses: { $all: semester.courses.map(course => course._id) },
+            })
+              .then(foundSemester => {
+                if (!foundSemester) return new Semester(semester).save();
+                return foundSemester;
+              })
+              .catch(e => {
+                console.log(e);
+              });
+          }
+        })
+      );
+
+      semesters = semesters.filter(
+        semester => semester && semester._id && semester.courses.length > 0
+      );
 
       const coursesTaken = semesters
-        .filter(semester => semester._id)
-        .map(semester => semester.courses)
+        .map(semester => semester.courses.map(course => course._id))
         .reduce((prev, current) => [...prev, ...current]);
 
-      const remainingRequirement = await getRemainingRequirement(coursesTaken);
+      // const remainingRequirement = await getRemainingRequirement(
+      //   semesterList
+      //     .map(semester => semester.courses)
+      //     .reduce((prev, current) => [...prev, ...current])
+      // );
 
       return new Plan({
-        semesters: semesters
-          .filter(semester => semester._id)
-          .map(semester => semester._id),
-        remainingRequirement,
+        semesters: semesters.map(semester => semester._id),
+        // remainingRequirement,
         user: user._id,
       })
         .save()
@@ -61,6 +81,7 @@ textScanController.post(
             {
               coursesTaken: coursesTaken.map(course => course._id),
               degreePlan: newPlan._id,
+              major,
             },
             { new: true }
           )

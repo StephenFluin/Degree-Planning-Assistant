@@ -4,7 +4,7 @@ const courseSchema = new Schema({
   school: { type: String, required: true, uppercase: true, default: 'SJSU' },
   department: { type: String, required: true, uppercase: true },
   code: { type: String, required: true },
-  title: { type: String, required: true, default: '' },
+  title: { type: String },
   credit: { type: String },
   description: { type: String },
   prerequisites: [
