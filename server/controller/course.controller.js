@@ -9,6 +9,7 @@ import {
   validationHandler,
   createOrGetOneCourse,
   getPopulatedCourse,
+  createOrGetAllCourse,
 } from '../store/utils';
 
 import {
@@ -35,30 +36,51 @@ const courseController = express.Router();
  */
 courseController.post(
   '/',
-  passport.authenticate('jwt', { session: false }),
-  validateCourseCreation,
+  // passport.authenticate('jwt', { session: false }),
+  // validateCourseCreation,
   (req, res) => {
     validationHandler(req, res, () => {
-      const { school, code } = req.body;
-      Course.findOne({ school, code })
-        .then(foundCourse => {
-          if (!foundCourse)
-            createOrGetOneCourse({ school, code }, 'NONE_EMPTY')
-              .then(createdCourse => res.status(200).json(createdCourse))
-              .catch(e =>
-                generateServerErrorCode(
-                  res,
-                  403,
-                  e,
-                  FAILED_TO_CREATE_COURSE,
-                  'course'
-                )
-              );
-        })
-        .catch(e =>
-          generateServerErrorCode(res, 403, e, COURSE_EXISTS_ALREADY, 'course')
-        );
+      req.body.courses.forEach(async course => {
+        const { _id, fullCourseCode } = course;
+        const { prerequisites, corequisites } = course;
+
+        const splitCourseString = fullCourseCode.split(' ');
+        const department = splitCourseString[0];
+        const code = splitCourseString[1].replace(/^0+/, '');
+
+        if (prerequisites && corequisites) {
+          [course.prerequisites, course.corequisites] = await Promise.all([
+            createOrGetAllCourse(prerequisites),
+            createOrGetAllCourse(corequisites),
+          ]);
+          course.prerequisites = course.prerequisites.map(el => el._id);
+          course.corequisites = course.corequisites.map(el => el._id);
+        }
+
+        await Course.findOneAndUpdate(
+          {
+            ...(_id && { _id }),
+            ...(department && { department: department.toUpperCase() }),
+            ...(code && { code }),
+          },
+          course,
+          { new: true, upsert: true }
+        )
+          .then(updatedCourse => {
+            console.log(updatedCourse.department + updatedCourse.code);
+          })
+          .catch(e =>
+            generateServerErrorCode(
+              res,
+              403,
+              e,
+              FAILED_TO_CREATE_COURSE,
+              'course'
+            )
+          );
+      });
     });
+    res.status(200).json('DONE');
   }
 );
 
@@ -68,7 +90,7 @@ courseController.post(
  */
 courseController.get(
   '/',
-  passport.authenticate('jwt', { session: false }),
+  // passport.authenticate('jwt', { session: false }),
   validateCourseQuery,
   (req, res) => {
     validationHandler(req, res, () => {
@@ -93,17 +115,22 @@ courseController.get(
 courseController.put(
   '/',
   passport.authenticate('jwt', { session: false }),
-  validateCourseId,
+  // validateCourseId,
   (req, res) => {
     validationHandler(req, res, async () => {
-      const { _id } = req.query;
+      const { _id, school, department, code } = req.query;
       const updateData = removeUndefinedObjectProps(req.body);
 
       if (isObjectEmpty(updateData))
         res.status(400).json({ error: NO_DATA_TO_UPDATE });
       else {
         Course.findByIdAndUpdate(
-          { _id },
+          {
+            ...(_id && { _id }),
+            ...(school && { school: school.toUpperCase() }),
+            ...(department && { department: department.toUpperCase() }),
+            ...(code && { code }),
+          },
           updateData,
           { useFindAndModify: false, new: true },
           (err, updatedCourse) => {

@@ -45,48 +45,54 @@ planController.errorHandler = (req, res, errors) => {
  * @access  Private
  */
 planController.post(
-  '/:userId',
+  '/',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     const { user } = req;
-    const { userId } = req.params;
+    const { userId, year, planId } = req.query;
     if (user._id == userId) {
       if (req.query.year === 1) {
         // TO-DO: If Freshman, generate all fixed plans
       } else {
-        const semesters = await createSemesterList(req.body.semesters);
+        const [takenSemester, coursesTaken, newSemester] = await Promise.all([
+          Plan.findById(...(planId && { planId })).populate('semesters'),
+          User.findById(userId).select('coursesTaken'),
+          createSemesterList(req.body.semesters),
+        ]);
 
-        courseCheck(userId, semesters);
+        const semesters = await takenSemester.concat(newSemester);
+
+        courseCheck(coursesTaken, semesters);
 
         // const randomSemesterList = await generateSemesters(
         //   remainingCourses
         // );
         // semesters.push(randomSemesterList);
-        Plan.findOneAndUpdate(
-          { user: user._id },
-          { semesters },
-          {
-            upsert: true,
-            new: true,
-            runValidators: true,
-            setDefaultsOnInsert: true,
-          }
-        )
-          .then(degreePlan => {
-            User.findByIdAndUpdate(user._id, { degreePlan }, { new: true })
-              .then(updatedUser => {
-                const userToReturn = { ...updatedUser.toJSON() };
-                delete userToReturn.hashedPassword;
-                delete userToReturn.__v;
-                res.status(200).json(userToReturn);
-              })
-              .catch(e => {
-                generateServerErrorCode(res, 500, e, FAILED_TO_UPDATE_USER);
-              });
-          })
-          .catch(e => {
-            generateServerErrorCode(res, 500, e, FAILED_TO_CREATE_PLAN);
-          });
+        // Plan.findOneAndUpdate(
+        //   { user: user._id },
+        //   { semesters },
+        //   {
+        //     upsert: true,
+        //     new: true,
+        //     runValidators: true,
+        //     setDefaultsOnInsert: true,
+        //   }
+        // )
+        //   .then(degreePlan => {
+        //     User.findByIdAndUpdate(user._id, { degreePlan }, { new: true })
+        //       .then(updatedUser => {
+        //         const userToReturn = { ...updatedUser.toJSON() };
+        //         delete userToReturn.hashedPassword;
+        //         delete userToReturn.__v;
+        //         res.status(200).json(userToReturn);
+        //       })
+        //       .catch(e => {
+        //         generateServerErrorCode(res, 500, e, FAILED_TO_UPDATE_USER);
+        //       });
+        //   })
+        //   .catch(e => {
+        //     generateServerErrorCode(res, 500, e, FAILED_TO_CREATE_PLAN);
+        //   });
       }
     }
   }

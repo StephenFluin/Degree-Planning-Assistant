@@ -1,5 +1,5 @@
 const response = {
-  takenCourseList: [
+  coursesTakenList: [
     {
       school: 'SJSU',
       code: 'ENGR 10',

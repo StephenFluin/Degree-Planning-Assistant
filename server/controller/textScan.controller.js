@@ -36,11 +36,15 @@ textScanController.post(
 
     CloudOcr.scan(path, option).then(async scanResult => {
       // const scanResult = response;
-      const { takenCourseList, semesterList, major, addedInfo } = scanResult;
+      const { coursesTakenList, semesterList, major, addedInfo } = scanResult;
 
-      const coursesTaken = await createOrGetAllCourse(takenCourseList);
+      // const coursesTaken = await createOrGetAllCourse(coursesTakenList);
 
       const semesters = await createSemesterList(semesterList);
+
+      const coursesTaken = semesters
+        .filter(semester => semester._id)
+        .map(semester => semester.courses);
 
       const remainingRequirement = await getRemainingRequirement(coursesTaken);
 

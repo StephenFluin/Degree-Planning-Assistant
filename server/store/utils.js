@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-underscore-dangle */
@@ -122,45 +121,47 @@ export const createUser = (email, password) => {
 export const createOrGetOneCourse = async (data, option = 'EMPTY') => {
   return new Promise((resolve, reject) => {
     let course = data;
-
-    const { school = 'SJSU', code, type } = course;
+    const {
+      school = 'SJSU',
+      code,
+      type = -1,
+      prerequisites = [],
+      corequisites = [],
+    } = course;
 
     const splitCourseString = code.split(' ');
     const department = splitCourseString[0];
     const courseCode = splitCourseString[1].replace(/^0+/, '');
 
-    Course.findOne({ school, department, code: courseCode })
+    Course.findOne({
+      school,
+      department,
+      code: courseCode,
+    })
       .then(async foundCourse => {
-        if (foundCourse) return resolve(foundCourse);
-
-        switch (option) {
-          case 'EMPTY':
-            course = {
-              ...data,
-              department,
-              code: courseCode,
-              type,
-            };
-            break;
-          default: {
-            const tasks = [
-              createOrGetAllCourse({
-                codes: data.prerequisites,
-              }),
-              createOrGetAllCourse({
-                codes: data.corequisites,
-              }),
-            ];
-            const [preList, coList] = await Promise.all(tasks);
-            course.prerequisites = preList;
-            course.corequisites = coList;
-            break;
-          }
+        if (foundCourse) {
+          if (type >= 0 && !foundCourse.type.includes(type))
+            foundCourse.type.push(type);
+          return resolve(foundCourse.save());
         }
+
+        [course.prerequisites, course.corequisites] = await Promise.all([
+          createOrGetAllCourse(prerequisites),
+          createOrGetAllCourse(corequisites),
+        ]);
+
+        course = {
+          ...data,
+          department,
+          code: courseCode,
+          type: type >= 0 ? [type] : [],
+        };
 
         return resolve(new Course(course).save());
       })
-      .catch(e => reject(e));
+      .catch(e => {
+        reject(e);
+      });
   });
 };
 
@@ -169,15 +170,19 @@ export const createOrGetOneCourse = async (data, option = 'EMPTY') => {
  * @param {[Object]} courses Array of codes
  */
 export const createOrGetAllCourse = courses => {
-  return new Promise(resolve => {
-    const tasks = courses.map(course => {
-      return createOrGetOneCourse({
-        ...course,
-        code: course.code,
-        title: course.title || ' ',
+  return new Promise((resolve, reject) => {
+    try {
+      const tasks = courses.map(course => {
+        return createOrGetOneCourse({
+          ...course,
+          code: course.code,
+          title: course.title || ' ',
+        });
       });
-    });
-    resolve(Promise.all(tasks));
+      resolve(Promise.all(tasks));
+    } catch (e) {
+      reject(e);
+    }
   });
 };
 
@@ -244,15 +249,13 @@ export const createOneSemester = async data => {
             newData.courses = courses.map(course => course._id);
 
             Semester.findOne({
-              courses: { $all: newData.courses },
+              courses: { $in: newData.courses },
             })
               .then(foundSemester => {
                 if (!foundSemester) {
                   // TO-DO: Add Pre-req check
                   resolve(new Semester(newData).save());
-                } else {
-                  resolve(foundSemester);
-                }
+                } else resolve(foundSemester);
               })
               .catch(e => reject(e));
           } else resolve(courses);
@@ -287,14 +290,14 @@ export const createSemesterList = semesterList => {
  * @param {[Array]} courses: List of taken courses
  * @param {Object} requirementOption: Requirement that the student follows
  */
-export const getRemainingRequirement = courses => {
+export const getRemainingRequirement = (courses, requirementOption) => {
   return new Promise(async (resolve, reject) => {
     const result = {};
     const typeMapping = groupBy(courses, 'type');
     const types = Object.keys(typeMapping).filter(type => type !== 'undefined');
 
     for (const type of types) {
-      await Requirement.findOne({ type })
+      Requirement.findOne({ type })
         .populate('courses')
         .then(foundRequirement => {
           const { requiredCredit } = foundRequirement;
@@ -315,13 +318,13 @@ export const getRemainingRequirement = courses => {
     }
 
     await Requirement.find(
-      { type: { $nin: types } },
+      { type: { $nin: ['1', '2'] } },
       (err, foundAllRequirement) => {
         if (err) reject(err);
         const requirementMap = groupBy(foundAllRequirement, 'type');
-        for (const type of Object.keys(requirementMap)) {
+        Object.keys(requirementMap).forEach(type => {
           result[type] = requirementMap[type];
-        }
+        });
       }
     );
 
@@ -347,15 +350,14 @@ export const generateSemesters = courses => {
  * @param {[Semesters]} semesters
  * @returns [status, error]
  */
-export const courseCheck = (userId, semesters) => {
+export const courseCheck = (coursesTaken, semesters) => {
   return new Promise(async (resolve, reject) => {
     const result = [];
-    const coursesTaken = await User.findById(userId).select('coursesTaken');
+    console.log(`[Course Check]`, coursesTaken);
 
-    // Check pre-req courses is in coursesTaken
-
-    // 1. Pre
+    // 1. Pre-req check
     semesters.map(semester => {
+      console.log(`[Course Check:semester] `, semester);
       return {
         id: semester._id,
         status: semester.courses.map(course => {

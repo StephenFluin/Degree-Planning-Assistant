@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import express from 'express';
 import passport from 'passport';
@@ -64,15 +67,15 @@ requirementController.post(
  * POST/
  * Create all new requirements if not exist, otherwise update
  */
-requirementController.post('/all', (req, res) => {
-  req.body.forEach(requirement => {
+requirementController.post('/all', async (req, res) => {
+  for (const requirement of req.body) {
     const { school, type, area, courses } = requirement;
     const courseObject = courses.map(course => {
       return { code: course, school, type, area };
     });
-    createOrGetAllCourse(courseObject)
-      .then(foundCourses => {
-        Requirement.findOneAndUpdate(
+    await createOrGetAllCourse(courseObject)
+      .then(async foundCourses => {
+        await Requirement.findOneAndUpdate(
           { school, type, area },
           { ...requirement, courses: foundCourses.map(course => course._id) },
           { new: true, upsert: true },
@@ -90,7 +93,7 @@ requirementController.post('/all', (req, res) => {
       .catch(e =>
         generateServerErrorCode(res, 500, e, FAILED_TO_CREATE_COURSE)
       );
-  });
+  }
   Requirement.find({}).then(result => {
     res.status(200).json({ ...result });
   });

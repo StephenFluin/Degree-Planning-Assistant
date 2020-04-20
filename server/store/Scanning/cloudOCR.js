@@ -29,7 +29,7 @@ const resetMap = () => {
   this.startingSem = {};
 
   return {
-    takenCourseList: [],
+    coursesTakenList: [],
     semesterList: [],
     otherInfo: [],
     major: '',
@@ -44,11 +44,11 @@ let TranscriptMap;
  */
 const addCourseToSemester = course => {
   if (
-    !TranscriptMap.takenCourseList.some(
+    !TranscriptMap.coursesTakenList.some(
       e => e.code === course.code && e.department === course.department
     )
   )
-    TranscriptMap.takenCourseList.push(course);
+    TranscriptMap.coursesTakenList.push(course);
   if (TranscriptMap.semesterList[currentSemIndex])
     TranscriptMap.semesterList[currentSemIndex].courses.push(course);
 };
