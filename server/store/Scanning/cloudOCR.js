@@ -29,7 +29,6 @@ const resetMap = () => {
   this.startingSem = {};
 
   return {
-    coursesTakenList: [],
     semesterList: [],
     otherInfo: [],
     major: '',
@@ -37,34 +36,6 @@ const resetMap = () => {
 };
 
 let TranscriptMap;
-
-/**
- * Add Course to the current Semester
- * @param {Object} course
- */
-const addCourseToSemester = course => {
-  if (
-    !TranscriptMap.coursesTakenList.some(
-      e => e.code === course.code && e.department === course.department
-    )
-  )
-    TranscriptMap.coursesTakenList.push(course);
-  if (TranscriptMap.semesterList[currentSemIndex])
-    TranscriptMap.semesterList[currentSemIndex].courses.push(course);
-};
-
-/**
- * UPDATE: Currently not in use. But please leave it there for future preferences.
- * Used in transcriptHandler() to get course info
- * @param {A String: contains all info of the course} words
- */
-const getCourseInfo = words => {
-  const code = `${words[0]} ${words[1]}`;
-  const creditIndex = words.length - 5;
-  const title = words.slice(2, creditIndex).join(' ');
-  const credit = words[creditIndex];
-  return { school, code, title, credit };
-};
 
 /**
  * Checking case and Map the info to the right type
@@ -78,6 +49,7 @@ const transcriptParser = async paragraph => {
   );
 
   const sentence = words.join(' ');
+  console.log(sentence);
 
   switch (true) {
     // Check for Enrolling Semester
@@ -122,6 +94,7 @@ const transcriptParser = async paragraph => {
       credit => words.includes(credit) && words[0].length <= 4
     ) ||
       (words[0].length <= 4 &&
+        // words[1].length <= 4 &&
         semesterSeason.every(semester => !words.includes(semester))):
       if (words[0] === 'SE') {
         if (csCode.includes(words[1])) words[0] = 'CS';
@@ -134,11 +107,12 @@ const transcriptParser = async paragraph => {
         .then(foundCourse => {
           if (foundCourse) {
             const { department, code, title } = foundCourse;
-            addCourseToSemester({
-              school,
-              code: `${department} ${code}`,
-              title,
-            });
+            if (TranscriptMap.semesterList[currentSemIndex])
+              TranscriptMap.semesterList[currentSemIndex].courses.push({
+                school,
+                code: `${department} ${code}`,
+                title,
+              });
           }
         })
         .catch(e => {

@@ -67,7 +67,7 @@ courseController.post(
           { new: true, upsert: true }
         )
           .then(updatedCourse => {
-            console.log(updatedCourse.department + updatedCourse.code);
+            console.log(updatedCourse.department, updatedCourse.code);
           })
           .catch(e =>
             generateServerErrorCode(
@@ -104,48 +104,6 @@ courseController.get(
         },
         res
       );
-    });
-  }
-);
-
-/**
- * PUT/
- * Update a course using ObjectId through query
- */
-courseController.put(
-  '/',
-  passport.authenticate('jwt', { session: false }),
-  // validateCourseId,
-  (req, res) => {
-    validationHandler(req, res, async () => {
-      const { _id, school, department, code } = req.query;
-      const updateData = removeUndefinedObjectProps(req.body);
-
-      if (isObjectEmpty(updateData))
-        res.status(400).json({ error: NO_DATA_TO_UPDATE });
-      else {
-        Course.findByIdAndUpdate(
-          {
-            ...(_id && { _id }),
-            ...(school && { school: school.toUpperCase() }),
-            ...(department && { department: department.toUpperCase() }),
-            ...(code && { code }),
-          },
-          updateData,
-          { useFindAndModify: false, new: true },
-          (err, updatedCourse) => {
-            if (err)
-              generateServerErrorCode(
-                res,
-                403,
-                'update course error',
-                COURSE_DOES_NOT_EXIST,
-                'course'
-              );
-            else res.status(200).json(updatedCourse);
-          }
-        );
-      }
     });
   }
 );
