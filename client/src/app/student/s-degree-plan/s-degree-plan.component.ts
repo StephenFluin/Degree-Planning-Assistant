@@ -1,8 +1,8 @@
 import { Component, OnInit, ErrorHandler } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { UserService, UserProfile } from "../user.service";
-import { PlanService, Year } from "../plan.service";
+import { UserService, UserProfile } from "../../user.service";
+import { PlanService, Year } from "../../plan.service";
 
 import { Observable } from "rxjs";
 import { share } from "rxjs/operators";
