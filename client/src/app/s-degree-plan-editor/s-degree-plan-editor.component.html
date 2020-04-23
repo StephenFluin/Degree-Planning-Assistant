@@ -241,8 +241,23 @@
       <div class="course-list">
         <span class="h6 bold neutral-gray-clr mb16">Courses taken</span>
         <mat-chip-list *ngIf="courseList" class="mb8">
-          <mat-chip *ngFor="let course of courseList; index as i" class="chip">
+          <mat-chip
+            *ngFor="let course of courseList; index as i"
+            [matMenuTriggerFor]="menu"
+            class="chip"
+          >
             {{ course.department }}{{ course.code }}
+            <mat-menu #menu="matMenu" style="padding: 0px;">
+              <app-popup
+                [title]="course.school + ' ' + course.department + course.code"
+                [subtitle]="course.title"
+                contentTitle="Description"
+              >
+                <p *ngIf="course?.description">
+                  {{ course.description }}
+                </p>
+              </app-popup>
+            </mat-menu>
           </mat-chip>
         </mat-chip-list>
       </div>
