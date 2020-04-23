@@ -35,6 +35,7 @@ export class SDegreePlanEditorComponent implements OnInit {
     this.userService.getUserData().subscribe((result) => {
       console.log("course list: ", result.coursesTaken);
       this.courseList = result.coursesTaken;
+      this.plan.user = result.firstName;
     });
 
     // this.setDummyData();
