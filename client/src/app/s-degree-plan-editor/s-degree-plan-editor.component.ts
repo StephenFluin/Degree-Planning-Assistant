@@ -30,6 +30,9 @@ export class SDegreePlanEditorComponent implements OnInit {
       this.plan.user = "";
       this.plan.program = "";
       this.plan.isAddingYear = false;
+      this.plan.years.forEach(
+        (semester) => (semester.isAddingSemester = false)
+      );
       console.log("The plan: ", result);
     });
     this.userService.getUserData().subscribe((result) => {
@@ -38,7 +41,7 @@ export class SDegreePlanEditorComponent implements OnInit {
       this.plan.user = result.firstName;
     });
 
-    // this.setDummyData();
+    this.setDummyData();
   }
 
   /** Dummy data for plan used to demo markup */
