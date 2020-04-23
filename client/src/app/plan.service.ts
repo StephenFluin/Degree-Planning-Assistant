@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-
-import { UserService, CourseData } from "./user.service";
-
+import { UserService } from "./user.service";
+import { CourseData } from "./course.service";
 import { map } from "rxjs/operators";
 
 export interface Year {
