@@ -41,7 +41,7 @@ export class SDegreePlanEditorComponent implements OnInit {
       this.plan.user = result.firstName;
     });
 
-    this.setDummyData();
+    // this.setDummyData();
   }
 
   /** Dummy data for plan used to demo markup */
